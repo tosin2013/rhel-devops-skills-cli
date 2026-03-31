@@ -21,6 +21,7 @@ Your AI assistant will activate this skill when you're:
 - Choosing between Helm and Ansible deployment patterns
 - Writing Helm charts for ArgoCD
 - Writing Ansible playbooks for Kubernetes
+- Scaffolding a new demo or lab project from the template
 - Configuring RHDP integration labels
 - Setting up Showroom content
 
@@ -33,6 +34,31 @@ For deployments expressible as Kubernetes manifests with Helm templating. ArgoCD
 ### Ansible Pattern
 
 For deployments requiring wait-for-ready logic, secret generation, or API calls. ArgoCD creates a Kubernetes Job running your playbook via Ansible Runner.
+
+## Scaffolding Workflow
+
+This template is a **bootstrap** — clone it to start a new project, then customize it for your demo or lab. The resulting repo belongs to the user's org, not the upstream template.
+
+```bash
+git clone https://github.com/rhpds/field-sourced-content-template.git my-demo
+cd my-demo
+rm -rf .git && git init
+git remote add origin https://github.com/your-org/my-demo.git
+```
+
+Choose **one** deployment pattern and remove the other:
+
+- **Helm**: Edit `values.yaml` to enable/disable components (Showroom, operators, namespaces)
+- **Ansible**: Write playbooks in `site.yml` orchestrating ArgoCD job execution
+
+## Related Skills
+
+| Skill | Integration |
+|-------|-------------|
+| [AgnosticD v2](agnosticd.html) | AgnosticD provisions the cluster; field content deploys onto it via the `ocp4_workload_field_content` role |
+| [Showroom](showroom.html) | Field content's Helm example includes a `components/showroom/` directory to deploy Showroom lab guides |
+
+See [ADR-010](../adrs/010-cross-skill-dependencies.html) for the cross-skill dependency model.
 
 ## RHDP Integration
 

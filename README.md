@@ -1,6 +1,6 @@
 # rhel-devops-skills-cli
 
-A centralized installer for AI assistant skills (Claude Code and Cursor IDE) providing deep knowledge for RHEL DevOps tooling — AgnosticD v2, Field-Sourced Content Template, and Patternizer.
+A centralized installer for AI assistant skills (Claude Code and Cursor IDE) providing deep knowledge for RHEL DevOps tooling — AgnosticD v2, Field-Sourced Content Template, Showroom, and Patternizer.
 
 ## Supported Skills
 
@@ -9,6 +9,7 @@ A centralized installer for AI assistant skills (Claude Code and Cursor IDE) pro
 | **agnosticd** | AgnosticD v2 — Ansible Agnostic Deployer for cloud provisioning via `agd` CLI | [agnosticd/agnosticd-v2](https://github.com/agnosticd/agnosticd-v2) |
 | **field-sourced-content** | RHDP self-service catalog items via GitOps (Helm/Ansible patterns) | [rhpds/field-sourced-content-template](https://github.com/rhpds/field-sourced-content-template) |
 | **patternizer** | Bootstrap Git repos into Validated Patterns for OpenShift | [tosin2013/patternizer](https://github.com/tosin2013/patternizer) |
+| **showroom** | RHDP lab guide and terminal system (Antora/AsciiDoc + Helm) | [rhpds/showroom-deployer](https://github.com/rhpds/showroom-deployer) |
 
 ## Supported Platforms
 
@@ -65,6 +66,7 @@ cd rhel-devops-skills-cli
 | [007](docs/adrs/007-github-pages-documentation-site.md) | GitHub Pages Documentation Site |
 | [008](docs/adrs/008-skill-update-strategy.md) | Skill Update Strategy |
 | [009](docs/adrs/009-community-skill-contributions.md) | Community Skill Contributions |
+| [010](docs/adrs/010-cross-skill-dependencies.md) | Cross-Skill Dependencies |
 
 ## Running Tests
 

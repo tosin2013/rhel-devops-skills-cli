@@ -21,6 +21,8 @@ Your AI assistant will activate this skill when you're:
 - Running `agd` commands (setup, provision, destroy, stop, start, status)
 - Creating or modifying configs and workloads
 - Configuring secrets files or account credentials
+- Setting up a fork for workshop development
+- Deploying Field-Sourced Content or Showroom as workloads
 - Debugging deployment failures
 
 ## Key Concepts
@@ -47,6 +49,27 @@ agnosticd-v2-output/      # ansible run output
 agnosticd-v2-virtualenv/  # Python venv with ansible-navigator
 ```
 
+## Fork Workflow
+
+Users developing workshops should **fork** `agnosticd-v2` to their own GitHub org. Custom configs and workloads live in the fork; only generic improvements (bug fixes, core features) should be submitted as PRs to upstream.
+
+```bash
+git clone https://github.com/your-org/agnosticd-v2.git
+cd agnosticd-v2
+git remote add upstream https://github.com/agnosticd/agnosticd-v2.git
+```
+
+Workshop-specific variables go in `agnosticd-v2-vars/` and secrets in `agnosticd-v2-secrets/` -- both outside the repo, never committed.
+
+## Related Skills
+
+| Skill | Integration |
+|-------|-------------|
+| [Field-Sourced Content](field-sourced-content.html) | AgnosticD deploys field content via the `ocp4_workload_field_content` workload role |
+| [Showroom](showroom.html) | AgnosticD deploys Showroom lab guides via the `ocp4_workload_showroom` infra_workload |
+
+See [ADR-010](../adrs/010-cross-skill-dependencies.html) for the cross-skill dependency model.
+
 ## Reference Documentation
 
 When installed, the `references/` directory includes:
@@ -57,6 +80,7 @@ When installed, the `references/` directory includes:
 | `contributing.adoc` | Contribution guidelines and PR format |
 | `conversion_guide.adoc` | Migrating from AgnosticD v1 to v2 |
 | `git-style-guide.adoc` | Git conventions for the project |
+| `core-workloads-catalog.md` | Catalog of all 35 core_workloads roles with descriptions |
 
 ## Install
 
