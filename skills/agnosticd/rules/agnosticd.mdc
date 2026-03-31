@@ -1,0 +1,19 @@
+---
+description: AgnosticD v2 conventions for configs, workloads, and deployment automation
+globs: ["**/ansible/**/*.yml", "**/configs/**/*", "**/roles/**/tasks/*.yml", "**/bin/agd"]
+alwaysApply: false
+---
+
+When working with AgnosticD v2:
+
+- Always use the `agd` CLI script from within the `agnosticd-v2` directory
+- Use `agd setup` for initial environment configuration, not manual venv creation
+- Deployment commands require three parameters: --guid, --config, --account
+- Keep secrets in `agnosticd-v2-secrets/`, variables in `agnosticd-v2-vars/`
+- Never commit secrets files to git
+- Configs live under `ansible/configs/<config-name>/`
+- Workloads are Ansible roles under `ansible/roles/`
+- Use execution environments for reproducible runs
+- Tag resources with `guid` and `env_type` for automated cleanup
+- Follow the git style guide: PR titles must start with Add|Change|Fix|Remove
+- Use AsciiDoc (.adoc) for documentation, not Markdown

@@ -1,0 +1,106 @@
+name: New Skill Request
+description: Request a new AI assistant skill for a RHEL DevOps tool
+title: "[Skill Request]: "
+labels: ["skill-request", "triage"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for requesting a new skill! Please fill out the information below so a maintainer can build and test the skill definition.
+
+        For details on how skills work, see [ADR-001: Agent Skills Standard](https://tosin2013.github.io/rhel-devops-skills-cli/adrs/001-adopt-agent-skills-standard.html) and [ADR-003: Documentation Embedding](https://tosin2013.github.io/rhel-devops-skills-cli/adrs/003-documentation-embedding-strategy.html).
+
+  - type: input
+    id: skill-name
+    attributes:
+      label: Skill Name
+      description: Short, lowercase, hyphenated name for the skill (e.g., `my-tool`)
+      placeholder: "e.g., ansible-navigator"
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Skill Description
+      description: One or two sentences describing what the skill helps with. This becomes the `description` field in SKILL.md.
+      placeholder: "AI assistance for Ansible Navigator execution environment management and playbook testing on RHEL."
+    validations:
+      required: true
+
+  - type: input
+    id: source-repo
+    attributes:
+      label: Source Repository URL
+      description: The GitHub repository containing the tool's documentation.
+      placeholder: "https://github.com/org/repo"
+    validations:
+      required: true
+
+  - type: input
+    id: branch
+    attributes:
+      label: Default Branch
+      description: The branch to fetch documentation from.
+      placeholder: "main"
+    validations:
+      required: true
+
+  - type: textarea
+    id: doc-paths
+    attributes:
+      label: Documentation Paths
+      description: |
+        List the file paths within the source repo that should be fetched into the skill's `references/` directory. One path per line.
+      placeholder: |
+        docs/setup.adoc
+        docs/user-guide.md
+        README.md
+    validations:
+      required: true
+
+  - type: textarea
+    id: when-to-use
+    attributes:
+      label: When to Use
+      description: |
+        Describe the scenarios when the AI should activate this skill. These become the "When to Use" section in SKILL.md.
+      placeholder: |
+        - Setting up the tool for the first time
+        - Configuring execution environments
+        - Debugging deployment failures
+    validations:
+      required: true
+
+  - type: textarea
+    id: cursor-rules
+    attributes:
+      label: Cursor Rule Patterns (optional)
+      description: |
+        If you want Cursor IDE rules (`.mdc` files), describe the file glob patterns and conventions the rule should enforce.
+      placeholder: |
+        Globs: **/playbooks/**/*.yml, **/roles/**/*
+        Conventions: Always use FQCN for Ansible modules, prefer ansible-navigator over ansible-playbook
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: Any other information that would help build this skill (related tools, common workflows, gotchas).
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Checklist
+      options:
+        - label: I have verified the source repository URL is correct and publicly accessible
+          required: true
+        - label: I have verified the documentation paths exist in the source repository
+          required: true
+        - label: I understand a maintainer will build the skill definition and submit a PR
+          required: true

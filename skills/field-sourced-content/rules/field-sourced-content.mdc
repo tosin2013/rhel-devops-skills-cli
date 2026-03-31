@@ -1,0 +1,18 @@
+---
+description: Field-Sourced Content Template conventions for RHDP GitOps deployments
+globs: ["**/charts/**/*.yaml", "**/values.yaml", "**/Chart.yaml", "**/site.yml", "**/requirements.yml"]
+alwaysApply: false
+---
+
+When working with Field-Sourced Content Template repositories:
+
+- Choose between Helm (`examples/helm/`) and Ansible (`examples/ansible/`) patterns
+- For Helm: follow the App of Apps pattern, use `helm template` to validate
+- For Ansible: use `kubernetes.core.k8s` module with auto-injected variables (cluster_domain, namespace)
+- Label resources for RHDP integration:
+  - `demo.redhat.com/application: "my-demo"` for health monitoring
+  - `demo.redhat.com/userinfo: ""` for data passback to AgnosticD
+- Never commit secrets to git — use OpenShift Secrets
+- Each component should be toggleable via values.yaml `enabled: true/false`
+- Order "Field Content CI" from RHDP catalog with your repo URL to deploy
+- Use ConfigMap with `demo.redhat.com/userinfo` label to pass URLs and credentials back

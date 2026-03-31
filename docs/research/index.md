@@ -1,6 +1,6 @@
 ---
 title: Research Documents
-nav_order: 3
+nav_order: 8
 has_children: true
 ---
 

@@ -1,0 +1,17 @@
+---
+description: Validated Patterns conventions for OpenShift GitOps pattern development
+globs: ["**/values-global.yaml", "**/values-*.yaml", "**/pattern.sh", "**/Makefile-common"]
+alwaysApply: false
+---
+
+When working with Validated Patterns (bootstrapped by Patternizer):
+
+- Use `patternizer init` via the container image, not manual scaffolding
+- Global config goes in `values-global.yaml`, cluster-specific in `values-<group>.yaml`
+- Use `./pattern.sh make install` to deploy the pattern to OpenShift
+- Secrets are managed via Vault and External Secrets Operator when enabled
+- Commit before running `init --with-secrets` — it modifies values-global.yaml
+- The `Makefile` must contain `include Makefile-common` for targets to work
+- Use `patternizer upgrade` to refresh common assets to latest versions
+- Keep Helm charts self-contained under their own directories
+- Follow Validated Patterns conventions: https://validatedpatterns.io/

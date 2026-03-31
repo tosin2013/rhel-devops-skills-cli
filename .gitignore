@@ -1,0 +1,7 @@
+PRD.md
+docs/_site/
+docs/.jekyll-cache/
+docs/Gemfile.lock
+*.log
+.rhel-devops-skills/
+.DS_Store

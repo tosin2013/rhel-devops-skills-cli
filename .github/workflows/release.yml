@@ -1,0 +1,42 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run tests
+        run: bash tests/run-all.sh
+
+      - name: Create release archive
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          tar czf "rhel-devops-skills-cli-${VERSION}.tar.gz" \
+            install.sh \
+            lib/ \
+            skills/ \
+            tests/ \
+            README.md \
+            LICENSE 2>/dev/null || \
+          tar czf "rhel-devops-skills-cli-${VERSION}.tar.gz" \
+            install.sh \
+            lib/ \
+            skills/ \
+            tests/ \
+            README.md
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+          files: rhel-devops-skills-cli-*.tar.gz

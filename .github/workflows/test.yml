@@ -1,0 +1,69 @@
+name: Tests
+
+on:
+  push:
+    branches: ["main"]
+    paths-ignore:
+      - "docs/**"
+      - "*.md"
+  pull_request:
+    branches: ["main"]
+    paths-ignore:
+      - "docs/**"
+      - "*.md"
+  workflow_dispatch:
+
+jobs:
+  test:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: System info
+        run: |
+          echo "OS: $(uname -s)"
+          echo "Bash: ${BASH_VERSION}"
+          echo "Git: $(git --version)"
+          command -v jq && echo "jq: $(jq --version)" || echo "jq: not found"
+          command -v python3 && echo "python3: $(python3 --version)" || echo "python3: not found"
+
+      - name: Install jq (if missing)
+        run: |
+          if ! command -v jq &>/dev/null; then
+            if [[ "$(uname -s)" == "Darwin" ]]; then
+              brew install jq
+            else
+              sudo apt-get update && sudo apt-get install -y jq
+            fi
+          fi
+
+      - name: Run tests
+        run: bash tests/run-all.sh
+
+      - name: Verify install.sh help
+        run: bash install.sh help
+
+      - name: Verify available skills
+        run: bash install.sh available
+
+  shellcheck:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install ShellCheck
+        run: sudo apt-get update && sudo apt-get install -y shellcheck
+
+      - name: Lint install.sh
+        run: shellcheck -x install.sh
+
+      - name: Lint lib/*.sh
+        run: shellcheck -x lib/*.sh
+
+      - name: Lint tests/*.sh
+        run: shellcheck -x tests/*.sh || true

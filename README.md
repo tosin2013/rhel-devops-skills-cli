@@ -1,14 +1,14 @@
 # rhel-devops-skills-cli
 
-A centralized repository and installation system that enables users to easily install and configure AI assistant skills (for Claude Code and Cursor IDE) providing deep knowledge and assistance for working with RHEL DevOps tooling.
+A centralized installer for AI assistant skills (Claude Code and Cursor IDE) providing deep knowledge for RHEL DevOps tooling — AgnosticD v2, Field-Sourced Content Template, and Patternizer.
 
 ## Supported Skills
 
 | Skill | Description | Source |
 |-------|-------------|--------|
-| **agnosticd** | AgnosticD v2 catalog item development and deployment automation | [agnosticd-v2](https://github.com/tosin2013/agnosticd-v2) |
-| **field-sourced-content** | OpenShift GitOps-based workshop/demo deployment via Field-Sourced Content Template | [field-sourced-content-template](https://github.com/rhpds/field-sourced-content-template) |
-| **patternizer** | Kubernetes/OpenShift pattern generation | [patternizer](https://github.com/tosin2013/patternizer) |
+| **agnosticd** | AgnosticD v2 — Ansible Agnostic Deployer for cloud provisioning via `agd` CLI | [agnosticd/agnosticd-v2](https://github.com/agnosticd/agnosticd-v2) |
+| **field-sourced-content** | RHDP self-service catalog items via GitOps (Helm/Ansible patterns) | [rhpds/field-sourced-content-template](https://github.com/rhpds/field-sourced-content-template) |
+| **patternizer** | Bootstrap Git repos into Validated Patterns for OpenShift | [tosin2013/patternizer](https://github.com/tosin2013/patternizer) |
 
 ## Supported Platforms
 
@@ -16,25 +16,41 @@ A centralized repository and installation system that enables users to easily in
 |----------|-------------|--------|
 | RHEL 8 | 4.4 | Supported (minimum) |
 | RHEL 9 | 5.1 | Supported |
-| RHEL 10 | 5.2 | Supported |
+| RHEL 10 | 5.2.26 | Supported |
 | macOS (Homebrew bash) | 5.2+ | Supported (`brew install bash` required) |
 
-Skills are installed using the [Agent Skills open standard](https://agentskills.io/) (`SKILL.md`) and work with both [Claude Code](https://docs.claude.com/en/docs/claude-code/slash-commands.md) and [Cursor IDE](https://www.cursor.com/docs/context/skills).
+Skills use the [Agent Skills open standard](https://agentskills.io/) (`SKILL.md`) and work with both [Claude Code](https://docs.claude.com/) and [Cursor IDE](https://www.cursor.com/).
 
 ## Quick Start
 
 ```bash
 git clone https://github.com/tosin2013/rhel-devops-skills-cli.git
 cd rhel-devops-skills-cli
-./install.sh --skill agnosticd
+./install.sh install --all
+```
+
+## Usage
+
+```bash
+./install.sh install --skill agnosticd       # Install one skill
+./install.sh install --all                    # Install all skills
+./install.sh install --all --ide cursor       # Target specific IDE
+./install.sh update --all                     # Update skill docs from upstream
+./install.sh check-updates                    # Check for upstream changes
+./install.sh verify --all                     # Verify installations
+./install.sh list                             # Show installed skills
+./install.sh available                        # Show all available skills
+./install.sh upgrade-installer                # Self-update the installer
 ```
 
 ## Documentation
 
-- [Architecture Decision Records](docs/adrs/) -- Design decisions with external research references
-- [Research Documents](docs/research/) -- Platform and standards research backing the ADRs
-- [Product Requirements Document](PRD.md) -- Full PRD (note: some assumptions superseded by ADRs)
-- [GitHub Pages Site](https://tosin2013.github.io/rhel-devops-skills-cli/) -- Online documentation
+- [Getting Started](https://tosin2013.github.io/rhel-devops-skills-cli/getting-started/)
+- [Skills Reference](https://tosin2013.github.io/rhel-devops-skills-cli/skills/)
+- [CLI Reference](https://tosin2013.github.io/rhel-devops-skills-cli/reference/cli/)
+- [Architecture Decision Records](docs/adrs/)
+- [Research Documents](docs/research/)
+- [GitHub Pages Site](https://tosin2013.github.io/rhel-devops-skills-cli/)
 
 ## Architecture Decisions
 
@@ -47,6 +63,14 @@ cd rhel-devops-skills-cli
 | [005](docs/adrs/005-dual-mode-skills-and-rules.md) | Dual-Mode Installation (Skills + Rules) |
 | [006](docs/adrs/006-shell-installer-architecture.md) | Shell Installer Architecture |
 | [007](docs/adrs/007-github-pages-documentation-site.md) | GitHub Pages Documentation Site |
+| [008](docs/adrs/008-skill-update-strategy.md) | Skill Update Strategy |
+| [009](docs/adrs/009-community-skill-contributions.md) | Community Skill Contributions |
+
+## Running Tests
+
+```bash
+bash tests/run-all.sh
+```
 
 ## License
 
