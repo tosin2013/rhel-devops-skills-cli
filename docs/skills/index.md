@@ -16,6 +16,16 @@ Each skill teaches your AI assistant (Claude Code or Cursor) how to work with a 
 | [Field-Sourced Content](field-sourced-content.html) | RHDP self-service catalog items via GitOps (Helm and Ansible patterns) | [rhpds/field-sourced-content-template](https://github.com/rhpds/field-sourced-content-template) |
 | [Patternizer](patternizer.html) | Bootstrap Git repos into Validated Patterns for OpenShift | [tosin2013/patternizer](https://github.com/tosin2013/patternizer) |
 
+## Cross-Skill Relationships
+
+Some skills work together. The installer and AI assistants recognize these relationships via the `related_skills` field in each SKILL.md. Currently:
+
+| Skill A | Skill B | Integration |
+|---------|---------|-------------|
+| AgnosticD v2 | Field-Sourced Content | AgnosticD provisions the OpenShift cluster; Field Content deploys onto it via the `ocp4_workload_field_content` workload role |
+
+See [ADR-010](../adrs/010-cross-skill-dependencies.html) for the full design.
+
 ## Install a Skill
 
 ```bash

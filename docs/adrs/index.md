@@ -23,3 +23,4 @@ All ADRs follow the [MADR](https://adr.github.io/madr/) (Markdown Architectural 
 | [007](007-github-pages-documentation-site.html) | GitHub Pages Documentation Site | Accepted |
 | [008](008-skill-update-strategy.html) | Skill Update Strategy | Accepted |
 | [009](009-community-skill-contributions.html) | Community Skill Contributions | Accepted |
+| [010](010-cross-skill-dependencies.html) | Cross-Skill Dependencies | Accepted |

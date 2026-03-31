@@ -16,3 +16,4 @@ When working with Field-Sourced Content Template repositories:
 - Each component should be toggleable via values.yaml `enabled: true/false`
 - Order "Field Content CI" from RHDP catalog with your repo URL to deploy
 - Use ConfigMap with `demo.redhat.com/userinfo` label to pass URLs and credentials back
+- The repo includes `roles/ocp4_workload_field_content/` -- an AgnosticD workload role that deploys field content via ArgoCD; refer to the agnosticd skill for cluster provisioning

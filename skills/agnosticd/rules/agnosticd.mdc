@@ -17,3 +17,4 @@ When working with AgnosticD v2:
 - Tag resources with `guid` and `env_type` for automated cleanup
 - Follow the git style guide: PR titles must start with Add|Change|Fix|Remove
 - Use AsciiDoc (.adoc) for documentation, not Markdown
+- When deploying Field-Sourced Content, add `ocp4_workload_field_content` to the workloads list and set `ocp4_workload_field_content_gitops_repo_url` to the content repo URL
