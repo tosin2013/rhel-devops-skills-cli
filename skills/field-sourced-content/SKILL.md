@@ -16,6 +16,7 @@ related_skills: [agnosticd, showroom]
 - Setting up Showroom content for demos
 - Deploying field content on an AgnosticD-provisioned cluster
 - Adding Showroom lab guides to field content
+- Scaffolding a new demo or lab project from the template
 - Debugging ArgoCD sync or deployment issues
 
 ## Instructions
@@ -43,16 +44,45 @@ Use when you need wait-for-ready, secret generation, API calls, or conditional l
 
 ArgoCD creates a Kubernetes Job that runs your playbook via Ansible Runner.
 
-## Quick Start
+## Scaffolding Workflow
+
+This template is a **bootstrap** -- clone it to start a new project, then actively customize it for the user's demo or lab. The resulting repo belongs to the user's org, not the upstream template.
+
+### 1. Clone and initialize
 
 ```bash
-git clone https://github.com/rhpds/field-sourced-content-template.git my-content
-cd my-content
-cd examples/helm      # or examples/ansible
-# Edit values.yaml and templates per each example's README
+git clone https://github.com/rhpds/field-sourced-content-template.git my-demo
+cd my-demo
+git remote set-url origin https://github.com/your-org/my-demo.git
 ```
 
-Then order **Field Content CI** from RHDP with your repository URL.
+### 2. Choose a pattern and remove the other
+
+```bash
+# For Helm-based deployment:
+rm -rf examples/ansible
+cp -r examples/helm/* .
+
+# Or for Ansible-based deployment:
+rm -rf examples/helm
+cp -r examples/ansible/* .
+```
+
+### 3. Customize for the user's goal
+
+- **Helm**: Edit `values.yaml` to enable/disable components (operator, helloWorld, showroom), add custom templates under `components/`, set image references and resource limits
+- **Ansible**: Write playbooks in `site.yml` using `kubernetes.core.k8s` with auto-injected variables (`cluster_domain`, `namespace`, `cluster_api_url`)
+- Set `demo.redhat.com/application` and `demo.redhat.com/userinfo` labels on resources
+- Configure Showroom content in `components/showroom/` if the demo needs a lab guide
+
+### 4. Push and deploy
+
+```bash
+git add . && git commit -m "Initialize field content for my demo"
+git push -u origin main
+```
+
+Then either order **Field Content CI** from RHDP with the repo URL, or configure AgnosticD with `ocp4_workload_field_content_gitops_repo_url` pointing to the user's repo.
 
 ## RHDP Integration Labels
 

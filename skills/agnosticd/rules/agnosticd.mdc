@@ -18,3 +18,6 @@ When working with AgnosticD v2:
 - Follow the git style guide: PR titles must start with Add|Change|Fix|Remove
 - Use AsciiDoc (.adoc) for documentation, not Markdown
 - When deploying Field-Sourced Content, add `ocp4_workload_field_content` to the workloads list and set `ocp4_workload_field_content_gitops_repo_url` to the content repo URL
+- Users developing workshops should work in a fork of agnosticd-v2, not the upstream repo
+- Never push workshop-specific configs or workloads to the upstream agnosticd-v2 repository -- only generic improvements via PRs
+- Custom configs belong in the user's fork; secrets and variables belong in agnosticd-v2-secrets/ and agnosticd-v2-vars/ (never committed)

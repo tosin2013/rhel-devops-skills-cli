@@ -17,3 +17,7 @@ When working with Field-Sourced Content Template repositories:
 - Order "Field Content CI" from RHDP catalog with your repo URL to deploy
 - Use ConfigMap with `demo.redhat.com/userinfo` label to pass URLs and credentials back
 - The repo includes `roles/ocp4_workload_field_content/` -- an AgnosticD workload role that deploys field content via ArgoCD; refer to the agnosticd skill for cluster provisioning
+- The template is a scaffold -- clone it to start new projects, then actively customize content for the user's stated goal
+- When the user wants to build a new demo or lab, clone field-sourced-content-template into a new directory named for their project
+- After cloning, choose Helm or Ansible pattern, remove the unused example, and customize values.yaml and templates for the user's workload
+- The user's content repo is their own -- push to their GitHub org, never back to the upstream template

@@ -17,6 +17,7 @@ related_skills: [field-sourced-content, showroom]
 - Understanding the required directory structure
 - Deploying Field-Sourced Content as an AgnosticD workload
 - Configuring Showroom as an infra_workload for lab guides
+- Setting up a fork of AgnosticD v2 for workshop development
 - Debugging deployment failures
 
 ## Instructions
@@ -37,6 +38,31 @@ AgnosticD v2 requires this local directory layout (created by `agd setup`):
   agnosticd-v2-output/      # ansible run output (per GUID)
   agnosticd-v2-virtualenv/  # Python 3.12+ venv with ansible-navigator
 ```
+
+## Fork Workflow
+
+Users developing workshops or custom deployments should **fork** `agnosticd-v2` to their own GitHub org rather than working directly in the upstream repository.
+
+```bash
+# Fork via GitHub UI, then clone your fork
+git clone https://github.com/your-org/agnosticd-v2.git
+cd agnosticd-v2
+
+# Add upstream as a remote for syncing
+git remote add upstream https://github.com/agnosticd/agnosticd-v2.git
+
+# Keep your fork in sync
+git fetch upstream
+git merge upstream/main
+```
+
+- **Custom configs and workloads** live in your fork under `ansible/configs/` and `ansible/roles/`
+- **Workshop-specific variables** go in `agnosticd-v2-vars/` (outside the repo, never committed)
+- **Secrets** go in `agnosticd-v2-secrets/` (outside the repo, never committed)
+- **Only generic improvements** (bug fixes, new core features, documentation) should be submitted as PRs to the upstream `agnosticd/agnosticd-v2` repository
+- **Never push** workshop-specific configs or workloads to upstream
+
+When configuring `ocp4_workload_field_content_gitops_repo_url`, point it to the user's own content repo -- not the upstream template.
 
 ## Key Commands
 
