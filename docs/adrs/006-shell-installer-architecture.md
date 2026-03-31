@@ -9,7 +9,7 @@ parent: Architecture Decision Records
 * Status: accepted
 * Date: 2026-03-31
 * Deciders: Architecture Team
-* Research: [RHEL and macOS Bash and Tooling Compatibility](../research/rhel-bash-and-tooling-compatibility.md)
+* Research: [RHEL and macOS Bash and Tooling Compatibility](../research/rhel-bash-and-tooling-compatibility.html)
 
 ## Context and Problem Statement
 
@@ -187,5 +187,5 @@ check_prerequisites() {
 * [macOS Bash Version Constraints](https://thelinuxcode.com/change-default-shell-from-zsh-to-bash-mac/)
 * [Homebrew](https://brew.sh/)
 * [Claude Code macOS Install Guide](https://dev.to/xujfcn/claude-code-installation-guide-for-macos-git-environment-variables-path-and-every-common-fix-4l96)
-* Related: [ADR-001](001-adopt-agent-skills-standard.md), [ADR-004](004-installation-target-paths.md)
+* Related: [ADR-001](001-adopt-agent-skills-standard.html), [ADR-004](004-installation-target-paths.html)
 * Supersedes: PRD Section 5.3 "Registry File Format" (YAML proposal)

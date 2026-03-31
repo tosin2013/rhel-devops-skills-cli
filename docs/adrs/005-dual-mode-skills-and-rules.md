@@ -9,7 +9,7 @@ parent: Architecture Decision Records
 * Status: accepted
 * Date: 2026-03-31
 * Deciders: Architecture Team
-* Research: [Cursor IDE Skill and Rules System](../research/cursor-ide-skill-and-rules-system.md), [Agent Skills Open Standard](../research/agent-skills-open-standard.md)
+* Research: [Cursor IDE Skill and Rules System](../research/cursor-ide-skill-and-rules-system.html), [Agent Skills Open Standard](../research/agent-skills-open-standard.html)
 
 ## Context and Problem Statement
 
@@ -107,4 +107,4 @@ When working with AgnosticD v2 catalog items:
 * [Agent Skills Specification](https://agentskills.io/specification) -- Cross-platform skill format
 * [Cursor Rules Guide (design.dev)](https://design.dev/guides/cursor-rules/) -- Best practices for Cursor rules
 * [Cursor Rules Guide (techsy.io)](https://techsy.io/blog/cursor-rules-guide) -- .mdc format details
-* Related: [ADR-001](001-adopt-agent-skills-standard.md), [ADR-004](004-installation-target-paths.md)
+* Related: [ADR-001](001-adopt-agent-skills-standard.html), [ADR-004](004-installation-target-paths.html)

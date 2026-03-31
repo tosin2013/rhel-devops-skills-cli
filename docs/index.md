@@ -27,9 +27,9 @@ cd rhel-devops-skills-cli
 
 | Skill | Description | Source Repository |
 |-------|-------------|-------------------|
-| [agnosticd](skills/agnosticd/) | AgnosticD v2 — Ansible Agnostic Deployer for cloud provisioning | [agnosticd/agnosticd-v2](https://github.com/agnosticd/agnosticd-v2) |
-| [field-sourced-content](skills/field-sourced-content/) | RHDP self-service catalog items via GitOps (Helm/Ansible) | [rhpds/field-sourced-content-template](https://github.com/rhpds/field-sourced-content-template) |
-| [patternizer](skills/patternizer/) | Bootstrap Git repos into Validated Patterns for OpenShift | [tosin2013/patternizer](https://github.com/tosin2013/patternizer) |
+| [agnosticd](skills/agnosticd.html) | AgnosticD v2 — Ansible Agnostic Deployer for cloud provisioning | [agnosticd/agnosticd-v2](https://github.com/agnosticd/agnosticd-v2) |
+| [field-sourced-content](skills/field-sourced-content.html) | RHDP self-service catalog items via GitOps (Helm/Ansible) | [rhpds/field-sourced-content-template](https://github.com/rhpds/field-sourced-content-template) |
+| [patternizer](skills/patternizer.html) | Bootstrap Git repos into Validated Patterns for OpenShift | [tosin2013/patternizer](https://github.com/tosin2013/patternizer) |
 
 ## Supported Platforms
 

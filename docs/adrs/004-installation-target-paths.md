@@ -9,7 +9,7 @@ parent: Architecture Decision Records
 * Status: accepted
 * Date: 2026-03-31
 * Deciders: Architecture Team
-* Research: [Claude Code Skill System](../research/claude-code-skill-system.md), [Cursor IDE Skill and Rules System](../research/cursor-ide-skill-and-rules-system.md)
+* Research: [Claude Code Skill System](../research/claude-code-skill-system.html), [Cursor IDE Skill and Rules System](../research/cursor-ide-skill-and-rules-system.html)
 
 ## Context and Problem Statement
 
@@ -89,7 +89,7 @@ On macOS, both Claude Code and Cursor use the **same home-directory paths** as o
 - Claude Code: `~/.claude/skills/` (global), `.claude/skills/` (project)
 - Cursor: `~/.cursor/skills/` (global), `.cursor/skills/` (project)
 
-There is **no** `~/Library/Application Support/` variant for skills. Claude Desktop's MCP config on macOS resides at `~/Library/Application Support/Claude/claude_desktop_config.json`, but that is for MCP servers (not skills) and is out of scope per [ADR-002](002-target-claude-code-and-cursor.md).
+There is **no** `~/Library/Application Support/` variant for skills. Claude Desktop's MCP config on macOS resides at `~/Library/Application Support/Claude/claude_desktop_config.json`, but that is for MCP servers (not skills) and is out of scope per [ADR-002](002-target-claude-code-and-cursor.html).
 
 This means the installer requires **no platform-specific path logic** -- the same `$HOME/.claude/skills/` and `$HOME/.cursor/skills/` paths work on both RHEL and macOS.
 
@@ -119,5 +119,5 @@ Since Cursor loads from `~/.claude/skills/`, installing ONLY to `~/.claude/skill
 * [Claude Code Skills Documentation](https://docs.claude.com/en/docs/claude-code/slash-commands.md) -- Confirms `~/.claude/skills/` as global location
 * [Claude Code .claude directory](https://code.claude.com/docs/en/claude-directory) -- Confirms `~/.claude/` path on all platforms including macOS
 * [Claude Code CLAUDE.md Guide](https://www.jdhodges.com/blog/claude-code-claudemd-project-instructions/) -- Documents Claude Code file locations
-* Related: [ADR-001](001-adopt-agent-skills-standard.md), [ADR-002](002-target-claude-code-and-cursor.md), [ADR-005](005-dual-mode-skills-and-rules.md)
+* Related: [ADR-001](001-adopt-agent-skills-standard.html), [ADR-002](002-target-claude-code-and-cursor.html), [ADR-005](005-dual-mode-skills-and-rules.html)
 * Supersedes: PRD Section 5.6 "File System" paths and Appendix B "File Locations"

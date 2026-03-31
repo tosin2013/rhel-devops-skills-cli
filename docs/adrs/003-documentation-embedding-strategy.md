@@ -9,7 +9,7 @@ parent: Architecture Decision Records
 * Status: accepted
 * Date: 2026-03-31
 * Deciders: Architecture Team
-* Research: [Agent Skills Open Standard](../research/agent-skills-open-standard.md), [Cursor IDE Skill and Rules System](../research/cursor-ide-skill-and-rules-system.md)
+* Research: [Agent Skills Open Standard](../research/agent-skills-open-standard.html), [Cursor IDE Skill and Rules System](../research/cursor-ide-skill-and-rules-system.html)
 
 ## Context and Problem Statement
 
@@ -90,5 +90,5 @@ The SKILL.md will NOT contain:
 * [Agent Skills Specification](https://agentskills.io/specification) -- Defines `references/` as standard directory for additional documentation
 * [Cursor Skills Documentation](https://www.cursor.com/docs/context/skills) -- "Keep SKILL.md focused; move detailed reference material to separate files"
 * [Agent Skills Overview](https://agentskills.io/) -- Describes progressive disclosure model
-* Related: [ADR-001](001-adopt-agent-skills-standard.md), [ADR-004](004-installation-target-paths.md)
+* Related: [ADR-001](001-adopt-agent-skills-standard.html), [ADR-004](004-installation-target-paths.html)
 * Supersedes: PRD Section 5.2 `docs/` directory layout within skills

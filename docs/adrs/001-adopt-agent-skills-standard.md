@@ -9,7 +9,7 @@ parent: Architecture Decision Records
 * Status: accepted
 * Date: 2026-03-31
 * Deciders: Architecture Team
-* Research: [Agent Skills Open Standard](../research/agent-skills-open-standard.md), [Claude Code Skill System](../research/claude-code-skill-system.md), [Cursor IDE Skill and Rules System](../research/cursor-ide-skill-and-rules-system.md)
+* Research: [Agent Skills Open Standard](../research/agent-skills-open-standard.html), [Claude Code Skill System](../research/claude-code-skill-system.html), [Cursor IDE Skill and Rules System](../research/cursor-ide-skill-and-rules-system.html)
 
 ## Context and Problem Statement
 
@@ -91,4 +91,4 @@ description: AI assistance for AgnosticD v2 catalog item development and deploym
 * [Cursor Agent Skills Documentation](https://www.cursor.com/docs/context/skills) -- Confirms SKILL.md loading from multiple directories
 * [Claude Code Skills Documentation](https://docs.claude.com/en/docs/claude-code/slash-commands.md) -- Confirms `.claude/skills/SKILL.md` format
 * Supersedes: PRD Section 5.3 "Skill Definition Format" (skill.json proposal)
-* Related: [ADR-002](002-target-claude-code-and-cursor.md), [ADR-003](003-documentation-embedding-strategy.md), [ADR-004](004-installation-target-paths.md)
+* Related: [ADR-002](002-target-claude-code-and-cursor.html), [ADR-003](003-documentation-embedding-strategy.html), [ADR-004](004-installation-target-paths.html)

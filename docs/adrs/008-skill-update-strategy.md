@@ -9,7 +9,7 @@ parent: Architecture Decision Records
 * Status: accepted
 * Date: 2026-03-31
 * Deciders: Architecture Team
-* Research: [RHEL and macOS Compatibility](../research/rhel-bash-and-tooling-compatibility.md)
+* Research: [RHEL and macOS Compatibility](../research/rhel-bash-and-tooling-compatibility.html)
 
 ## Context and Problem Statement
 
@@ -127,4 +127,4 @@ check_updates_background() {
 
 * [GitHub API - Get a commit](https://docs.github.com/en/rest/commits/commits#get-a-commit)
 * [git ls-remote documentation](https://git-scm.com/docs/git-ls-remote)
-* Related: [ADR-003](003-documentation-embedding-strategy.md) (references/ structure), [ADR-006](006-shell-installer-architecture.md) (registry format)
+* Related: [ADR-003](003-documentation-embedding-strategy.html) (references/ structure), [ADR-006](006-shell-installer-architecture.html) (registry format)

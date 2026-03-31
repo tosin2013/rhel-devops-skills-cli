@@ -99,4 +99,4 @@ Experienced contributors who are familiar with the format are welcome to submit 
 
 * [GitHub Issue Forms syntax](https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/syntax-for-issue-forms)
 * [GitHub Issue Templates](https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/configuring-issue-templates-for-your-repository)
-* Related: [ADR-001](001-adopt-agent-skills-standard.md) (SKILL.md format), [ADR-003](003-documentation-embedding-strategy.md) (references/ structure), [ADR-004](004-installation-target-paths.md) (installation paths)
+* Related: [ADR-001](001-adopt-agent-skills-standard.html) (SKILL.md format), [ADR-003](003-documentation-embedding-strategy.html) (references/ structure), [ADR-004](004-installation-target-paths.html) (installation paths)

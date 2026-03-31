@@ -9,7 +9,7 @@ parent: Architecture Decision Records
 * Status: accepted
 * Date: 2026-03-31
 * Deciders: Architecture Team
-* Research: [Claude Code Skill System](../research/claude-code-skill-system.md), [Model Context Protocol (MCP)](../research/model-context-protocol-mcp.md)
+* Research: [Claude Code Skill System](../research/claude-code-skill-system.html), [Model Context Protocol (MCP)](../research/model-context-protocol-mcp.html)
 
 ## Context and Problem Statement
 
@@ -73,4 +73,4 @@ The installer will:
 * [Claude Skills Overview](https://claude.com/docs/skills) -- Describes skills as part of Claude Code
 * [Cursor Skills Documentation](https://www.cursor.com/docs/context/skills) -- Cursor loads from `.claude/skills/` for cross-compatibility
 * [MCP Specification](https://modelcontextprotocol.io/specification/latest) -- MCP is for dynamic tool integration, not static documentation
-* Related: [ADR-001](001-adopt-agent-skills-standard.md), [ADR-004](004-installation-target-paths.md)
+* Related: [ADR-001](001-adopt-agent-skills-standard.html), [ADR-004](004-installation-target-paths.html)
