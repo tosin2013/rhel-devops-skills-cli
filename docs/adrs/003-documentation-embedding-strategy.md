@@ -1,3 +1,9 @@
+---
+title: "ADR-003: Documentation Embedding Strategy"
+nav_order: 3
+parent: Architecture Decision Records
+---
+
 # ADR-003: Documentation Embedding Strategy Using references/ Directory
 
 * Status: accepted

@@ -1,3 +1,9 @@
+---
+title: "ADR-002: Target Claude Code and Cursor"
+nav_order: 2
+parent: Architecture Decision Records
+---
+
 # ADR-002: Target Claude Code and Cursor IDE (Not Claude Desktop App)
 
 * Status: accepted

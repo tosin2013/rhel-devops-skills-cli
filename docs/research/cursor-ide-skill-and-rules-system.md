@@ -1,3 +1,9 @@
+---
+title: Cursor IDE Skill and Rules System
+nav_order: 2
+parent: Research Documents
+---
+
 # Cursor IDE Skill and Rules System
 
 **Date**: 2026-03-31

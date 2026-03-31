@@ -1,3 +1,9 @@
+---
+title: "ADR-001: Adopt Agent Skills Standard"
+nav_order: 1
+parent: Architecture Decision Records
+---
+
 # ADR-001: Adopt Agent Skills Open Standard (SKILL.md) Over Custom skill.json
 
 * Status: accepted

@@ -1,3 +1,9 @@
+---
+title: "ADR-005: Dual-Mode Skills and Rules"
+nav_order: 5
+parent: Architecture Decision Records
+---
+
 # ADR-005: Dual-Mode Installation (Skills + Optional Cursor Rules)
 
 * Status: accepted

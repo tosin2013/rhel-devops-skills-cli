@@ -1,3 +1,9 @@
+---
+title: Claude Code Skill System
+nav_order: 1
+parent: Research Documents
+---
+
 # Claude Code Skill System
 
 **Date**: 2026-03-31

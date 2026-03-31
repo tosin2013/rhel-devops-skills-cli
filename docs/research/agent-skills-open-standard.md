@@ -1,3 +1,9 @@
+---
+title: Agent Skills Open Standard
+nav_order: 3
+parent: Research Documents
+---
+
 # Agent Skills Open Standard
 
 **Date**: 2026-03-31

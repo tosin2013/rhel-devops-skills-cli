@@ -1,3 +1,9 @@
+---
+title: "ADR-004: Installation Target Paths"
+nav_order: 4
+parent: Architecture Decision Records
+---
+
 # ADR-004: Correct Installation Target Paths for Claude Code and Cursor
 
 * Status: accepted
@@ -77,6 +83,16 @@ detect_cursor() {
   assets/
 ```
 
+### macOS Path Confirmation
+
+On macOS, both Claude Code and Cursor use the **same home-directory paths** as on Linux:
+- Claude Code: `~/.claude/skills/` (global), `.claude/skills/` (project)
+- Cursor: `~/.cursor/skills/` (global), `.cursor/skills/` (project)
+
+There is **no** `~/Library/Application Support/` variant for skills. Claude Desktop's MCP config on macOS resides at `~/Library/Application Support/Claude/claude_desktop_config.json`, but that is for MCP servers (not skills) and is out of scope per [ADR-002](002-target-claude-code-and-cursor.md).
+
+This means the installer requires **no platform-specific path logic** -- the same `$HOME/.claude/skills/` and `$HOME/.cursor/skills/` paths work on both RHEL and macOS.
+
 ### Alternative: Cross-Compatibility Shortcut
 
 Since Cursor loads from `~/.claude/skills/`, installing ONLY to `~/.claude/skills/` would make skills visible to both platforms. However, this creates a confusing user experience where Cursor users find their skills in a Claude directory. Explicit per-platform installation is clearer.
@@ -101,6 +117,7 @@ Since Cursor loads from `~/.claude/skills/`, installing ONLY to `~/.claude/skill
 
 * [Cursor Skills Documentation](https://www.cursor.com/docs/context/skills) -- Lists all skill directory locations including cross-compatibility paths
 * [Claude Code Skills Documentation](https://docs.claude.com/en/docs/claude-code/slash-commands.md) -- Confirms `~/.claude/skills/` as global location
+* [Claude Code .claude directory](https://code.claude.com/docs/en/claude-directory) -- Confirms `~/.claude/` path on all platforms including macOS
 * [Claude Code CLAUDE.md Guide](https://www.jdhodges.com/blog/claude-code-claudemd-project-instructions/) -- Documents Claude Code file locations
 * Related: [ADR-001](001-adopt-agent-skills-standard.md), [ADR-002](002-target-claude-code-and-cursor.md), [ADR-005](005-dual-mode-skills-and-rules.md)
 * Supersedes: PRD Section 5.6 "File System" paths and Appendix B "File Locations"
