@@ -12,6 +12,7 @@ This directory contains documentation fetched from the [AgnosticD v2](https://gi
 | `git-style-guide.adoc` | Git commit messages, branch naming, PR conventions | `docs/git-style-guide.adoc` |
 | `README.adoc` | Repository overview, getting started, architecture | `README.adoc` |
 | `readme.adoc` | Execution environments documentation | `tools/execution_environments/readme.adoc` |
+| `core-workloads-catalog.md` | Complete catalog of all 35 core_workloads roles with descriptions and key variables | Local reference (from [agnosticd/core_workloads](https://github.com/agnosticd/core_workloads)) |
 
 ## Source Repository
 

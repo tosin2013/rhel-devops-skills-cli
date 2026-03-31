@@ -1,7 +1,7 @@
 ---
 name: agnosticd
 description: AI assistance for AgnosticD v2 — the Ansible Agnostic Deployer for provisioning infrastructure and deploying workloads on AWS, Azure, OpenStack, and OpenShift. Use when working with the agd CLI, catalog items, configs, or deployment workflows.
-related_skills: [field-sourced-content]
+related_skills: [field-sourced-content, showroom]
 ---
 
 # AgnosticD v2 Skill
@@ -16,6 +16,7 @@ related_skills: [field-sourced-content]
 - Working with execution environments and ansible-navigator
 - Understanding the required directory structure
 - Deploying Field-Sourced Content as an AgnosticD workload
+- Configuring Showroom as an infra_workload for lab guides
 - Debugging deployment failures
 
 ## Instructions
@@ -91,6 +92,8 @@ ocp4_workload_field_content_gitops_repo_url: "https://github.com/your-org/your-c
 ```
 
 The workload role uses `openshift_cluster_ingress_domain` and `openshift_api_url` from the provisioned cluster to configure the ArgoCD Application. Field content resources labeled with `demo.redhat.com/userinfo` pass URLs and credentials back to AgnosticD and the RHDP catalog.
+
+For lab guides, add `ocp4_workload_showroom` to `infra_workloads:` to deploy Showroom alongside the cluster. See the **showroom** skill for content authoring and terminal configuration.
 
 See the **field-sourced-content** skill for guidance on authoring the content repository itself (Helm or Ansible patterns).
 

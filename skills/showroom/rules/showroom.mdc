@@ -1,0 +1,17 @@
+---
+description: Showroom lab content authoring and deployment conventions
+globs: ["**/default-site.yml", "**/antora.yml", "**/showroom*/**", "**/content/modules/**/*.adoc"]
+alwaysApply: false
+---
+
+When working with Showroom content or deployment:
+
+- Use the Antora directory structure: `content/modules/ROOT/pages/` for lab pages, `nav.adoc` for navigation
+- Write content in AsciiDoc (.adoc), not Markdown
+- Use AsciiDoc attributes from `antora.yml` for dynamic values (hostnames, passwords, GUIDs)
+- Start from `showroom_template_default` -- do not build Antora scaffolding from scratch
+- Preview locally with `podman run --rm -v $PWD:/antora:z -p 8080:8080 ghcr.io/juliaaano/antora-viewer`
+- When deploying via AgnosticD, add `ocp4_workload_showroom` to `infra_workloads` (not `workloads`)
+- When deploying via Field-Sourced Content Helm, enable `components.showroom.enabled: true`
+- Select terminal type based on use case: `showroom` for pod-based, `wetty` for SSH to bastion, empty for content-only
+- Pin the Helm chart version (`ocp4_workload_showroom_deployer_chart_version`) for reproducibility

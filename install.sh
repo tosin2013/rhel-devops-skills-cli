@@ -58,6 +58,7 @@ AVAILABLE SKILLS:
   agnosticd              AgnosticD v2 — Ansible Agnostic Deployer
   field-sourced-content  RHDP Field-Sourced Content Template
   patternizer            Validated Patterns bootstrapper (Patternizer)
+  showroom               RHDP lab guide and terminal system (Showroom)
 USAGE
 }
 

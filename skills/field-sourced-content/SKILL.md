@@ -1,7 +1,7 @@
 ---
 name: field-sourced-content
 description: AI assistance for building RHDP Catalog Items using the Field-Sourced Content Template — a self-service GitOps platform with Helm and Ansible deployment patterns. Use when creating demos or labs for Red Hat Demo Platform.
-related_skills: [agnosticd]
+related_skills: [agnosticd, showroom]
 ---
 
 # Field-Sourced Content Template Skill
@@ -15,6 +15,7 @@ related_skills: [agnosticd]
 - Configuring RHDP integration labels (`demo.redhat.com/userinfo`, `demo.redhat.com/application`)
 - Setting up Showroom content for demos
 - Deploying field content on an AgnosticD-provisioned cluster
+- Adding Showroom lab guides to field content
 - Debugging ArgoCD sync or deployment issues
 
 ## Instructions
@@ -81,6 +82,8 @@ This repository includes `roles/ocp4_workload_field_content/` -- an AgnosticD wo
 - `ocp4_workload_field_content_namespace` -- target namespace for the ArgoCD Application
 
 The role automatically receives `openshift_cluster_ingress_domain` and `openshift_api_url` from the AgnosticD provisioned cluster, which are passed to ArgoCD as deployer values.
+
+The Helm example also includes a `components/showroom/` directory that deploys Showroom lab guides alongside your demo. See the **showroom** skill for content authoring and terminal configuration.
 
 See the **agnosticd** skill for guidance on provisioning the cluster and configuring workloads.
 

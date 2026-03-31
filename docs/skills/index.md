@@ -15,6 +15,7 @@ Each skill teaches your AI assistant (Claude Code or Cursor) how to work with a 
 | [AgnosticD v2](agnosticd.html) | Ansible Agnostic Deployer for cloud provisioning via the `agd` CLI | [agnosticd/agnosticd-v2](https://github.com/agnosticd/agnosticd-v2) |
 | [Field-Sourced Content](field-sourced-content.html) | RHDP self-service catalog items via GitOps (Helm and Ansible patterns) | [rhpds/field-sourced-content-template](https://github.com/rhpds/field-sourced-content-template) |
 | [Patternizer](patternizer.html) | Bootstrap Git repos into Validated Patterns for OpenShift | [tosin2013/patternizer](https://github.com/tosin2013/patternizer) |
+| [Showroom](showroom.html) | RHDP lab guide and terminal system (Antora/AsciiDoc content + Helm deployment) | [rhpds/showroom-deployer](https://github.com/rhpds/showroom-deployer) |
 
 ## Cross-Skill Relationships
 
@@ -23,6 +24,8 @@ Some skills work together. The installer and AI assistants recognize these relat
 | Skill A | Skill B | Integration |
 |---------|---------|-------------|
 | AgnosticD v2 | Field-Sourced Content | AgnosticD provisions the OpenShift cluster; Field Content deploys onto it via the `ocp4_workload_field_content` workload role |
+| AgnosticD v2 | Showroom | AgnosticD deploys Showroom as an `infra_workload` to serve lab guides on the cluster |
+| Field-Sourced Content | Showroom | Field Content's Helm example includes a `components/showroom/` directory to deploy Showroom alongside the demo |
 
 See [ADR-010](../adrs/010-cross-skill-dependencies.html) for the full design.
 
