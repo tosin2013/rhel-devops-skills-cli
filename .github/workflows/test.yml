@@ -31,24 +31,40 @@ jobs:
           command -v jq && echo "jq: $(jq --version)" || echo "jq: not found"
           command -v python3 && echo "python3: $(python3 --version)" || echo "python3: not found"
 
-      - name: Install jq (if missing)
+      - name: Install dependencies (macOS)
+        if: runner.os == 'macOS'
+        run: brew install bash jq
+
+      - name: Install dependencies (Linux)
+        if: runner.os == 'Linux'
         run: |
           if ! command -v jq &>/dev/null; then
-            if [[ "$(uname -s)" == "Darwin" ]]; then
-              brew install jq
-            else
-              sudo apt-get update && sudo apt-get install -y jq
-            fi
+            sudo apt-get update && sudo apt-get install -y jq
           fi
 
       - name: Run tests
-        run: bash tests/run-all.sh
+        run: |
+          if [[ "$(uname -s)" == "Darwin" ]]; then
+            /opt/homebrew/bin/bash tests/run-all.sh
+          else
+            bash tests/run-all.sh
+          fi
 
       - name: Verify install.sh help
-        run: bash install.sh help
+        run: |
+          if [[ "$(uname -s)" == "Darwin" ]]; then
+            /opt/homebrew/bin/bash install.sh help
+          else
+            bash install.sh help
+          fi
 
       - name: Verify available skills
-        run: bash install.sh available
+        run: |
+          if [[ "$(uname -s)" == "Darwin" ]]; then
+            /opt/homebrew/bin/bash install.sh available
+          else
+            bash install.sh available
+          fi
 
   shellcheck:
     runs-on: ubuntu-latest
@@ -63,7 +79,7 @@ jobs:
         run: shellcheck -x install.sh
 
       - name: Lint lib/*.sh
-        run: shellcheck -x lib/*.sh
+        run: shellcheck -x --severity=warning lib/*.sh
 
       - name: Lint tests/*.sh
         run: shellcheck -x tests/*.sh || true

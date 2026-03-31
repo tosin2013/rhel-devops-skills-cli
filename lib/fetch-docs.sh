@@ -36,6 +36,7 @@ fetch_skill_docs() {
 
     local tmpdir
     tmpdir="$(mktemp -d)"
+    # shellcheck disable=SC2064
     trap "rm -rf '$tmpdir'" RETURN
 
     local attempt=0
@@ -182,7 +183,8 @@ backup_skill_references() {
     local skill_name="$1" ide_dir="$2"
     local skill_path="$ide_dir/$skill_name"
     if [[ -d "$skill_path/references" ]]; then
-        local backup_path="$BACKUP_DIR/${skill_name}-$(date +%Y%m%d-%H%M%S)"
+        local backup_path
+        backup_path="$BACKUP_DIR/${skill_name}-$(date +%Y%m%d-%H%M%S)"
         mkdir -p "$backup_path"
         cp -r "$skill_path/references" "$backup_path/"
         debug "Backed up $skill_path/references to $backup_path"

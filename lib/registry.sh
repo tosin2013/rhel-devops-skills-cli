@@ -69,7 +69,8 @@ REGISTRY_EOF
 
 registry_backup() {
     if [[ -f "$REGISTRY_FILE" ]]; then
-        local backup_name="registry-$(date +%Y%m%d-%H%M%S).json"
+        local backup_name
+        backup_name="registry-$(date +%Y%m%d-%H%M%S).json"
         cp "$REGISTRY_FILE" "$BACKUP_DIR/$backup_name"
         debug "Registry backed up to $BACKUP_DIR/$backup_name"
     fi

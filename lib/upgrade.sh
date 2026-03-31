@@ -55,13 +55,15 @@ upgrade_installer() {
     script_root="$(get_script_dir)"
     local install_dir="$script_root/.."
 
-    local backup_path="$BACKUP_DIR/installer-v${INSTALLER_VERSION}-$(date +%Y%m%d-%H%M%S)"
+    local backup_path
+    backup_path="$BACKUP_DIR/installer-v${INSTALLER_VERSION}-$(date +%Y%m%d-%H%M%S)"
     mkdir -p "$backup_path"
     cp -r "$install_dir/install.sh" "$install_dir/lib" "$backup_path/" 2>/dev/null
     info "Current installer backed up to $backup_path"
 
     local tmpdir
     tmpdir="$(mktemp -d)"
+    # shellcheck disable=SC2064
     trap "rm -rf '$tmpdir'" RETURN
 
     if git clone --depth 1 "$INSTALLER_REPO" "$tmpdir/repo" 2>/dev/null; then
@@ -138,6 +140,7 @@ upgrade_skill() {
 
     local tmpdir
     tmpdir="$(mktemp -d)"
+    # shellcheck disable=SC2064
     trap "rm -rf '$tmpdir'" RETURN
 
     local commit_hash

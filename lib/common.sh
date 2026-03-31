@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # Shared utilities for rhel-devops-skills-cli
+# shellcheck disable=SC2034
 
 set -euo pipefail
 
@@ -69,7 +70,8 @@ debug()   { [[ "$VERBOSE" == "true" ]] && echo -e "[DEBUG] $*" >&2 || true; }
 
 log_to_file() {
     mkdir -p "$LOG_DIR"
-    local logfile="$LOG_DIR/install-$(date +%Y-%m-%d).log"
+    local logfile
+    logfile="$LOG_DIR/install-$(date +%Y-%m-%d).log"
     echo "[$(date -Iseconds)] $*" >> "$logfile"
 }
 

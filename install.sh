@@ -79,6 +79,7 @@ do_install_skill() {
 
     local tmpdir
     tmpdir="$(mktemp -d)"
+    # shellcheck disable=SC2064
     trap "rm -rf '$tmpdir'" RETURN
 
     local commit_hash

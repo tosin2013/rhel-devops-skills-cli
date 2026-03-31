@@ -17,7 +17,6 @@ validate_skill() {
     local installed_to
     installed_to="$(registry_get_skill "$skill_name" "installed_to")"
 
-    local skill_json
     if command -v jq &>/dev/null; then
         while IFS= read -r entry; do
             local ide path
