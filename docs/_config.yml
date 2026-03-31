@@ -41,5 +41,11 @@ gh_edit_branch: "main"
 gh_edit_source: docs
 gh_edit_view_mode: "tree"
 
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: default
+
 exclude:
   - Gemfile.lock
