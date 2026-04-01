@@ -1,0 +1,16 @@
+---
+description: Student readiness verification for deployed workshop environments
+globs: ["**/readiness*", "**/validate-env*", "**/smoke-test*"]
+alwaysApply: false
+---
+
+When verifying whether a deployed environment is ready for students:
+
+- Always collect the environment type (OCP shared, OCP dedicated, RHEL VM, AAP, hybrid) before running checks
+- Require at minimum: access credentials (oc token or SSH key) and the workshop GUID
+- Run checks in order: access first, then services, then content — stop at the first failure
+- Present results as a pass/fail table with actionable next steps for each failure
+- For multi-user environments, spot-check at least 3 student environments (first, middle, last)
+- Never skip the content-environment match check — mismatched URLs are a common cause of student confusion
+- When checks fail, escalate to the agnosticd or showroom skill troubleshooting sections before suggesting manual debugging
+- Reference the RHDP Skills Marketplace tools (/health:deployment-validator, /showroom:verify-content) for deeper validation

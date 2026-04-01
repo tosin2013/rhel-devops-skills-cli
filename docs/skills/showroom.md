@@ -56,7 +56,13 @@ Showroom can be deployed three ways:
 
 ## Related Skills
 
-Showroom integrates with both [AgnosticD v2](agnosticd.html) (cluster provisioning) and [Field-Sourced Content](field-sourced-content.html) (application deployment). Together they form the complete RHDP demo stack.
+| Skill | Integration |
+|-------|-------------|
+| [AgnosticD v2](agnosticd.html) | Deploys Showroom as an `infra_workload` on provisioned clusters |
+| [Field-Sourced Content](field-sourced-content.html) | Includes Showroom as a Helm component for self-service demos |
+| [Student Readiness](student-readiness.html) | Verifies Showroom accessibility, terminal, and content-environment match |
+
+See [ADR-011](../adrs/011-e2e-validation-and-troubleshooting.html) for validation and troubleshooting strategy.
 
 ## Reference Documentation
 

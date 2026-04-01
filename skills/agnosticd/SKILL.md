@@ -132,3 +132,56 @@ See the **field-sourced-content** skill for guidance on authoring the content re
 - Use `agnosticd_user_info` to output deployment information
 - Follow the git style guide in `references/` for branch naming and PR titles
 - Test configs locally before pushing
+
+## Troubleshooting
+
+When `agd provision` or `agd destroy` fails, follow this decision tree:
+
+```
+Deployment fails
+├─ "agd setup" not run or broken?
+│   → Run ./bin/agd setup
+│   → Verify Python 3.12+ and podman are installed
+│   → Check that agnosticd-v2-virtualenv/ exists
+│
+├─ Credential / account error?
+│   → Check agnosticd-v2-secrets/ for the account file
+│   → Verify cloud credentials are valid (AWS STS, Azure token, etc.)
+│   → Confirm the account name in -a flag matches a secrets file
+│
+├─ Cluster unreachable after provisioning?
+│   → Run: agd status -g <GUID> -c <CONFIG> -a <ACCOUNT>
+│   → Check VPN/network connectivity
+│   → Verify openshift_cluster_ingress_domain resolves
+│   → Check cloud console for instance/cluster state
+│
+├─ Workload fails (ocp4_workload_* role)?
+│   → Check output in agnosticd-v2-output/<GUID>/
+│   → Look for the failing role name in the Ansible output
+│   ├─ ocp4_workload_field_content?
+│   │   → Verify ocp4_workload_field_content_gitops_repo_url is correct
+│   │   → Check ArgoCD Application sync status: oc get app -n openshift-gitops
+│   ├─ ocp4_workload_showroom?
+│   │   → Verify content_git_repo URL and ref
+│   │   → Check showroom pod: oc get pods -n showroom-<GUID>
+│   │   → Check showroom pod logs: oc logs -n showroom-<GUID> -l app=showroom
+│   └─ Other workload?
+│       → Check the role's defaults/main.yml for required variables
+│       → Verify operator prerequisites are met (oc get csv -A)
+│
+├─ Environment deployed but not working for students?
+│   → Use the student-readiness skill to run end-to-end checks
+│
+└─ Still stuck?
+    → Use /health:deployment-validator from the RHDP Skills Marketplace
+      to generate Ansible validation roles
+    → See: https://rhpds.github.io/rhdp-skills-marketplace/
+```
+
+## Validation
+
+After a successful deployment, verify the environment before handing it to students:
+
+- **Student readiness**: Use the **student-readiness** skill to verify cluster access, Showroom, terminal, operators, RBAC, and workload resources
+- **Content quality**: Use `/showroom:verify-content` from the [RHDP Skills Marketplace](https://rhpds.github.io/rhdp-skills-marketplace/) to validate lab content against Red Hat standards
+- **Infrastructure health**: Use `/health:deployment-validator` to create Ansible roles that verify pods, routes, and operators

@@ -67,8 +67,9 @@ Workshop-specific variables go in `agnosticd-v2-vars/` and secrets in `agnosticd
 |-------|-------------|
 | [Field-Sourced Content](field-sourced-content.html) | AgnosticD deploys field content via the `ocp4_workload_field_content` workload role |
 | [Showroom](showroom.html) | AgnosticD deploys Showroom lab guides via the `ocp4_workload_showroom` infra_workload |
+| [Student Readiness](student-readiness.html) | After provisioning, verify the environment is ready for students end-to-end |
 
-See [ADR-010](../adrs/010-cross-skill-dependencies.html) for the cross-skill dependency model.
+See [ADR-010](../adrs/010-cross-skill-dependencies.html) for the cross-skill dependency model and [ADR-011](../adrs/011-e2e-validation-and-troubleshooting.html) for validation and troubleshooting.
 
 ## Reference Documentation
 

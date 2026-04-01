@@ -143,3 +143,58 @@ helm template showroom showroom-single-pod \
 - Use `partials/` for reusable content shared across modules
 - Test locally with the Antora viewer container before pushing
 - Pin the Helm chart version in AgnosticD configs for reproducibility
+
+## Troubleshooting
+
+When Showroom is not accessible or behaving unexpectedly, follow this decision tree:
+
+```
+Showroom not accessible
+├─ Pod not running?
+│   → oc get pods -n showroom-<GUID>
+│   → Check events: oc describe pod -n showroom-<GUID> <pod-name>
+│   → Image pull error? Verify terminal image URL in variables
+│   → CrashLoopBackOff? Check logs: oc logs -n showroom-<GUID> <pod-name>
+│
+├─ Route not created?
+│   → oc get routes -n showroom-<GUID>
+│   → Verify namespace exists: oc get ns showroom-<GUID>
+│   → Check Helm release: helm list -n showroom-<GUID>
+│
+├─ Content blank or shows error?
+│   → Verify ocp4_workload_showroom_content_git_repo URL is correct
+│   → Verify ocp4_workload_showroom_content_git_repo_ref branch/tag exists
+│   → Check Antora build logs in the showroom pod:
+│     oc logs -n showroom-<GUID> -c showroom-content
+│   → Test the content repo locally with the Antora viewer container
+│
+├─ Terminal not connecting?
+│   ├─ Type = showroom (pod-based)?
+│   │   → Check terminal pod: oc get pods -n showroom-<GUID> -l app=showroom-terminal
+│   │   → Verify terminal image is correct for the lab (OCP, ROSA, ARO, base)
+│   │   → Check terminal pod logs: oc logs -n showroom-<GUID> -l app=showroom-terminal
+│   └─ Type = wetty (SSH)?
+│       → Verify bastion is reachable: ssh <user>@<bastion_host>
+│       → Check wetty_ssh_bastion_login variable
+│       → Check Wetty route: oc get route -n showroom-<GUID> -l app=wetty
+│
+├─ VNC not working?
+│   → Verify ocp4_workload_showroom_novnc_enable is true
+│   → Check noVNC pod status
+│
+├─ Environment deployed but not ready for students?
+│   → Use the student-readiness skill to run end-to-end checks
+│
+└─ Still stuck?
+    → Run /showroom:verify-content to validate content quality
+    → Run /health:deployment-validator for infrastructure checks
+    → See: https://rhpds.github.io/rhdp-skills-marketplace/
+```
+
+## Validation
+
+Before handing a Showroom environment to students:
+
+- **Content quality**: Use `/showroom:verify-content` from the [RHDP Skills Marketplace](https://rhpds.github.io/rhdp-skills-marketplace/) to validate AsciiDoc against Red Hat standards
+- **Student readiness**: Use the **student-readiness** skill to verify the full student experience (access, lab guide, terminal, operators, RBAC)
+- **Lab grading** (if applicable): Use `/ftl:rhdp-lab-validator` to generate Solve/Validate button automation

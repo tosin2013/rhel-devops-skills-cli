@@ -59,6 +59,7 @@ AVAILABLE SKILLS:
   field-sourced-content  RHDP Field-Sourced Content Template
   patternizer            Validated Patterns bootstrapper (Patternizer)
   showroom               RHDP lab guide and terminal system (Showroom)
+  student-readiness      Workshop environment readiness checker
 USAGE
 }
 

@@ -10,6 +10,7 @@ A centralized installer for AI assistant skills (Claude Code and Cursor IDE) pro
 | **field-sourced-content** | RHDP self-service catalog items via GitOps (Helm/Ansible patterns) | [rhpds/field-sourced-content-template](https://github.com/rhpds/field-sourced-content-template) |
 | **patternizer** | Bootstrap Git repos into Validated Patterns for OpenShift | [tosin2013/patternizer](https://github.com/tosin2013/patternizer) |
 | **showroom** | RHDP lab guide and terminal system (Antora/AsciiDoc + Helm) | [rhpds/showroom-deployer](https://github.com/rhpds/showroom-deployer) |
+| **student-readiness** | Workshop environment readiness checker (student POV) | Self-contained |
 
 ## Supported Platforms
 
@@ -67,6 +68,7 @@ cd rhel-devops-skills-cli
 | [008](docs/adrs/008-skill-update-strategy.md) | Skill Update Strategy |
 | [009](docs/adrs/009-community-skill-contributions.md) | Community Skill Contributions |
 | [010](docs/adrs/010-cross-skill-dependencies.md) | Cross-Skill Dependencies |
+| [011](docs/adrs/011-e2e-validation-and-troubleshooting.md) | End-to-End Validation and Troubleshooting |
 
 ## Running Tests
 
