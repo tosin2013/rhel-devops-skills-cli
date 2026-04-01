@@ -100,6 +100,12 @@ upgrade_skill() {
     source_repo="$(get_skill_config "$skill_name" "source_repo")"
     branch="$(get_skill_config "$skill_name" "branch")"
 
+    # Self-contained skills have no upstream to update from
+    if [[ -z "$source_repo" ]]; then
+        success "Skill '$skill_name' is self-contained (no upstream repo to update from)"
+        return 0
+    fi
+
     local stored_hash
     stored_hash="$(registry_get_skill "$skill_name" "docs_commit_hash" 2>/dev/null)" || stored_hash=""
 

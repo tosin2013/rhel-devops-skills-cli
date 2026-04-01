@@ -31,6 +31,32 @@ fetch_skill_docs() {
     source_repo="$(get_skill_config "$skill_name" "source_repo")"
     branch="$(get_skill_config "$skill_name" "branch")"
 
+    local script_root
+    script_root="$(get_script_dir)"
+    local skill_src="$script_root/../skills/$skill_name"
+
+    # Self-contained skills have no upstream repo — install directly from local files
+    if [[ -z "$source_repo" ]]; then
+        info "Installing self-contained skill '$skill_name' (no upstream repo)..."
+        log_to_file "INSTALL-LOCAL: $skill_name (self-contained)"
+
+        mkdir -p "$target_dir/references"
+
+        if [[ -f "$skill_src/SKILL.md" ]]; then
+            cp "$skill_src/SKILL.md" "$target_dir/SKILL.md"
+        fi
+
+        if [[ -f "$skill_src/references/REFERENCE.md" ]]; then
+            cp "$skill_src/references/REFERENCE.md" "$target_dir/references/REFERENCE.md"
+        fi
+
+        # Use installer repo commit as the version hash
+        local commit_hash
+        commit_hash="$(git -C "$script_root/.." rev-parse HEAD 2>/dev/null || echo "local")"
+        echo "$commit_hash"
+        return 0
+    fi
+
     info "Fetching documentation for '$skill_name' from $source_repo..."
     log_to_file "FETCH: $skill_name from $source_repo ($branch)"
 
@@ -66,10 +92,6 @@ fetch_skill_docs() {
     commit_hash="$(git -C "$tmpdir/repo" rev-parse HEAD 2>/dev/null)"
 
     mkdir -p "$target_dir/references"
-
-    local script_root
-    script_root="$(get_script_dir)"
-    local skill_src="$script_root/../skills/$skill_name"
 
     if [[ -f "$skill_src/SKILL.md" ]]; then
         cp "$skill_src/SKILL.md" "$target_dir/SKILL.md"
@@ -140,6 +162,12 @@ check_updates_for_skill() {
     stored_hash="$(registry_get_skill "$skill_name" "docs_commit_hash" 2>/dev/null)" || return 1
     source_repo="$(get_skill_config "$skill_name" "source_repo")"
     branch="$(get_skill_config "$skill_name" "branch")"
+
+    # Self-contained skills have no upstream to check
+    if [[ -z "$source_repo" ]]; then
+        echo "up_to_date"
+        return 0
+    fi
 
     remote_hash="$(get_remote_commit_hash "$source_repo" "$branch")"
 
