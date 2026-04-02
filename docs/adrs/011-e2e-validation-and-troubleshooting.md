@@ -55,21 +55,23 @@ Chosen option: **"Dedicated student-readiness skill with troubleshooting decisio
 
 ### Workshop Lifecycle
 
-The full lifecycle now has four phases:
+The full lifecycle now has five phases:
 
 ```
-Create              Deploy              Validate            Troubleshoot
-┌──────────┐       ┌──────────┐       ┌──────────┐       ┌──────────┐
-│ Showroom │       │AgnosticD │       │ Student  │       │ Decision │
-│ content  │──────►│ + Field  │──────►│Readiness │──────►│  trees   │
-│ authoring│       │ Content  │       │  Skill   │       │ in SKILL │
-└──────────┘       └──────────┘       └──────────┘       └──────────┘
-      │                  │                  │                  │
-      ▼                  ▼                  ▼                  ▼
- verify-content    deployment-        student-         agnosticd/
- (marketplace)     validator          readiness        showroom
-                   (marketplace)      (this project)   troubleshoot
+Create              Deploy              Validate            Test                Troubleshoot
+┌──────────┐       ┌──────────┐       ┌──────────┐       ┌──────────┐       ┌──────────┐
+│ Showroom │       │AgnosticD │       │ Student  │       │ Workshop │       │ Decision │
+│ content  │──────►│ + Field  │──────►│Readiness │──────►│  Tester  │──────►│  trees   │
+│ authoring│       │ Content  │       │  Skill   │       │  Skill   │       │ in SKILL │
+└──────────┘       └──────────┘       └──────────┘       └──────────┘       └──────────┘
+      │                  │                  │                  │                  │
+      ▼                  ▼                  ▼                  ▼                  ▼
+ verify-content    deployment-        student-         workshop-          agnosticd/
+ (marketplace)     validator          readiness        tester             showroom
+                   (marketplace)      (this project)   (this project)     troubleshoot
 ```
+
+The **workshop-tester** skill (see [ADR-012](012-workshop-module-testing.html)) extends the validation lifecycle by executing actual module exercises against the live environment. While student-readiness checks "is the env ready?", workshop-tester answers "do the exercises actually work?" — classifying failures as Instruction Fix, Infra / Deployment Fix, or Rethink.
 
 ### Student Readiness Skill
 
@@ -114,4 +116,4 @@ Each deployment skill (AgnosticD, Showroom) gets an embedded troubleshooting sec
 * [/health:deployment-validator](https://rhpds.github.io/rhdp-skills-marketplace/skills/deployment-health-checker.html) -- infrastructure health checks
 * [/showroom:verify-content](https://rhpds.github.io/rhdp-skills-marketplace/skills/verify-content.html) -- content quality validation
 * [/ftl:rhdp-lab-validator](https://rhpds.github.io/rhdp-skills-marketplace/skills/rhdp-lab-validator.html) -- lab grading automation
-* Related: [ADR-010](010-cross-skill-dependencies.html) (cross-skill dependencies), [ADR-008](008-skill-update-strategy.html) (skill updates)
+* Related: [ADR-010](010-cross-skill-dependencies.html) (cross-skill dependencies), [ADR-008](008-skill-update-strategy.html) (skill updates), [ADR-012](012-workshop-module-testing.html) (workshop module testing)

@@ -60,6 +60,7 @@ AVAILABLE SKILLS:
   patternizer            Validated Patterns bootstrapper (Patternizer)
   showroom               RHDP lab guide and terminal system (Showroom)
   student-readiness      Workshop environment readiness checker
+  workshop-tester        AI-as-student module tester with failure classification
 USAGE
 }
 

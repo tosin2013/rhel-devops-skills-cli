@@ -25,3 +25,4 @@ All ADRs follow the [MADR](https://adr.github.io/madr/) (Markdown Architectural 
 | [009](009-community-skill-contributions.html) | Community Skill Contributions | Accepted |
 | [010](010-cross-skill-dependencies.html) | Cross-Skill Dependencies | Accepted |
 | [011](011-e2e-validation-and-troubleshooting.html) | End-to-End Validation and Troubleshooting | Accepted |
+| [012](012-workshop-module-testing.html) | Workshop Module Testing Strategy | Accepted |

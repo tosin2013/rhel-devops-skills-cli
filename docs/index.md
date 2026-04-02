@@ -7,7 +7,7 @@ nav_order: 1
 # RHEL DevOps Skills CLI
 {: .fs-9 }
 
-A centralized installer for AI assistant skills — providing deep knowledge of AgnosticD v2, Field-Sourced Content, and Patternizer to Claude Code and Cursor IDE.
+A centralized installer for AI assistant skills — providing deep knowledge of AgnosticD v2, Field-Sourced Content, Showroom, Patternizer, and workshop validation to Claude Code and Cursor IDE.
 {: .fs-6 .fw-300 }
 
 [Get Started](getting-started/){: .btn .btn-primary .fs-5 .mb-4 .mb-md-0 .mr-2 }
@@ -30,6 +30,9 @@ cd rhel-devops-skills-cli
 | [agnosticd](skills/agnosticd.html) | AgnosticD v2 — Ansible Agnostic Deployer for cloud provisioning | [agnosticd/agnosticd-v2](https://github.com/agnosticd/agnosticd-v2) |
 | [field-sourced-content](skills/field-sourced-content.html) | RHDP self-service catalog items via GitOps (Helm/Ansible) | [rhpds/field-sourced-content-template](https://github.com/rhpds/field-sourced-content-template) |
 | [patternizer](skills/patternizer.html) | Bootstrap Git repos into Validated Patterns for OpenShift | [tosin2013/patternizer](https://github.com/tosin2013/patternizer) |
+| [showroom](skills/showroom.html) | RHDP lab guide and terminal system (Antora/AsciiDoc + Helm) | [rhpds/showroom-deployer](https://github.com/rhpds/showroom-deployer) |
+| [student-readiness](skills/student-readiness.html) | Workshop environment readiness checker (student POV) | Self-contained |
+| [workshop-tester](skills/workshop-tester.html) | AI-as-student module tester with failure classification | Self-contained |
 
 ## Supported Platforms
 

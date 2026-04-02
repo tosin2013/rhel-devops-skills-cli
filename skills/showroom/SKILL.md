@@ -1,7 +1,7 @@
 ---
 name: showroom
 description: AI assistance for Showroom — the RHDP lab guide and terminal system. Use when creating Antora-based lab content, configuring Showroom deployment on OpenShift (terminal types, VNC, multi-user), or integrating Showroom with AgnosticD or Field-Sourced Content.
-related_skills: [agnosticd, field-sourced-content]
+related_skills: [agnosticd, field-sourced-content, student-readiness, workshop-tester]
 ---
 
 # Showroom Skill
@@ -197,4 +197,5 @@ Before handing a Showroom environment to students:
 
 - **Content quality**: Use `/showroom:verify-content` from the [RHDP Skills Marketplace](https://rhpds.github.io/rhdp-skills-marketplace/) to validate AsciiDoc against Red Hat standards
 - **Student readiness**: Use the **student-readiness** skill to verify the full student experience (access, lab guide, terminal, operators, RBAC)
+- **Module testing**: Use the **workshop-tester** skill to execute each module's exercises against the live environment and classify any failures as Instruction Fix, Infra / Deployment Fix, or Rethink
 - **Lab grading** (if applicable): Use `/ftl:rhdp-lab-validator` to generate Solve/Validate button automation

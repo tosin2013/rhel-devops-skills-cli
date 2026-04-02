@@ -1,0 +1,21 @@
+---
+description: Workshop module testing — AI-as-student step execution and failure classification
+globs: ["**/module-*.adoc", "**/module-*.md", "**/workshop-test*", "**/test-report*"]
+alwaysApply: false
+---
+
+When testing workshop module exercises against a live environment:
+
+- Always run student-readiness checks first — do not test module steps on a broken environment
+- Collect at minimum: module file path, access credentials (oc token or SSH key), and workshop GUID
+- Parse the module for executable steps: look for `[source,role="execute"]` in AsciiDoc or fenced bash/shell blocks in markdown
+- Skip `[source,role="copypaste"]` blocks — those are for the student to read, not execute
+- Substitute AsciiDoc attributes (from antora.yml) with actual environment values before executing
+- Execute steps in document order, tracking namespace/project context across steps
+- When a step fails, classify as Instruction Fix, Infra / Deployment Fix, or Rethink using the heuristics in SKILL.md
+- Flag uncertain classifications with [uncertain] and explain the reasoning
+- Mark dependent steps as SKIP when a prerequisite step fails
+- Present results as a pass/fail table with category and actionable notes for each failure
+- Group post-test suggestions by category so developers can batch similar fixes
+- When re-testing after fixes, compare against the previous report to show progress
+- For timing-dependent steps (waiting for pods, operators), add a reasonable retry with backoff before classifying as a failure

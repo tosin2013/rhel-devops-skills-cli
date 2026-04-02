@@ -55,6 +55,7 @@ The checklist adapts based on what was deployed:
 | [AgnosticD v2](agnosticd.html) | Provisions the environment being validated; troubleshooting trees for deployment failures |
 | [Showroom](showroom.html) | Deploys the lab guide and terminal being checked; troubleshooting trees for content/terminal issues |
 | [Field-Sourced Content](field-sourced-content.html) | Deploys workloads onto the cluster being validated |
+| [Workshop Tester](workshop-tester.html) | Next step after readiness — executes module exercises and classifies failures as Instruction Fix, Infra / Deployment Fix, or Rethink |
 
 ## Complementary Marketplace Tools
 

@@ -1,7 +1,7 @@
 ---
 name: agnosticd
 description: AI assistance for AgnosticD v2 — the Ansible Agnostic Deployer for provisioning infrastructure and deploying workloads on AWS, Azure, OpenStack, and OpenShift. Use when working with the agd CLI, catalog items, configs, or deployment workflows.
-related_skills: [field-sourced-content, showroom]
+related_skills: [field-sourced-content, showroom, student-readiness, workshop-tester]
 ---
 
 # AgnosticD v2 Skill
@@ -183,5 +183,6 @@ Deployment fails
 After a successful deployment, verify the environment before handing it to students:
 
 - **Student readiness**: Use the **student-readiness** skill to verify cluster access, Showroom, terminal, operators, RBAC, and workload resources
+- **Module testing**: Use the **workshop-tester** skill to execute each module's exercises against the live environment and classify any failures as Instruction Fix, Infra / Deployment Fix, or Rethink
 - **Content quality**: Use `/showroom:verify-content` from the [RHDP Skills Marketplace](https://rhpds.github.io/rhdp-skills-marketplace/) to validate lab content against Red Hat standards
 - **Infrastructure health**: Use `/health:deployment-validator` to create Ansible roles that verify pods, routes, and operators
