@@ -26,6 +26,7 @@ Before starting, collect:
 | Input | Required | Example |
 |-------|----------|---------|
 | Target RQ(s) | Yes | `RQ-4`, `all` |
+| Current project path or URL | Yes | `~/my-agnosticd-fork/` or GitHub repo URL |
 | Target skill scope | No — defaults to all skills | `agnosticd-refactor` |
 | Upstream source URL | Only if not in references/ | `https://github.com/agnosticd/agnosticd-v2` |
 
@@ -75,7 +76,17 @@ Fetch the upstream source. Extract **only verified, exact content**:
 
 Do not paraphrase or approximate. If the upstream source uses a specific term, use that term exactly.
 
-### 2c. Verify sufficiency
+### 2c. Compare against the user's project
+
+Using the upstream guidance extracted in 2b as the requirements baseline, inspect the user's current project files (provided as the "Current project path or URL" input). For each requirement, determine:
+
+- **Matches** — the project already implements this correctly
+- **Gaps** — the project is missing this requirement or implements it incorrectly
+- **Unclear** — the project has a file or variable that may be related but cannot be confirmed without more context
+
+Record this comparison separately from the general finding. The skill file receives the general guidance (what upstream requires); the user receives the project-specific diagnosis (how their project measures up and what to fix).
+
+### 2d. Verify sufficiency
 
 Before proceeding to Phase 3, confirm that the extracted content is sufficient to replace every write target found in Phase 1. If any target requires information that was not found:
 
@@ -138,11 +149,12 @@ This phase is optional. Activate it after Phase 3 write-back is complete when re
 
 ### When to Activate Phase 4
 
-Assess after every write-back whether any of these conditions are true:
+Activate Phase 4 when: the user's project correctly implements what the upstream guidance specifies, and the upstream tool still does not behave as documented. This is the key distinction:
 
-1. A required field or file is completely undocumented in upstream docs (e.g. `pattern-metadata.yaml` schema fields were not found in any official documentation)
-2. A documented feature behaves differently from what the upstream docs describe
-3. Upstream documentation is missing a step that is required for the skill to work (e.g. the `--with-secrets` flag is undocumented in the patternizer README)
+- **Missing or unclear upstream documentation** → update the skill files locally (Phase 3). Do not open an upstream issue just because documentation is sparse.
+- **Project correctly follows the guidance; tool doesn't behave as documented** → this is an upstream bug or documentation inaccuracy worth reporting. Activate Phase 4.
+
+If the project has gaps (found in Phase 2c), address those gaps with the user first. Phase 4 is only warranted when the project is correct and the tool is wrong.
 
 If none of these conditions apply, skip Phase 4.
 
@@ -163,12 +175,12 @@ Use this table to identify the correct upstream repository for an issue or PR:
 Offer the user a choice before doing anything:
 
 ```
-Research revealed a gap in upstream documentation:
-  [describe the specific gap found]
+The user's project correctly implements the upstream guidance, but the tool does not behave as documented:
+  [describe the specific discrepancy — what the docs say vs. what the tool does]
 
 Would you like to:
-  (A) Create a GitHub issue to report the missing documentation
-  (B) Create a GitHub PR with a documentation fix (doc-only changes only)
+  (A) Create a GitHub issue to report the discrepancy
+  (B) Create a GitHub PR with a documentation or code fix (doc-only changes unless user is a contributor)
   (C) Skip — keep the finding in the skill file only
 ```
 

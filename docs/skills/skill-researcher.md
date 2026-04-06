@@ -36,7 +36,8 @@ Phase 1 — Discover
 Phase 2 — Research
   Read references/REFERENCE.md to find the upstream URL
   Fetch and extract verified content (exact names, signatures, keys)
-  Stop and report if upstream source is insufficient
+  Compare upstream guidance against the user's project files
+  Report matches, gaps, and unclear areas to the user
 
 Phase 3 — Write Back
   Save a reference document to references/ directory
@@ -46,7 +47,7 @@ Phase 3 — Write Back
 
 ## Optional Phase 4 — Upstream Contribution
 
-After write-back, if research reveals a gap in upstream documentation — a required field that is undocumented, a missing schema definition, or behavior that differs from documented expectations — the skill optionally helps create a GitHub issue or documentation PR on the upstream project.
+After write-back, if the user's project correctly follows the upstream guidance and the tool still does not work as documented — a discrepancy between what the docs say and what the tool actually does — the skill optionally helps create a GitHub issue or PR to report the discrepancy upstream. Missing documentation alone is handled locally by updating the skill files.
 
 The AI always drafts the issue or PR for user review before running any `gh` command.
 
