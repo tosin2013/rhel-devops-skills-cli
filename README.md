@@ -1,6 +1,6 @@
 # rhel-devops-skills-cli
 
-A centralized installer for AI assistant skills (Claude Code and Cursor IDE) providing deep knowledge for RHEL DevOps tooling — AgnosticD v2, Field-Sourced Content Template, Showroom, and Patternizer.
+A centralized installer for AI assistant skills (Claude Code and Cursor IDE) providing deep knowledge for RHEL DevOps tooling — AgnosticD v2, Field-Sourced Content Template, Showroom, Patternizer, and Validated Patterns.
 
 ## Supported Skills
 
@@ -12,6 +12,9 @@ A centralized installer for AI assistant skills (Claude Code and Cursor IDE) pro
 | **showroom** | RHDP lab guide and terminal system (Antora/AsciiDoc + Helm) | [rhpds/showroom-deployer](https://github.com/rhpds/showroom-deployer) |
 | **student-readiness** | Workshop environment readiness checker (student POV) | Self-contained |
 | **workshop-tester** | AI-as-student module tester with failure classification | Self-contained |
+| **agnosticd-refactor** | Audit and improve existing AgnosticD v2 configs and workload roles against RHDP best practices | Self-contained |
+| **vp-refactor** | Audit and improve existing Validated Pattern repos toward VP Operator and tier submission | Self-contained |
+| **skill-researcher** | Resolve open research questions and write findings back into affected skills permanently | Self-contained |
 
 ## Supported Platforms
 
@@ -71,6 +74,8 @@ cd rhel-devops-skills-cli
 | [010](docs/adrs/010-cross-skill-dependencies.md) | Cross-Skill Dependencies |
 | [011](docs/adrs/011-e2e-validation-and-troubleshooting.md) | End-to-End Validation and Troubleshooting |
 | [012](docs/adrs/012-workshop-module-testing.md) | Workshop Module Testing Strategy |
+| [013](docs/adrs/013-refactor-skills.md) | Refactor Skills for AgnosticD and Validated Patterns |
+| [014](docs/adrs/014-skill-researcher.md) | Skill Researcher Workflow |
 
 ## Running Tests
 
