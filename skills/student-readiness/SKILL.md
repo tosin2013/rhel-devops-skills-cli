@@ -116,11 +116,21 @@ oc get routes -n <namespace> --no-headers
 
 ### 7. Content-Environment Match
 
-Compare Showroom content attributes against actual cluster values:
+The values in Showroom's `antora.yml` attributes (e.g. `openshift_cluster_ingress_domain`) come from `agnosticd_user_info` module calls in the workload roles during provisioning — they are not hardcoded. This check verifies that the injected values match the actual deployed environment.
+
 ```bash
 oc get ingresses.config/cluster -o jsonpath='{.spec.domain}'
 ```
-- Verify: the `openshift_cluster_ingress_domain` in Showroom's `antora.yml` attributes matches the actual cluster ingress domain
+- Verify: the `openshift_cluster_ingress_domain` attribute in Showroom's `antora.yml` matches the actual cluster ingress domain
+
+If they do not match, the diagnosis is one of:
+1. The workload role did not call `agnosticd_user_info` with the correct cluster URL key
+2. The `antora.yml` in the content repo has a hardcoded value that overrides the injected attribute
+3. The config was deployed against a different cluster than expected
+
+> (RESEARCH NEEDED — RQ-4: What are the exact `agnosticd_user_info` key names that map to Showroom antora.yml attributes, so this check can verify all injected values — not just ingress domain?)
+>
+> Pending items: full list of attribute keys written by agnosticd_user_info, how they map to antora.yml attribute names.
 
 ### 8. AAP Readiness (if applicable)
 
@@ -132,6 +142,12 @@ curl -sk -H "Authorization: Bearer <TOKEN>" "https://<AAP_CONTROLLER>/api/v2/pro
 
 ### 9. Multi-User Verification (if applicable)
 
+The expected value of N is set by an AgnosticD multi-user variable in the config's vars file. When collecting the "Number of students" input (see Required Input), ask the developer what that variable is set to — that is the authoritative source, not the student sign-up count.
+
+> (RESEARCH NEEDED — RQ-7: What is the exact AgnosticD variable name that controls the number of student environments provisioned, so this check can verify the deployed count against the configured count?)
+>
+> Pending items: variable name for student count (e.g. `ocp4_idm_htpasswd_user_count` or similar), how the per-student namespace naming convention is derived from the variable.
+
 For N students, verify isolation:
 ```bash
 for i in $(seq 1 $N); do
@@ -139,6 +155,7 @@ for i in $(seq 1 $N); do
 done
 ```
 - Verify: all N student environments are provisioned with correct namespace isolation
+- If the count of OK namespaces is less than N, the provisioning loop did not complete — re-run `agd provision` or check the AgnosticD output logs for the failing iteration
 
 ## Output Format
 
@@ -175,4 +192,4 @@ When checks fail and the cause is not obvious:
 - For multi-user workshops, verify at least 3 student environments (first, middle, last)
 - Save the readiness report output for post-training review
 - If using the RHDP catalog, readiness checks should run after the catalog item's provisioning callback completes
-- Re-run checks if the environment was stopped and restarted (`agd stop` / `agd start`)
+- After `agd start` (environment was previously stopped), prioritize checks in this order before proceeding: #1 (cluster access — nodes must be Ready), then #4 (operators — all CSVs must be Succeeded). These degrade most during a stop cycle. Only proceed to checks #2 and #3 (Showroom, terminal) once the cluster and operators are healthy, as Showroom pods may fail to start if operators are not ready first.

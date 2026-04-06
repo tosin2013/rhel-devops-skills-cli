@@ -82,6 +82,14 @@ ocp4_workload_showroom_content_git_repo: "https://github.com/your-org/your-lab.g
 ocp4_workload_showroom_content_git_repo_ref: main
 ```
 
+**Multi-user deployments:** For workshops where each student gets their own Showroom instance, AgnosticD provisions a separate Showroom namespace per student. The number of student instances is controlled by AgnosticD multi-user variables in the config's vars file.
+
+> (RESEARCH NEEDED — RQ-7: What AgnosticD variables control per-student Showroom provisioning, and how does the multi-user loop work for `ocp4_workload_showroom`?)
+>
+> Pending items: the variable name that sets the number of students (e.g. `ocp4_idm_htpasswd_user_count` or similar), how the per-student namespace naming is derived, and any Showroom-specific multi-user configuration options.
+
+See the **agnosticd-refactor** skill, audit area 7, for the full multi-user configuration checklist.
+
 ### 2. Field-Sourced Content component
 
 The Helm example includes a `components/showroom/` directory that deploys Showroom alongside your demo via ArgoCD. Enable it in `values.yaml`:
@@ -135,10 +143,44 @@ helm template showroom showroom-single-pod \
 | `ocp4_workload_showroom_novnc_enable` | `false` | Enable VNC client tab |
 | `ocp4_workload_showroom_deployer_chart_version` | `1.3.4` | Helm chart version |
 
+## AgnosticD Data Integration
+
+When Showroom is deployed as an `ocp4_workload_showroom` infra_workload, AgnosticD automatically populates `antora.yml` attributes with live cluster data. This means AsciiDoc content like `{openshift_cluster_ingress_domain}` renders the real cluster domain — not a placeholder — when the lab guide loads.
+
+**How the data flows:**
+
+```
+AgnosticD provisioning
+  │
+  └─ agnosticd_user_info calls (in workload roles)
+       │
+       └─→ Antora attribute injection into antora.yml
+               │
+               └─→ {openshift_cluster_ingress_domain}
+                   {student credentials}
+                   {workload-specific URLs}
+                   rendered in AsciiDoc content at build time
+```
+
+This connection is why lab content should reference `{openshift_cluster_ingress_domain}` as an attribute rather than hardcoding a URL — the attribute value will be accurate for every student's environment, regardless of GUID.
+
+> (RESEARCH NEEDED — RQ-4: What exact Antora attribute names does AgnosticD inject, how are they written into antora.yml, and what is the full list of attributes that workload roles can populate?)
+>
+> Pending items: canonical list of injected attribute names, the mechanism by which agnosticd_user_info output becomes antora.yml attributes, which attributes are populated by the core provisioning vs individual workload roles.
+
+**Current partial guidance:**
+
+- Use `{openshift_cluster_ingress_domain}` in content for cluster URLs that must resolve per-student
+- Do not hardcode cluster hostnames or GUIDs — they will be wrong for other students' environments
+- If an attribute renders as `{attribute-name}` literally in the deployed guide, the source is missing: either the workload role did not call `agnosticd_user_info` with the expected key, or the attribute name in the AsciiDoc does not match what `agnosticd_user_info` wrote
+- See the **agnosticd** skill, "Reporting Deployment Info" section, for the full data flow
+
+---
+
 ## Best Practices
 
 - Start from `showroom_template_default` -- do not build Antora structure from scratch
-- Use AsciiDoc attributes from `antora.yml` for dynamic content (hostnames, passwords)
+- Use AsciiDoc attributes from `antora.yml` for dynamic content (hostnames, passwords) — these are populated by `agnosticd_user_info` at provisioning time, not hardcoded
 - Keep modules focused -- one concept per page
 - Use `partials/` for reusable content shared across modules
 - Test locally with the Antora viewer container before pushing

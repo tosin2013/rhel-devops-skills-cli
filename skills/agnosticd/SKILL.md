@@ -1,7 +1,7 @@
 ---
 name: agnosticd
 description: AI assistance for AgnosticD v2 — the Ansible Agnostic Deployer for provisioning infrastructure and deploying workloads on AWS, Azure, OpenStack, and OpenShift. Use when working with the agd CLI, catalog items, configs, or deployment workflows.
-related_skills: [field-sourced-content, showroom, student-readiness, workshop-tester]
+related_skills: [field-sourced-content, showroom, student-readiness, workshop-tester, agnosticd-refactor]
 ---
 
 # AgnosticD v2 Skill
@@ -64,6 +64,35 @@ git merge upstream/main
 
 When configuring `ocp4_workload_field_content_gitops_repo_url`, point it to the user's own content repo -- not the upstream template.
 
+## Creating a Config
+
+> (RESEARCH NEEDED — RQ-2: What is the required file structure and playbook set for an AgnosticD v2 config, what does each playbook do, and what are the minimum required variables?)
+>
+> This section will be completed once research into AgnosticD v2 config anatomy is done.
+> Pending items: required playbook list (provision.yml, destroy.yml, stop.yml, start.yml, status.yml), mandatory variables, `default_vars` file conventions, directory layout requirements.
+
+**Current partial guidance:**
+
+Configs live under `ansible/configs/<config-name>/` in your forked repository. At minimum, a config needs a variables defaults file and playbooks that correspond to the lifecycle operations. See the **agnosticd-refactor** skill, audit area 2, for the full checklist once research is complete.
+
+---
+
+## Creating a Workload Role
+
+> (RESEARCH NEEDED — RQ-3: What files are required in a new `ocp4_workload_*` role, what is the purpose of each task file, and how does the `ocp4_workload_example` template demonstrate the correct structure?)
+>
+> This section will be completed once research into AgnosticD v2 workload role anatomy is done.
+> Pending items: required files (tasks/workload.yml, tasks/main.yml, defaults/main.yml, meta/main.yml), variable naming prefix conventions, `ocp4_workload_example` reference implementation walkthrough.
+
+**Current partial guidance:**
+
+- All custom workload roles must follow the `ocp4_workload_*` naming convention
+- All role variables must be prefixed with the full role name to avoid variable collisions across workloads
+- Roles live under `ansible/roles/` in your forked repository
+- See the upstream `ocp4_workload_example` role as the canonical starting point
+
+---
+
 ## Key Commands
 
 All commands take three parameters: `--guid | -g`, `--config | -c`, `--account | -a`.
@@ -84,23 +113,70 @@ All commands take three parameters: `--guid | -g`, `--config | -c`, `--account |
 ./bin/agd status -g myocp -c openshift-cluster -a sandbox1234
 ```
 
+> (RESEARCH NEEDED — RQ-5: What Ansible playbooks and variables does a config need to support `agd stop`, `agd start`, and `agd status`, and what does RHDP expect these lifecycle operations to do for an AWS-based OpenShift cluster?)
+>
+> Pending items: playbook names and locations for stop/start/status, AWS EC2 instance stop vs cluster stop semantics, variables that control lifecycle behavior, RHDP cost-management requirements.
+
+**Current partial guidance:** Stop, start, and status operations are required for RHDP cost management — configs that do not implement them cannot be cost-controlled on the platform and will not be accepted for catalog submission. See the **agnosticd-refactor** skill, audit area 5, for the verification checklist.
+
 ## Platform Prerequisites
 
-### RHEL 9.5+
+Before running any `agd` command, verify the three requirements below. If a check fails, follow the corrective action for your platform.
+
+### 1. Python 3.12 or higher
+
+```bash
+python3 --version    # must return Python 3.12.x or higher
+```
+
+If the version is lower than 3.12, install the correct version:
+
+**RHEL 9.5+**
 ```bash
 sudo subscription-manager repos --enable codeready-builder-for-rhel-9-$(arch)-rpms
-sudo dnf -y install git python3.12 python3.12-devel gcc oniguruma-devel podman
+sudo dnf -y install git python3.12 python3.12-devel gcc oniguruma-devel
 ```
 
-### RHEL 10.0+
+**RHEL 10.0+** (ships Python 3.12 as the default `python3`)
 ```bash
 sudo subscription-manager repos --enable codeready-builder-for-rhel-10-$(arch)-rpms
-sudo dnf -y install git python3 python3-devel gcc oniguruma-devel podman
+sudo dnf -y install git python3 python3-devel gcc oniguruma-devel
 ```
 
-### macOS
+**macOS**
 ```bash
-brew install python@3.13 podman
+brew install python@3.13
+```
+
+### 2. Podman
+
+```bash
+podman --version     # must succeed
+```
+
+If missing:
+
+**RHEL 9.5+ / 10.0+**
+```bash
+sudo dnf -y install podman
+```
+
+**macOS**
+```bash
+brew install podman
+podman machine init && podman machine start
+```
+
+### 3. Virtualenv (created by `agd setup`)
+
+```bash
+ls ~/Development/agnosticd-v2-virtualenv/    # must exist
+```
+
+If missing, run setup from within the `agnosticd-v2/` directory:
+```bash
+cd ~/Development/agnosticd-v2
+./bin/agd setup
 ```
 
 ## Integration with Field-Sourced Content
@@ -123,13 +199,47 @@ For lab guides, add `ocp4_workload_showroom` to `infra_workloads:` to deploy Sho
 
 See the **field-sourced-content** skill for guidance on authoring the content repository itself (Helm or Ansible patterns).
 
+## Reporting Deployment Info
+
+Every config that deploys to RHDP must surface structured data back to the platform so students see their credentials and URLs in the catalog item. This is done via the `agnosticd_user_info` Ansible action plugin.
+
+**Conceptual data flow:**
+
+```
+agnosticd_user_info calls (in workload roles or post-provision tasks)
+  │
+  ├─→ RHDP catalog  ──────────→ student display (URLs, credentials)
+  │
+  └─→ Showroom antora.yml     → {openshift_cluster_ingress_domain} and
+      attribute injection        other dynamic values in lab content
+```
+
+> (RESEARCH NEEDED — RQ-4: How does the `agnosticd_user_info` Ansible module work, what format does it expect, how does data flow to RHDP and students, and how does it connect to Showroom Antora attributes?)
+>
+> This section will be completed once research into the agnosticd_user_info module is done.
+> Pending items: module signature and required keys, RHDP-expected output fields, student credential patterns, connection to openshift_cluster_ingress_domain and Showroom antora.yml attributes.
+
+**Current partial guidance:**
+
+- Call `agnosticd_user_info` in the post-provision phase of each workload role that produces a student-facing URL or credential
+- The RHDP catalog picks up this data and displays it in the "My Services" page
+- Showroom uses the same data to populate `antora.yml` attributes — so lab content that references `{openshift_cluster_ingress_domain}` gets the actual cluster domain at build time
+- Every RHDP config must call this module; configs that do not surface output cannot be accepted for catalog submission
+- See the **agnosticd-refactor** skill, audit area 4, for the full verification checklist
+
+---
+
 ## Best Practices
 
 - Always run `agd` from within the `agnosticd-v2` directory
-- Use execution environments for reproducible deployments
-- Keep secrets in `agnosticd-v2-secrets/`, never commit them to git
-- Tag all resources with `guid` and `env_type` for cleanup
-- Use `agnosticd_user_info` to output deployment information
+- Use execution environments for reproducible deployments — available EE images and their collection contents are pending research (RQ-6)
+- Keep secrets in `agnosticd-v2-secrets/`:
+  - `secrets.yml` — pull secret and satellite/RHN credentials
+  - `secrets-<account>.yml` — per-cloud-account credentials matching the `-a` flag
+  - Never commit either file to git
+- Tag all cloud resources via `cloud_tags` with at minimum `owner`, `guid: "{{ guid }}"`, and `config` — required for RHDP automated cleanup
+- Use `agnosticd_user_info` to output deployment information (see **Reporting Deployment Info** section above)
+- All tasks and plays must have `name:` fields; use YAML literal notation — no `foo=bar` inline syntax
 - Follow the git style guide in `references/` for branch naming and PR titles
 - Test configs locally before pushing
 

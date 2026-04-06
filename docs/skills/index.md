@@ -18,6 +18,9 @@ Each skill teaches your AI assistant (Claude Code or Cursor) how to work with a 
 | [Showroom](showroom.html) | RHDP lab guide and terminal system (Antora/AsciiDoc content + Helm deployment) | [rhpds/showroom-deployer](https://github.com/rhpds/showroom-deployer) |
 | [Student Readiness](student-readiness.html) | Workshop environment readiness checker — verifies the student experience end-to-end | Self-contained |
 | [Workshop Tester](workshop-tester.html) | AI-as-student module tester — executes exercises and classifies failures | Self-contained |
+| [AgnosticD Refactor](agnosticd-refactor.html) | Audit and improve existing AgnosticD v2 configs and workload roles against RHDP best practices | Self-contained |
+| [VP Refactor](vp-refactor.html) | Audit and improve existing Validated Pattern repos toward VP Operator and tier submission | Self-contained |
+| [Skill Researcher](skill-researcher.html) | Resolve open `(RESEARCH NEEDED)` questions by fetching upstream docs and writing findings back into all affected skills | Self-contained |
 
 ## Cross-Skill Relationships
 
@@ -33,8 +36,14 @@ Some skills work together. The installer and AI assistants recognize these relat
 | Student Readiness | Workshop Tester | Run readiness checks before module testing; workshop-tester depends on student-readiness passing |
 | Showroom | Workshop Tester | Workshop-tester parses Showroom AsciiDoc for executable steps (`[source,role="execute"]`) |
 | AgnosticD v2 | Workshop Tester | Infra / Deployment Fix failures from testing often require AgnosticD config changes |
+| AgnosticD v2 | AgnosticD Refactor | Refactor skill audits existing configs built with AgnosticD; escalates to agnosticd skill for deployment failures |
+| AgnosticD Refactor | Student Readiness | After fixing audit findings, use student-readiness to verify the corrected environment end-to-end |
+| AgnosticD Refactor | Workshop Tester | Infra / Deployment Fix failures in workshop-tester often require agnosticd-refactor audit to find root cause |
+| Patternizer | VP Refactor | Refactor skill audits patterns initialized by Patternizer; escalates to patternizer for init/upgrade operations |
+| Skill Researcher | AgnosticD Refactor | skill-researcher resolves AgnosticD RQ-1 through RQ-7 by writing verified findings into agnosticd-refactor audit areas |
+| Skill Researcher | VP Refactor | skill-researcher resolves Validated Patterns RQ-1 through RQ-8 by writing verified findings into vp-refactor audit areas |
 
-See [ADR-010](../adrs/010-cross-skill-dependencies.html) for cross-skill dependencies, [ADR-011](../adrs/011-e2e-validation-and-troubleshooting.html) for validation and troubleshooting, and [ADR-012](../adrs/012-workshop-module-testing.html) for workshop module testing strategy.
+See [ADR-010](../adrs/010-cross-skill-dependencies.html) for cross-skill dependencies, [ADR-011](../adrs/011-e2e-validation-and-troubleshooting.html) for validation and troubleshooting, [ADR-012](../adrs/012-workshop-module-testing.html) for workshop module testing strategy, [ADR-013](../adrs/013-refactor-skills.html) for refactor skills design, and [ADR-014](../adrs/014-skill-researcher.html) for the skill researcher workflow.
 
 ## Validation Lifecycle
 

@@ -104,7 +104,25 @@ Field-Sourced Content deploys onto OpenShift clusters that are provisioned by [A
 
 1. **AgnosticD provisions the cluster** via `agd provision`
 2. **Field content deploys onto it** via ArgoCD (triggered by the `ocp4_workload_field_content` workload role)
-3. **Data flows back** through `demo.redhat.com/userinfo` ConfigMaps that AgnosticD picks up
+3. **Data flows back** via two additive pipelines — both can be active in the same deployment
+
+**Pipeline A — AgnosticD direct (workload roles):**
+```
+agnosticd_user_info calls in workload roles
+  → structured data written during provisioning
+  → RHDP catalog (student display: URLs, credentials)
+  → Showroom antora.yml attribute injection
+```
+
+**Pipeline B — Field Content via label (deployed resources):**
+```
+ConfigMaps labeled demo.redhat.com/userinfo=""
+  deployed by your ArgoCD Helm chart or Ansible playbook
+  → AgnosticD picks up the ConfigMap data post-deploy
+  → merges into RHDP catalog alongside Pipeline A output
+```
+
+Pipeline A is the primary mechanism for core cluster data (API URL, ingress domain, admin credentials). Pipeline B is the mechanism for workload-specific data that only becomes known after the field content deploys (e.g. application URLs, generated credentials). Both pipelines write to the same RHDP catalog destination — use them together for complete student-facing output.
 
 This repository includes `roles/ocp4_workload_field_content/` -- an AgnosticD workload role that creates an ArgoCD Application from your field content Git repo. The role requires:
 
@@ -115,7 +133,7 @@ The role automatically receives `openshift_cluster_ingress_domain` and `openshif
 
 The Helm example also includes a `components/showroom/` directory that deploys Showroom lab guides alongside your demo. See the **showroom** skill for content authoring and terminal configuration.
 
-See the **agnosticd** skill for guidance on provisioning the cluster and configuring workloads.
+See the **agnosticd** skill ("Reporting Deployment Info" section) for the full `agnosticd_user_info` data flow and how Pipeline A data reaches the RHDP catalog and Showroom.
 
 ## Best Practices
 

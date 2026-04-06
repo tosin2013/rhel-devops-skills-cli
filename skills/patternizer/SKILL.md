@@ -1,6 +1,7 @@
 ---
 name: patternizer
 description: AI assistance for Patternizer — a CLI tool that bootstraps Git repositories containing Helm charts into ready-to-use Validated Patterns for OpenShift. Use when initializing, upgrading, or working with Validated Patterns.
+related_skills: [vp-refactor]
 ---
 
 # Patternizer Skill
