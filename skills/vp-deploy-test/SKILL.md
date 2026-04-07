@@ -264,11 +264,82 @@ Validated Pattern Deployment Test — Complete
    student-readiness           PASS / FAIL
 ══════════════════════════════════════════════════════
  Overall: READY FOR STUDENTS / NEEDS ATTENTION
-
-Next steps:
-  □ [If PASS] Hand environment to students — run workshop-tester for module validation
-  □ [If FAIL] Run vp-refactor to audit the pattern, then re-install
 ```
+
+---
+
+## Remediation Plan
+
+When the overall result is **NEEDS ATTENTION**, generate an ordered, prioritized remediation plan from the actual failures found. Create each item as a session todo so progress is tracked.
+
+Prioritize in this order:
+
+| Priority | Condition | Action |
+|----------|-----------|--------|
+| BLOCKING | `values-secret.yaml` committed to git (Phase 1) | Remove from git history immediately — do not proceed until resolved |
+| BLOCKING | Install failed / ApplicationSet not created (Phase 2) | Activate **vp-refactor** to audit values files, chart structure, and `pattern-metadata.yaml` |
+| BLOCKING | ArgoCD Application Degraded/OutOfSync — `SyncFailed` (Phase 3) | Activate **vp-refactor**, Audit Area 1 (Values) and Area 3 (Charts) for the specific failing Application |
+| HIGH | ArgoCD Application OutOfSync — Git repo unreachable (Phase 3) | Verify ArgoCD repo credentials and GitOps repo URL in the pattern CR |
+| HIGH | ExternalSecret `SecretSyncedError` (Phase 4) | Activate **vp-refactor**, Audit Area 4 (Secrets Management); check Vault path and ESO SecretStore credentials |
+| HIGH | student-readiness failed (Phase 4) | Work through student-readiness troubleshooting tree; escalate to **vp-refactor** if root cause is in the pattern |
+| MEDIUM | Imperative CronJob not completing (Phase 4) | Activate **vp-refactor**, Audit Area 8 (Imperative Jobs); check job logs |
+| LOW | ArgoCD Application stuck `Progressing` (Phase 3) | Check sync wave ordering in charts; may resolve with a manual ArgoCD sync retry |
+
+Present the plan as an ordered list containing only the items that actually failed:
+
+```
+Deployment Remediation Plan — <pattern-name>
+──────────────────────────────────────────────────────
+Priority  #  Finding                                Action
+BLOCKING  1  hub app SyncFailed (Helm render error) Activate vp-refactor → Audit Area 3
+HIGH      2  ExternalSecret db-creds SecretSyncedError  Activate vp-refactor → Audit Area 4
+MEDIUM    3  CronJob bootstrap-job not completing   Check job logs, vp-refactor Audit Area 8
+──────────────────────────────────────────────────────
+Created 3 todos. Resolve in order — BLOCKING items first.
+```
+
+After presenting the plan, ask:
+> "Would you like to start with item 1 now? (y/n)"
+
+If yes, activate the indicated skill immediately.
+
+---
+
+## Re-test After Fixes
+
+After the developer resolves one or more items from the remediation plan, re-run only the phases that contained failures rather than a full reinstall:
+
+```
+Re-running failed phases only:
+  Phase 3 (ArgoCD convergence) — re-checking Application health after Helm fix
+  Phase 4 (Secrets and jobs) — re-checking ExternalSecrets and CronJobs
+
+Skipping Phase 1 (pre-flight passed) and Phase 2 (install succeeded).
+```
+
+For ArgoCD re-checks, trigger a manual sync first rather than re-installing:
+
+```bash
+argocd app sync <app-name> --server <argocd-url>
+# or
+oc patch application <app-name> -n openshift-gitops \
+  --type merge -p '{"operation":{"sync":{}}}'
+```
+
+Compare results against the previous run and show which items were resolved:
+
+```
+Re-test Results — <pattern-name>
+──────────────────────────────────────────────────────
+ Item  Finding                         Previous   Now
+ 1     hub app SyncFailed              FAIL    →  PASS  ✓ resolved
+ 2     db-creds SecretSyncedError      FAIL    →  FAIL  still failing
+ 3     bootstrap-job not completing    FAIL    →  PASS  ✓ resolved
+──────────────────────────────────────────────────────
+ Resolved: 2/3   Remaining: 1
+```
+
+Repeat until all items resolve, then present the full Final Summary Report as READY FOR STUDENTS.
 
 ---
 

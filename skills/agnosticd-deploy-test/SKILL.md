@@ -228,11 +228,72 @@ AgnosticD Deployment Test — Complete
  Phase 4 — Lifecycle           PASS / FAIL / SKIPPED
 ══════════════════════════════════════════════════════
  Overall: READY FOR STUDENTS / NEEDS ATTENTION
-
-Next steps:
-  □ [If PASS] Hand environment to students — run workshop-tester for module validation
-  □ [If FAIL] Run agnosticd-refactor to audit the config, then re-provision
 ```
+
+---
+
+## Remediation Plan
+
+When the overall result is **NEEDS ATTENTION**, generate an ordered, prioritized remediation plan from the actual failures found. Create each item as a session todo so progress is tracked.
+
+Prioritize in this order:
+
+| Priority | Condition | Action |
+|----------|-----------|--------|
+| BLOCKING | Provision failed (Phase 2) | Activate **agnosticd-refactor** to audit config structure and required variables before re-provisioning |
+| BLOCKING | Workload role FAILED (Phase 3) | Activate **agnosticd-refactor**, Audit Area 3 (Workload Role Structure) for the specific failing role |
+| HIGH | `agnosticd_user_info` missing (Phase 3) | Activate **agnosticd-refactor**, Audit Area 4 — data pipeline not wired |
+| HIGH | student-readiness failed (Phase 3) | Work through student-readiness troubleshooting tree; escalate to **agnosticd-refactor** if root cause is config |
+| MEDIUM | Lifecycle `agd stop` failed (Phase 4) | Verify `stop.yml` exists in `ansible/configs/<config-name>/` and cloud credentials are current |
+| MEDIUM | Lifecycle `agd start` failed (Phase 4) | Verify `start.yml` exists and inspect the start playbook output for FAILED tasks |
+| LOW | Lifecycle `agd status` failed (Phase 4) | Verify `status.yml` exists; status failure alone does not block student readiness |
+
+Present the plan as an ordered list containing only the items that actually failed:
+
+```
+Deployment Remediation Plan — <config-name> / <guid>
+──────────────────────────────────────────────────────
+Priority  #  Finding                           Action
+BLOCKING  1  ocp4_workload_showroom FAILED     Activate agnosticd-refactor → Audit Area 3
+HIGH      2  agnosticd_user_info missing       Activate agnosticd-refactor → Audit Area 4
+MEDIUM    3  agd stop failed (exit 1)          Check stop.yml in ansible/configs/<name>/
+──────────────────────────────────────────────────────
+Created 3 todos. Resolve in order — BLOCKING items first.
+```
+
+After presenting the plan, ask:
+> "Would you like to start with item 1 now? (y/n)"
+
+If yes, activate the indicated skill immediately.
+
+---
+
+## Re-test After Fixes
+
+After the developer resolves one or more items from the remediation plan, re-run only the phases that contained failures rather than a full end-to-end test:
+
+```
+Re-running failed phases only:
+  Phase 3 (Post-deploy validation) — re-checking workloads and agnosticd_user_info
+  Phase 4 (Lifecycle) — re-testing agd stop/start/status
+
+Skipping Phase 1 (pre-flight passed) and Phase 2 (provision succeeded).
+```
+
+Compare results against the previous run and show which items were resolved:
+
+```
+Re-test Results — <config-name> / <guid>
+──────────────────────────────────────────────────────
+ Item  Finding                        Previous   Now
+ 1     ocp4_workload_showroom         FAILED  →  PASS  ✓ resolved
+ 2     agnosticd_user_info            MISSING →  PASS  ✓ resolved
+ 3     agd stop                       FAILED  →  FAIL  still failing
+──────────────────────────────────────────────────────
+ Resolved: 2/3   Remaining: 1
+```
+
+Repeat until all items resolve, then present the full Final Summary Report as READY FOR STUDENTS.
 
 ---
 
