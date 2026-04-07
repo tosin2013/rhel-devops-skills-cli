@@ -1,7 +1,7 @@
 ---
 name: student-readiness
 description: AI assistance for verifying that a deployed workshop or demo environment is ready for students. Use when a developer provides OpenShift credentials or bastion access and asks whether students can start the lab. Adapts to OCP, RHEL VM, AAP, and hybrid AgnosticD environments.
-related_skills: [agnosticd, showroom, field-sourced-content, workshop-tester]
+related_skills: [agnosticd, showroom, field-sourced-content, workshop-tester, agnosticd-deploy-test, vp-deploy-test]
 ---
 
 # Student Readiness Skill

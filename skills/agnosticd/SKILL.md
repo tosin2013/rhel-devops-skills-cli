@@ -1,7 +1,7 @@
 ---
 name: agnosticd
 description: AI assistance for AgnosticD v2 — the Ansible Agnostic Deployer for provisioning infrastructure and deploying workloads on AWS, Azure, OpenStack, and OpenShift. Use when working with the agd CLI, catalog items, configs, or deployment workflows.
-related_skills: [field-sourced-content, showroom, student-readiness, workshop-tester, agnosticd-refactor]
+related_skills: [field-sourced-content, showroom, student-readiness, workshop-tester, agnosticd-refactor, agnosticd-deploy-test]
 ---
 
 # AgnosticD v2 Skill

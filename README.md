@@ -15,6 +15,8 @@ A centralized installer for AI assistant skills (Claude Code and Cursor IDE) pro
 | **agnosticd-refactor** | Audit and improve existing AgnosticD v2 configs and workload roles against RHDP best practices | Self-contained |
 | **vp-refactor** | Audit and improve existing Validated Pattern repos toward VP Operator and tier submission | Self-contained |
 | **skill-researcher** | Resolve open research questions and write findings back into affected skills permanently | Self-contained |
+| **agnosticd-deploy-test** | Validate an AgnosticD v2 deployment end-to-end — provisioning, workloads, `agnosticd_user_info`, and stop/start lifecycle | Self-contained |
+| **vp-deploy-test** | Validate a Validated Pattern deployment end-to-end — VP Operator install, ArgoCD convergence, secrets, and jobs | Self-contained |
 
 ## Supported Platforms
 
@@ -76,6 +78,7 @@ cd rhel-devops-skills-cli
 | [012](docs/adrs/012-workshop-module-testing.md) | Workshop Module Testing Strategy |
 | [013](docs/adrs/013-refactor-skills.md) | Refactor Skills for AgnosticD and Validated Patterns |
 | [014](docs/adrs/014-skill-researcher.md) | Skill Researcher Workflow |
+| [015](docs/adrs/015-deployment-pipeline-testing.md) | Deployment Pipeline Testing Skills |
 
 ## Running Tests
 

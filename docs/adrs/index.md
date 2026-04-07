@@ -28,3 +28,4 @@ All ADRs follow the [MADR](https://adr.github.io/madr/) (Markdown Architectural 
 | [012](012-workshop-module-testing.html) | Workshop Module Testing Strategy | Accepted |
 | [013](013-refactor-skills.html) | Refactor Skills for AgnosticD and Validated Patterns | Accepted |
 | [014](014-skill-researcher.html) | Skill Researcher Workflow | Accepted |
+| [015](015-deployment-pipeline-testing.html) | Deployment Pipeline Testing Skills | Accepted |
