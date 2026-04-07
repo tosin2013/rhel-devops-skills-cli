@@ -37,6 +37,34 @@ cd rhel-devops-skills-cli
 ./install.sh install --all
 ```
 
+## Quick Upgrade
+
+If you already have the repo cloned, pull the latest changes and update all installed skills in one step:
+
+```bash
+cd rhel-devops-skills-cli
+git pull origin main
+./install.sh update --all
+```
+
+To also pick up any newly added skills that were not previously installed:
+
+```bash
+cd rhel-devops-skills-cli
+git pull origin main
+./install.sh install --all
+./install.sh update --all
+```
+
+To upgrade the installer itself before updating skills:
+
+```bash
+cd rhel-devops-skills-cli
+git pull origin main
+./install.sh upgrade-installer
+./install.sh update --all
+```
+
 ## Usage
 
 ```bash
