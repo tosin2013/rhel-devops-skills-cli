@@ -61,6 +61,12 @@ AVAILABLE SKILLS:
   showroom               RHDP lab guide and terminal system (Showroom)
   student-readiness      Workshop environment readiness checker
   workshop-tester        AI-as-student module tester with failure classification
+  agnosticd-refactor     Audit and improve AgnosticD v2 configs
+  vp-refactor            Audit and improve Validated Pattern repos
+  skill-researcher       Resolve open research questions in skills
+  agnosticd-deploy-test  Validate AgnosticD deployment end-to-end
+  vp-deploy-test         Validate VP deployment end-to-end
+  vp-deploy-validator    Health check running VP deployment
 USAGE
 }
 

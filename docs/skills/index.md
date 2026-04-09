@@ -23,6 +23,7 @@ Each skill teaches your AI assistant (Claude Code or Cursor) how to work with a 
 | [Skill Researcher](skill-researcher.html) | Resolve open `(RESEARCH NEEDED)` questions by fetching upstream docs and writing findings back into all affected skills | Self-contained |
 | [AgnosticD Deploy Test](agnosticd-deploy-test.html) | Validate an AgnosticD v2 deployment end-to-end — provisioning, workload completion, `agnosticd_user_info` data flow, and stop/start lifecycle | Self-contained |
 | [VP Deploy Test](vp-deploy-test.html) | Validate a Validated Pattern deployment end-to-end — VP Operator install, ArgoCD convergence, secrets delivery, and imperative jobs | Self-contained |
+| [VP Deploy Validator](vp-deploy-validator.html) | Health check an already-running Validated Pattern — ArgoCD convergence, secrets, and jobs without reinstalling | Self-contained |
 
 ## Cross-Skill Relationships
 
@@ -50,23 +51,27 @@ Some skills work together. The installer and AI assistants recognize these relat
 | Patternizer | VP Deploy Test | vp-deploy-test validates patterns initialized by patternizer |
 | VP Refactor | VP Deploy Test | vp-deploy-test escalates to vp-refactor when convergence or secrets failures are found |
 | Student Readiness | VP Deploy Test | vp-deploy-test activates student-readiness after Phase 4 validation passes |
+| VP Deploy Test | VP Deploy Validator | vp-deploy-validator is the health-check-only complement — use for pre-demo checks or after CI/CD deploy without reinstalling |
+| VP Deploy Validator | VP Refactor | vp-deploy-validator escalates to vp-refactor when convergence or secrets failures are found |
+| VP Deploy Validator | Student Readiness | vp-deploy-validator activates student-readiness after health checks pass |
 
-See [ADR-010](../adrs/010-cross-skill-dependencies.html) for cross-skill dependencies, [ADR-011](../adrs/011-e2e-validation-and-troubleshooting.html) for validation and troubleshooting, [ADR-012](../adrs/012-workshop-module-testing.html) for workshop module testing strategy, [ADR-013](../adrs/013-refactor-skills.html) for refactor skills design, [ADR-014](../adrs/014-skill-researcher.html) for the skill researcher workflow, and [ADR-015](../adrs/015-deployment-pipeline-testing.html) for deployment pipeline testing.
+See [ADR-010](../adrs/010-cross-skill-dependencies.html) for cross-skill dependencies, [ADR-011](../adrs/011-e2e-validation-and-troubleshooting.html) for validation and troubleshooting, [ADR-012](../adrs/012-workshop-module-testing.html) for workshop module testing strategy, [ADR-013](../adrs/013-refactor-skills.html) for refactor skills design, [ADR-014](../adrs/014-skill-researcher.html) for the skill researcher workflow, and [ADR-015](../adrs/015-deployment-pipeline-testing.html) for deployment pipeline testing and the operator confidence chain.
 
 ## Validation Lifecycle
 
-The validation skills follow a clear progression covering both AgnosticD and Validated Patterns:
+The validation skills follow a clear confidence-building progression. The goal of every step is to give an operator confidence they can run the workload with limited or no issues before going live.
 
 ```
 agnosticd-deploy-test  →  student-readiness  →  workshop-tester  →  ftl:rhdp-lab-validator
-vp-deploy-test            (env ready?)           (steps work?)       (grade automation)
-(pipeline healthy?)
+vp-deploy-test         →  vp-deploy-validator →  student-readiness → workshop-tester
+(pipeline worked?)        (still healthy?)       (student POV)        (exercises work?)
 ```
 
 1. **AgnosticD Deploy Test / VP Deploy Test** verifies the deployment pipeline produced a correct, fully-working result (provisioning, convergence, lifecycle)
-2. **Student Readiness** verifies the deployed environment is accessible and ready from the student's perspective
-3. **Workshop Tester** executes module exercises against the live environment and classifies failures
-4. **ftl:rhdp-lab-validator** (marketplace) generates grading automation for passing modules
+2. **VP Deploy Validator** *(VP only)* health-checks an already-running pattern without reinstalling — use for pre-demo checks or after CI/CD deploys
+3. **Student Readiness** verifies the deployed environment is accessible and ready from the student's perspective
+4. **Workshop Tester** executes module exercises against the live environment and classifies failures — the final confidence gate before going live
+5. **ftl:rhdp-lab-validator** (marketplace) generates grading automation for passing modules
 
 ## Complementary: RHDP Skills Marketplace
 

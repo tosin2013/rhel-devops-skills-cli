@@ -8,6 +8,8 @@ related_skills: [agnosticd, agnosticd-refactor, student-readiness, workshop-test
 
 ## When to Use
 
+**Purpose:** Use this skill to build confidence that the AgnosticD deployment is sound — that provisioning succeeded, workloads are running, data is flowing, and the lifecycle works — before handing the environment to students or running `workshop-tester`. Passing all phases means an operator can run this workload with limited or no issues.
+
 - After `agd provision` completes and you want to verify the deployment is fully healthy
 - Workloads appear to have deployed but you're not sure all are running correctly
 - `agnosticd_user_info` data is missing from the RHDP catalog or Showroom
@@ -202,11 +204,12 @@ Deployment Test — Phase 4: Lifecycle Test
  Lifecycle: PASS / FAIL
 ```
 
-**After lifecycle passes:** optionally activate workshop-tester:
+**After lifecycle passes:** the deployment is confirmed sound. The next step in the confidence chain is `workshop-tester`:
 
 ```
 All deployment tests passed.
-→ Optionally activate workshop-tester to run module exercises against this environment.
+→ Activate workshop-tester to validate module exercises against this environment.
+  This is the next step in building operator confidence before going live.
 ```
 
 ---
@@ -228,6 +231,10 @@ AgnosticD Deployment Test — Complete
  Phase 4 — Lifecycle           PASS / FAIL / SKIPPED
 ══════════════════════════════════════════════════════
  Overall: READY FOR STUDENTS / NEEDS ATTENTION
+
+ Confidence: HIGH — all phases passed. An operator can run this workload
+             with limited or no issues.
+             Next step: run workshop-tester to validate module exercises.
 ```
 
 ---

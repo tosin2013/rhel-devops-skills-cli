@@ -17,6 +17,7 @@ A centralized installer for AI assistant skills (Claude Code and Cursor IDE) pro
 | **skill-researcher** | Resolve open research questions and write findings back into affected skills permanently | Self-contained |
 | **agnosticd-deploy-test** | Validate an AgnosticD v2 deployment end-to-end — provisioning, workloads, `agnosticd_user_info`, and stop/start lifecycle | Self-contained |
 | **vp-deploy-test** | Validate a Validated Pattern deployment end-to-end — VP Operator install, ArgoCD convergence, secrets, and jobs | Self-contained |
+| **vp-deploy-validator** | Health check an already-running Validated Pattern — ArgoCD convergence, secrets, and jobs without reinstalling | Self-contained |
 
 ## Supported Platforms
 

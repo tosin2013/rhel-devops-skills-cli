@@ -1,12 +1,14 @@
 ---
 name: vp-deploy-test
 description: AI assistance for validating a Validated Pattern deployment end-to-end — verifying VP Operator installation, ArgoCD Application convergence, secrets delivery via Vault and ESO, and imperative job completion. Use after pattern.sh make install or VP Operator install, before running student-readiness checks.
-related_skills: [patternizer, vp-refactor, student-readiness, workshop-tester]
+related_skills: [patternizer, vp-refactor, student-readiness, workshop-tester, vp-deploy-validator]
 ---
 
 # Validated Pattern Deployment Tester Skill
 
 ## When to Use
+
+**Purpose:** Use this skill to build confidence that the Validated Pattern deployment is sound — that installation succeeded, all Applications converged, secrets are flowing, and jobs completed — before handing the environment to students or running `workshop-tester`. Passing all phases means an operator can run this pattern with limited or no issues.
 
 - After `pattern.sh make install` or VP Operator installation completes and you want to verify the pattern is fully deployed
 - ArgoCD Applications were created but you're not sure all are Healthy/Synced
@@ -15,7 +17,7 @@ related_skills: [patternizer, vp-refactor, student-readiness, workshop-tester]
 - Before running student-readiness or handing the environment to students
 - After fixing a `vp-refactor` audit finding and re-deploying
 
-Do NOT use this skill to initialize a new pattern from scratch — use the **patternizer** skill instead. Do NOT use this skill to audit pattern files without a live deployment — use the **vp-refactor** skill instead.
+Do NOT use this skill to initialize a new pattern from scratch — use the **patternizer** skill instead. Do NOT use this skill to audit pattern files without a live deployment — use the **vp-refactor** skill instead. To check an already-running deployment without re-installing, use the **vp-deploy-validator** skill instead.
 
 ## Instructions
 
@@ -243,6 +245,14 @@ Deployment Test — Phase 4: Secrets and Jobs
 ──────────────────────────────────────────────────────
 ```
 
+**After all Phase 4 checks pass:** the deployment is confirmed sound. The next step in the confidence chain is `workshop-tester`:
+
+```
+All deployment tests passed.
+→ Activate workshop-tester to validate module exercises against this environment.
+  This is the next step in building operator confidence before going live.
+```
+
 ---
 
 ## Final Summary Report
@@ -264,6 +274,10 @@ Validated Pattern Deployment Test — Complete
    student-readiness           PASS / FAIL
 ══════════════════════════════════════════════════════
  Overall: READY FOR STUDENTS / NEEDS ATTENTION
+
+ Confidence: HIGH — all phases passed. An operator can run this pattern
+             with limited or no issues.
+             Next step: run workshop-tester to validate module exercises.
 ```
 
 ---
