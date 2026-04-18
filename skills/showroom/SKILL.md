@@ -1,7 +1,7 @@
 ---
 name: showroom
 description: AI assistance for Showroom — the RHDP lab guide and terminal system. Use when creating Antora-based lab content, configuring Showroom deployment on OpenShift (terminal types, VNC, multi-user), or integrating Showroom with AgnosticD or Field-Sourced Content.
-related_skills: [agnosticd, field-sourced-content, student-readiness, workshop-tester]
+related_skills: [agnosticd, field-sourced-content, student-readiness, workshop-tester, agnosticd-hub-student]
 ---
 
 # Showroom Skill

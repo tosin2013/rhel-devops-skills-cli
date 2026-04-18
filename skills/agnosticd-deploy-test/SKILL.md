@@ -1,7 +1,7 @@
 ---
 name: agnosticd-deploy-test
 description: AI assistance for validating an AgnosticD v2 deployment end-to-end — verifying provisioning completed cleanly, all workloads are running, agnosticd_user_info data is flowing, and the stop/start/status lifecycle works. Use after agd provision completes, before running student-readiness checks.
-related_skills: [agnosticd, agnosticd-refactor, student-readiness, workshop-tester]
+related_skills: [agnosticd, agnosticd-refactor, student-readiness, workshop-tester, agnosticd-hub-student]
 ---
 
 # AgnosticD Deployment Tester Skill

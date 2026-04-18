@@ -24,6 +24,7 @@ Each skill teaches your AI assistant (Claude Code or Cursor) how to work with a 
 | [AgnosticD Deploy Test](agnosticd-deploy-test.html) | Validate an AgnosticD v2 deployment end-to-end — provisioning, workload completion, `agnosticd_user_info` data flow, and stop/start lifecycle | Self-contained |
 | [VP Deploy Test](vp-deploy-test.html) | Validate a Validated Pattern deployment end-to-end — VP Operator install, ArgoCD convergence, secrets delivery, and imperative jobs | Self-contained |
 | [VP Deploy Validator](vp-deploy-validator.html) | Health check an already-running Validated Pattern — ArgoCD convergence, secrets, and jobs without reinstalling | Self-contained |
+| [AgnosticD Hub-Student](agnosticd-hub-student.html) | Architect, size, provision, and validate hub+student cluster topologies — Showroom on hub, each student on a separate SNO/compact cluster, with cloud quota pre-flight for AWS, GCP, and Azure | Self-contained |
 
 ## Cross-Skill Relationships
 
@@ -54,8 +55,13 @@ Some skills work together. The installer and AI assistants recognize these relat
 | VP Deploy Test | VP Deploy Validator | vp-deploy-validator is the health-check-only complement — use for pre-demo checks or after CI/CD deploy without reinstalling |
 | VP Deploy Validator | VP Refactor | vp-deploy-validator escalates to vp-refactor when convergence or secrets failures are found |
 | VP Deploy Validator | Student Readiness | vp-deploy-validator activates student-readiness after health checks pass |
+| AgnosticD v2 | AgnosticD Hub-Student | agnosticd-hub-student extends the AgnosticD topology to hub+student multi-cluster deployments |
+| AgnosticD Deploy Test | AgnosticD Hub-Student | agnosticd-hub-student is the multi-cluster variant; agnosticd-deploy-test validates single-cluster deployments |
+| Showroom | AgnosticD Hub-Student | agnosticd-hub-student wires Showroom's terminal to student cluster APIs rather than the hub |
+| Student Readiness | AgnosticD Hub-Student | agnosticd-hub-student activates student-readiness per student cluster after Phase 3 |
+| Skill Researcher | AgnosticD Hub-Student | skill-researcher resolves RQ-HUB-1 through RQ-HUB-7 for the hub+student topology |
 
-See [ADR-010](../adrs/010-cross-skill-dependencies.html) for cross-skill dependencies, [ADR-011](../adrs/011-e2e-validation-and-troubleshooting.html) for validation and troubleshooting, [ADR-012](../adrs/012-workshop-module-testing.html) for workshop module testing strategy, [ADR-013](../adrs/013-refactor-skills.html) for refactor skills design, [ADR-014](../adrs/014-skill-researcher.html) for the skill researcher workflow, and [ADR-015](../adrs/015-deployment-pipeline-testing.html) for deployment pipeline testing and the operator confidence chain.
+See [ADR-010](../adrs/010-cross-skill-dependencies.html) for cross-skill dependencies, [ADR-011](../adrs/011-e2e-validation-and-troubleshooting.html) for validation and troubleshooting, [ADR-012](../adrs/012-workshop-module-testing.html) for workshop module testing strategy, [ADR-013](../adrs/013-refactor-skills.html) for refactor skills design, [ADR-014](../adrs/014-skill-researcher.html) for the skill researcher workflow, [ADR-015](../adrs/015-deployment-pipeline-testing.html) for deployment pipeline testing and the operator confidence chain, and [ADR-016](../adrs/016-hub-student-skill.html) for the hub+student topology skill.
 
 ## Validation Lifecycle
 

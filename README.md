@@ -18,6 +18,7 @@ A centralized installer for AI assistant skills (Claude Code and Cursor IDE) pro
 | **agnosticd-deploy-test** | Validate an AgnosticD v2 deployment end-to-end — provisioning, workloads, `agnosticd_user_info`, and stop/start lifecycle | Self-contained |
 | **vp-deploy-test** | Validate a Validated Pattern deployment end-to-end — VP Operator install, ArgoCD convergence, secrets, and jobs | Self-contained |
 | **vp-deploy-validator** | Health check an already-running Validated Pattern — ArgoCD convergence, secrets, and jobs without reinstalling | Self-contained |
+| **agnosticd-hub-student** | Architect, size, and provision hub+student cluster topologies — Showroom on hub, each student on a separate SNO/compact cluster, with cloud quota pre-flight for AWS, GCP, and Azure | Self-contained |
 
 ## Supported Platforms
 
@@ -108,6 +109,7 @@ git pull origin main
 | [013](docs/adrs/013-refactor-skills.md) | Refactor Skills for AgnosticD and Validated Patterns |
 | [014](docs/adrs/014-skill-researcher.md) | Skill Researcher Workflow |
 | [015](docs/adrs/015-deployment-pipeline-testing.md) | Deployment Pipeline Testing Skills |
+| [016](docs/adrs/016-hub-student-skill.md) | AgnosticD Hub-Student Topology Skill |
 
 ## Running Tests
 
