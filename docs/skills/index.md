@@ -25,6 +25,7 @@ Each skill teaches your AI assistant (Claude Code or Cursor) how to work with a 
 | [VP Deploy Test](vp-deploy-test.html) | Validate a Validated Pattern deployment end-to-end — VP Operator install, ArgoCD convergence, secrets delivery, and imperative jobs | Self-contained |
 | [VP Deploy Validator](vp-deploy-validator.html) | Health check an already-running Validated Pattern — ArgoCD convergence, secrets, and jobs without reinstalling | Self-contained |
 | [AgnosticD Hub-Student](agnosticd-hub-student.html) | Architect, size, provision, and validate hub+student cluster topologies — Showroom on hub, each student on a separate SNO/compact cluster, with cloud quota pre-flight for AWS, GCP, and Azure | Self-contained |
+| [VP Submission](vp-submission.html) | Audit a Validated Pattern against VP tier requirements (Community, Tested, Maintained) and guide the PR submission to validatedpatterns/docs | Self-contained |
 
 ## Cross-Skill Relationships
 
@@ -60,8 +61,13 @@ Some skills work together. The installer and AI assistants recognize these relat
 | Showroom | AgnosticD Hub-Student | agnosticd-hub-student wires Showroom's terminal to student cluster APIs rather than the hub |
 | Student Readiness | AgnosticD Hub-Student | agnosticd-hub-student activates student-readiness per student cluster after Phase 3 |
 | Skill Researcher | AgnosticD Hub-Student | skill-researcher resolves RQ-HUB-1 through RQ-HUB-7 for the hub+student topology |
+| VP Deploy Validator | VP Submission | vp-deploy-validator surfaces vp-submission as the next step after HEALTHY; triggers destroy-and-redeploy gate on irrecoverable failures |
+| VP Deploy Test | VP Submission | vp-deploy-test detects SUBMISSION_BLOCKING non-interactive install failures before patterns can be submitted |
+| VP Refactor | VP Submission | vp-submission escalates structural pattern issues to vp-refactor before re-auditing tier readiness |
+| Patternizer | VP Submission | vp-submission audits patterns initialized by patternizer for VP tier compliance |
+| Skill Researcher | VP Submission | skill-researcher resolves VP-SUB-1 through VP-SUB-5 for submission criteria and docs structure |
 
-See [ADR-010](../adrs/010-cross-skill-dependencies.html) for cross-skill dependencies, [ADR-011](../adrs/011-e2e-validation-and-troubleshooting.html) for validation and troubleshooting, [ADR-012](../adrs/012-workshop-module-testing.html) for workshop module testing strategy, [ADR-013](../adrs/013-refactor-skills.html) for refactor skills design, [ADR-014](../adrs/014-skill-researcher.html) for the skill researcher workflow, [ADR-015](../adrs/015-deployment-pipeline-testing.html) for deployment pipeline testing and the operator confidence chain, and [ADR-016](../adrs/016-hub-student-skill.html) for the hub+student topology skill.
+See [ADR-010](../adrs/010-cross-skill-dependencies.html) for cross-skill dependencies, [ADR-011](../adrs/011-e2e-validation-and-troubleshooting.html) for validation and troubleshooting, [ADR-012](../adrs/012-workshop-module-testing.html) for workshop module testing strategy, [ADR-013](../adrs/013-refactor-skills.html) for refactor skills design, [ADR-014](../adrs/014-skill-researcher.html) for the skill researcher workflow, [ADR-015](../adrs/015-deployment-pipeline-testing.html) for deployment pipeline testing and the operator confidence chain, [ADR-016](../adrs/016-hub-student-skill.html) for the hub+student topology skill, and [ADR-017](../adrs/017-vp-submission-skill.html) for the VP submission skill and validator redeploy gate.
 
 ## Validation Lifecycle
 
@@ -69,15 +75,16 @@ The validation skills follow a clear confidence-building progression. The goal o
 
 ```
 agnosticd-deploy-test  →  student-readiness  →  workshop-tester  →  ftl:rhdp-lab-validator
-vp-deploy-test         →  vp-deploy-validator →  student-readiness → workshop-tester
-(pipeline worked?)        (still healthy?)       (student POV)        (exercises work?)
+vp-deploy-test         →  vp-deploy-validator →  student-readiness → workshop-tester  →  vp-submission
+(pipeline worked?)        (still healthy?)       (student POV)        (exercises work?)    (submit to VP)
 ```
 
-1. **AgnosticD Deploy Test / VP Deploy Test** verifies the deployment pipeline produced a correct, fully-working result (provisioning, convergence, lifecycle)
-2. **VP Deploy Validator** *(VP only)* health-checks an already-running pattern without reinstalling — use for pre-demo checks or after CI/CD deploys
+1. **AgnosticD Deploy Test / VP Deploy Test** verifies the deployment pipeline produced a correct, fully-working result (provisioning, convergence, lifecycle). VP Deploy Test also detects `SUBMISSION_BLOCKING` non-interactive install failures.
+2. **VP Deploy Validator** *(VP only)* health-checks an already-running pattern without reinstalling. Activates the destroy-and-redeploy gate after two failed remediation cycles or on non-interactive install failure.
 3. **Student Readiness** verifies the deployed environment is accessible and ready from the student's perspective
 4. **Workshop Tester** executes module exercises against the live environment and classifies failures — the final confidence gate before going live
-5. **ftl:rhdp-lab-validator** (marketplace) generates grading automation for passing modules
+5. **VP Submission** *(VP only)* audits the pattern against Community, Tested, and Maintained tier criteria and guides the PR submission to [validatedpatterns/docs](https://github.com/validatedpatterns/docs)
+6. **ftl:rhdp-lab-validator** (marketplace) generates grading automation for passing modules
 
 ## Complementary: RHDP Skills Marketplace
 

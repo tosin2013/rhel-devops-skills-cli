@@ -1,7 +1,7 @@
 ---
 name: vp-deploy-test
 description: AI assistance for validating a Validated Pattern deployment end-to-end — verifying VP Operator installation, ArgoCD Application convergence, secrets delivery via Vault and ESO, and imperative job completion. Use after pattern.sh make install or VP Operator install, before running student-readiness checks.
-related_skills: [patternizer, vp-refactor, student-readiness, workshop-tester, vp-deploy-validator]
+related_skills: [patternizer, vp-refactor, student-readiness, workshop-tester, vp-deploy-validator, vp-submission]
 ---
 
 # Validated Pattern Deployment Tester Skill
@@ -90,12 +90,48 @@ Expected: a Pattern CR exists and shows the target GitOps repo URL.
 Capture:
 - Exit code for CLI install (0 = success, non-zero = failure)
 - Whether the ArgoCD ApplicationSet was created
+- Whether any interactive prompt appeared in the output
 
 ```bash
 oc get applicationset -n openshift-gitops
 ```
 
-**If install fails:**
+**Non-interactive install check (CLI method only):**
+
+While streaming or reviewing the `pattern.sh` output, watch for any of these patterns indicating user interaction was required:
+
+- A line containing `[y/N]`, `[Y/n]`, `(yes/no)`, `Enter password:`, `Password:`, or `Select` with a numbered choice
+- The process pausing without output for more than 30 seconds (TTY wait)
+- A `read` prompt from a shell script
+- An `oc login` prompt requesting credentials
+
+If any interactive prompt is detected:
+
+```
+Deployment Test — Phase 2: SUBMISSION_BLOCKING — Non-interactive install failure
+  Pattern:   <pattern-name>
+  Prompt:    <exact prompt text>
+
+  A Validated Pattern must deploy fully unattended via pattern.sh or the VP
+  Operator to be accepted at any VP tier. This is a submission-blocking issue.
+
+  Action: Locate and remove all interactive prompts from:
+  - pattern.sh and all Makefiles it calls
+  - Any shell scripts called during install
+  - values files (no prompts for missing values — all must have defaults
+    or be provided via values-secret.yaml)
+  Common causes:
+  - `read` calls in install helpers without a default
+  - oc login without pre-configured credentials
+  - Helm `--set` prompts for required but unset values
+  - `confirm.sh` style scripts
+
+After fixing: re-run this phase to verify a clean unattended install.
+```
+
+Record this as `SUBMISSION_BLOCKING` and stop. Do not proceed to Phase 3 until the install is confirmed non-interactive.
+
+**If install fails (non-zero exit, no interactive prompt):**
 
 ```
 Deployment Test — Phase 2: Install FAILED

@@ -1,7 +1,7 @@
 ---
 name: vp-deploy-validator
 description: AI assistance for validating the health of an already-running Validated Pattern deployment — checking ArgoCD Application convergence, secrets delivery, and job completion without re-installing. Use when the pattern was deployed by automation or by someone else, or for a pre-demo confidence check on a live deployment.
-related_skills: [vp-deploy-test, vp-refactor, student-readiness, workshop-tester]
+related_skills: [vp-deploy-test, vp-refactor, student-readiness, workshop-tester, vp-submission]
 ---
 
 # Validated Pattern Deployment Validator Skill
@@ -44,9 +44,11 @@ Verify access and that the VP stack is present before running health checks.
 | Check | Command | Pass condition |
 |-------|---------|---------------|
 | OCP login | `oc whoami` | Returns a username |
+| Cluster nodes healthy | `oc get nodes` | All nodes in `Ready` state |
 | VP Operator present | `oc get csv -n openshift-operators \| grep patterns` | CSV in Succeeded state |
 | OpenShift GitOps present | `oc get csv -n openshift-operators \| grep gitops` | CSV in Succeeded state |
 | ArgoCD reachable | `oc get applications -n openshift-gitops` | Returns at least one Application |
+| Non-interactive install | Inspect recent `pattern.sh` output or install log for interactive prompts | No TTY waits, `y/n` prompts, password requests, or kubeconfig selection prompts found |
 
 If the VP Operator or ArgoCD is not present, stop and report:
 
@@ -55,6 +57,30 @@ Pre-flight FAILED: VP Operator or ArgoCD not found.
 This cluster does not appear to have a Validated Pattern installed.
 → If you need to install one, use the vp-deploy-test skill.
 ```
+
+If cluster nodes are not all Ready, record as a **cluster health** finding — this triggers the new cluster tracking path in the Destroy and Redeploy section.
+
+If an interactive prompt is detected in the install log:
+
+```
+Pre-flight — SUBMISSION_BLOCKING: Non-interactive install failure
+  pattern.sh make install required user interaction:
+  <exact prompt text found>
+
+  A Validated Pattern must deploy fully unattended to be accepted at any VP tier.
+  This is a submission-blocking issue — the pattern cannot be submitted until resolved.
+
+  Action: Remove all interactive prompts from pattern.sh, Makefiles, and any
+  called scripts. Common causes:
+  - `read` calls in shell scripts without a default value
+  - `oc login` prompts (credentials must be pre-configured)
+  - Helm `--set` prompts for missing values
+  - kubectl/oc asking to confirm destructive operations
+
+  After fixing: re-run vp-deploy-test to validate a clean unattended install.
+```
+
+Record this as a `SUBMISSION_BLOCKING` finding and continue the health check — the pattern may still be partially healthy even if the install was not fully unattended.
 
 ---
 
@@ -134,13 +160,15 @@ oc get jobs -A | grep -v kube
 
 ### 3c. Confidence chain hand-off
 
-After secrets and jobs checks pass, the deployment is confirmed healthy. The next step in the confidence chain:
+After secrets and jobs checks pass, the deployment is confirmed healthy. The next steps in the confidence chain:
 
 ```
 All health checks passed.
 → Activate student-readiness to verify the student experience end-to-end.
 → Then activate workshop-tester to validate module exercises.
-  These are the next steps in building operator confidence before going live.
+→ When workshop-tester passes: activate vp-submission to audit VP tier
+  readiness and prepare the pattern for submission to validatedpatterns.io.
+  These are the steps in building operator confidence and reaching submission.
 ```
 
 ### Phase 3 Report
@@ -176,7 +204,7 @@ Validated Pattern Health Check — Complete
 
  Confidence: HIGH — all health checks passed. An operator can run this
              pattern with limited or no issues.
-             Next steps: student-readiness → workshop-tester
+             Next steps: student-readiness → workshop-tester → vp-submission
 ```
 
 ---
@@ -235,6 +263,95 @@ Repeat until all items resolve, then present the final confidence statement: **H
 
 ---
 
+## Destroy and Redeploy Decision Gate
+
+The remediation loop has a limit. After **two complete remediation cycles** (two rounds of `vp-refactor` escalation + re-check) with at least one BLOCKING failure still present, stop the remediation loop and activate the destroy-and-redeploy decision gate.
+
+The gate also activates immediately if either of these is true:
+- A `SUBMISSION_BLOCKING: Non-interactive install failure` finding was recorded in Phase 1
+- The OCP cluster nodes are not all Ready (cluster health failure recorded in Phase 1)
+
+### Decide: Pattern Problem or Cluster Problem?
+
+Before destroying anything, determine the root cause:
+
+```
+Destroy-and-Redeploy Assessment — <pattern-name>
+──────────────────────────────────────────────────────
+ Remediation cycles completed: <N>
+ Remaining BLOCKING failures:  <list>
+
+ Is the cluster itself healthy?
+   oc get nodes            → All Ready / NOT ALL READY
+   oc get co               → All Available / DEGRADED
+
+ Diagnosis:
+   CLUSTER PROBLEM  — nodes not ready, operators degraded, API unstable
+   PATTERN PROBLEM  — cluster healthy but pattern never converges
+──────────────────────────────────────────────────────
+```
+
+Ask the user to confirm the diagnosis before proceeding.
+
+### Path A — Pattern Problem (cluster is healthy)
+
+The cluster is healthy but the pattern state is irrecoverable. Destroy the VP installation and redeploy from scratch on the same cluster.
+
+**Confirm with the user before running any destructive command:**
+
+```
+Proposed action: destroy and redeploy the pattern on the existing cluster.
+  This will delete all ArgoCD Applications, Helm releases, and namespaces
+  created by the pattern. The cluster itself will remain.
+
+Approve? (y/n)
+```
+
+If approved:
+
+```bash
+# Uninstall the pattern via VP Operator or pattern.sh
+./pattern.sh make uninstall
+# Verify ArgoCD Applications are removed
+oc get applications -n openshift-gitops
+# Redeploy from scratch
+→ Activate vp-deploy-test to run a fresh install and validate end-to-end.
+```
+
+### Path B — Cluster Problem (nodes not ready or API unstable)
+
+The OCP cluster itself is unhealthy and cannot host a reliable pattern deployment. Track a replacement cluster.
+
+**Confirm with the user before any cluster action:**
+
+```
+Proposed action: provision a replacement OCP cluster and re-run vp-deploy-test on it.
+  The current cluster will not be destroyed unless you explicitly request it.
+
+Replacement cluster options:
+  (A) Provision a new cluster via AgnosticD — activate agnosticd-deploy-test
+  (B) Provision via ROSA/ARO/ROKS (managed OpenShift)
+  (C) Use an existing cluster at a different API URL
+
+Which path? (A/B/C)
+```
+
+**Tracking the new cluster:**
+
+Once a replacement cluster is confirmed, record it as a session variable:
+
+```
+New cluster target:
+  API URL:     <new-api-url>
+  Kubeconfig:  <path>
+  Status:      PROVISIONING / READY
+
+→ When cluster is Ready: activate vp-deploy-test with the new cluster context.
+→ After vp-deploy-test passes: re-run vp-deploy-validator on the new cluster.
+```
+
+---
+
 ## Escalation
 
 - **ArgoCD Application Degraded/OutOfSync** → Use the **vp-refactor** skill to audit values files and chart structure
@@ -242,3 +359,6 @@ Repeat until all items resolve, then present the final confidence statement: **H
 - **Imperative jobs failing** → Use the **vp-refactor** skill, Audit Area 8 (Imperative Jobs)
 - **VP Operator not present** → The pattern is not installed — use the **vp-deploy-test** skill to install and validate
 - **Health checks pass but student experience broken** → Activate the **student-readiness** skill for student-perspective checks
+- **BLOCKING failures persist after two remediation cycles** → Activate the **Destroy and Redeploy** decision gate above
+- **Non-interactive install failure** → Fix all interactive prompts, then use **vp-deploy-test** to validate a clean unattended install
+- **All checks pass** → Activate **vp-submission** to audit VP tier readiness and guide submission to validatedpatterns.io

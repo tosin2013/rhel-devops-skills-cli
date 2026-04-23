@@ -30,3 +30,4 @@ All ADRs follow the [MADR](https://adr.github.io/madr/) (Markdown Architectural 
 | [014](014-skill-researcher.html) | Skill Researcher Workflow | Accepted |
 | [015](015-deployment-pipeline-testing.html) | Deployment Pipeline Testing Skills | Accepted |
 | [016](016-hub-student-skill.html) | AgnosticD Hub-Student Topology Skill | Accepted |
+| [017](017-vp-submission-skill.html) | VP Submission Skill and Validator Redeploy Gate | Accepted |
