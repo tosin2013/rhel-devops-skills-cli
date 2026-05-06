@@ -47,7 +47,7 @@ test_registry_add_skill() {
 
 test_registry_get_skill_field() {
     registry_init
-    registry_add_skill "testskill2" "1.0.0" "https://example.com/repo2" "def456" '[{"ide":"cursor","path":"~/.cursor/skills/testskill2"}]'
+    registry_add_skill "testskill2" "1.0.0" "https://example.com/repo2" "def456" '[{"ide":"cursor","path":"~/.cursor/skills-cursor/testskill2"}]'
     local hash
     hash="$(registry_get_skill "testskill2" "docs_commit_hash")"
     assert_eq "def456" "$hash" "commit hash matches"

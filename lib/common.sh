@@ -12,7 +12,7 @@ readonly BACKUP_DIR="$DATA_DIR/backups"
 readonly LOG_DIR="$DATA_DIR/logs"
 
 readonly CLAUDE_SKILLS_DIR="$HOME/.claude/skills"
-readonly CURSOR_SKILLS_DIR="$HOME/.cursor/skills"
+readonly CURSOR_SKILLS_DIR="$HOME/.cursor/skills-cursor"
 readonly CURSOR_RULES_DIR=".cursor/rules"
 
 # Available skills -- loaded dynamically from per-skill config.sh files

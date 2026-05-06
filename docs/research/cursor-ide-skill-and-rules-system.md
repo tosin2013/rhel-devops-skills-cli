@@ -16,7 +16,7 @@ How does Cursor IDE support custom skills, rules, and agent instructions? What a
 
 ## Background
 
-The PRD for rhel-devops-skills-cli assumes skills install to `~/.cursor/skills/` using a `skill.json` format. This research validates those assumptions against the actual Cursor IDE extension systems as of March 2026.
+The PRD for rhel-devops-skills-cli assumes skills install to `~/.cursor/skills-cursor/` using a `skill.json` format. This research validates those assumptions against the actual Cursor IDE extension systems as of March 2026.
 
 ## Methodology
 
@@ -46,7 +46,7 @@ The PRD for rhel-devops-skills-cli assumes skills install to `~/.cursor/skills/`
 - **Description**: Skills are auto-loaded from these directories:
   - `.agents/skills/` (project-level)
   - `.cursor/skills/` (project-level)
-  - `~/.cursor/skills/` (user-level/global)
+  - `~/.cursor/skills-cursor/` (user-level/global)
   - For compatibility: `.claude/skills/`, `.codex/skills/`, `~/.claude/skills/`, `~/.codex/skills/`
 - **Evidence**: Explicitly listed in official documentation table
 - **Confidence**: High
@@ -97,7 +97,7 @@ The PRD for rhel-devops-skills-cli assumes skills install to `~/.cursor/skills/`
 The PRD's `skill.json` format is incorrect. The installer should:
 1. Create `SKILL.md` files for on-demand skill capabilities
 2. Optionally create `.cursor/rules/*.mdc` files for always-applied conventions
-3. Install global skills to `~/.cursor/skills/` or leverage `.claude/skills/` cross-compatibility
+3. Install global skills to `~/.cursor/skills-cursor/` or leverage `.claude/skills/` cross-compatibility
 
 ### Technology Choices
 - SKILL.md with YAML frontmatter (Agent Skills standard)
@@ -112,7 +112,7 @@ The PRD's `skill.json` format is incorrect. The installer should:
 ## Recommendations
 
 1. Primary installation format: SKILL.md in skill directories
-2. Install to `~/.cursor/skills/` for global Cursor skills
+2. Install to `~/.cursor/skills-cursor/` for global Cursor skills
 3. Optionally install to `~/.claude/skills/` for cross-Claude/Cursor compatibility
 4. Consider generating `.cursor/rules/*.mdc` for always-on project conventions
 5. Keep SKILL.md focused; use references/ for detailed documentation

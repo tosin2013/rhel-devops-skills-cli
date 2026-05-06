@@ -75,7 +75,7 @@ For each skill, the installer:
 ### File Layout
 
 ```
-~/.claude/skills/          # or ~/.cursor/skills/
+~/.claude/skills/          # or ~/.cursor/skills-cursor/
   agnosticd/
     SKILL.md               # Agent skill definition
     references/

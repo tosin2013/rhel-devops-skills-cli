@@ -20,7 +20,7 @@ What are the correct installation paths, and can we optimize for cross-platform 
 ## Decision Drivers
 
 * Claude Code loads skills from `~/.claude/skills/<name>/SKILL.md` (global) and `.claude/skills/` (project)
-* Cursor loads skills from `~/.cursor/skills/<name>/SKILL.md` (global) and `.cursor/skills/` (project)
+* Cursor loads skills from `~/.cursor/skills-cursor/<name>/SKILL.md` (global) and `.cursor/skills/` (project)
 * Cursor ALSO loads from `~/.claude/skills/` and `.claude/skills/` for cross-compatibility
 * Installing to `~/.claude/skills/` makes skills visible to both platforms
 * The PRD's `~/.config/claude/skills/` path does not exist in either platform
@@ -30,24 +30,24 @@ What are the correct installation paths, and can we optimize for cross-platform 
 ## Considered Options
 
 1. **Install to `~/.claude/skills/` only** -- Single location, both platforms see it
-2. **Install to both `~/.claude/skills/` and `~/.cursor/skills/`** -- Explicit per-platform installation
+2. **Install to both `~/.claude/skills/` and `~/.cursor/skills-cursor/`** -- Explicit per-platform installation
 3. **Install to `~/.config/claude/skills/`** -- As proposed in PRD (incorrect path)
-4. **Install to `~/.cursor/skills/` only** -- Cursor-specific only
+4. **Install to `~/.cursor/skills-cursor/` only** -- Cursor-specific only
 
 ## Decision Outcome
 
-Chosen option: **"Install to both `~/.claude/skills/` and `~/.cursor/skills/` with `--ide` flag control"**, because it provides explicit, per-platform installation with clear user control, while defaulting to both platforms when both are detected.
+Chosen option: **"Install to both `~/.claude/skills/` and `~/.cursor/skills-cursor/` with `--ide` flag control"**, because it provides explicit, per-platform installation with clear user control, while defaulting to both platforms when both are detected.
 
 ### Installation Path Matrix
 
 | Flag | Claude Code Detected | Cursor Detected | Installs To |
 |------|---------------------|-----------------|-------------|
 | `--ide claude` | Yes | - | `~/.claude/skills/<name>/` |
-| `--ide cursor` | - | Yes | `~/.cursor/skills/<name>/` |
+| `--ide cursor` | - | Yes | `~/.cursor/skills-cursor/<name>/` |
 | `--ide both` | Yes | Yes | Both paths |
 | (no flag) | Yes | Yes | Both paths (auto-detect) |
 | (no flag) | Yes | No | `~/.claude/skills/<name>/` |
-| (no flag) | No | Yes | `~/.cursor/skills/<name>/` |
+| (no flag) | No | Yes | `~/.cursor/skills-cursor/<name>/` |
 
 ### Detection Logic
 
@@ -74,7 +74,7 @@ detect_cursor() {
   scripts/
   assets/
 
-~/.cursor/skills/agnosticd/
+~/.cursor/skills-cursor/agnosticd/
   SKILL.md
   references/
     setup.adoc
@@ -87,11 +87,11 @@ detect_cursor() {
 
 On macOS, both Claude Code and Cursor use the **same home-directory paths** as on Linux:
 - Claude Code: `~/.claude/skills/` (global), `.claude/skills/` (project)
-- Cursor: `~/.cursor/skills/` (global), `.cursor/skills/` (project)
+- Cursor: `~/.cursor/skills-cursor/` (global), `.cursor/skills/` (project)
 
 There is **no** `~/Library/Application Support/` variant for skills. Claude Desktop's MCP config on macOS resides at `~/Library/Application Support/Claude/claude_desktop_config.json`, but that is for MCP servers (not skills) and is out of scope per [ADR-002](002-target-claude-code-and-cursor.html).
 
-This means the installer requires **no platform-specific path logic** -- the same `$HOME/.claude/skills/` and `$HOME/.cursor/skills/` paths work on both RHEL and macOS.
+This means the installer requires **no platform-specific path logic** -- the same `$HOME/.claude/skills/` and `$HOME/.cursor/skills-cursor/` paths work on both RHEL and macOS.
 
 ### Alternative: Cross-Compatibility Shortcut
 

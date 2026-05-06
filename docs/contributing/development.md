@@ -53,7 +53,7 @@ All architectural decisions are documented in [ADRs](../adrs/):
 - **ADR-001**: Agent Skills standard (`SKILL.md`) over custom formats
 - **ADR-002**: Target Claude Code and Cursor IDE
 - **ADR-003**: Documentation embedding via `references/`
-- **ADR-004**: Installation paths (`~/.claude/skills/`, `~/.cursor/skills/`)
+- **ADR-004**: Installation paths (`~/.claude/skills/`, `~/.cursor/skills-cursor/`)
 - **ADR-005**: Dual-mode skills + optional Cursor rules
 - **ADR-006**: Shell installer with JSON registry
 - **ADR-007**: GitHub Pages with Just the Docs

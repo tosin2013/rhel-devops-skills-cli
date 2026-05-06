@@ -68,7 +68,7 @@ Installed skills are tracked in `~/.rhel-devops-skills/registry.json`:
       "docs_commit_hash": "abc123...",
       "installed_to": [
         {"ide": "claude", "path": "~/.claude/skills/agnosticd"},
-        {"ide": "cursor", "path": "~/.cursor/skills/agnosticd"}
+        {"ide": "cursor", "path": "~/.cursor/skills-cursor/agnosticd"}
       ]
     }
   ]
