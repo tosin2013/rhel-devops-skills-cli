@@ -60,7 +60,7 @@ Chosen option: **"GitHub Issue template intake with maintainer build"**, because
 6. PR is validated:
    - [ ] SKILL.md has valid YAML frontmatter with name and description
    - [ ] references/REFERENCE.md lists all documentation files
-   - [ ] Skill installs successfully to ~/.claude/skills/ and ~/.cursor/skills/
+   - [ ] Skill installs successfully to ~/.claude/skills/ and ~/.cursor/skills-cursor/
    - [ ] ShellCheck passes on any scripts/
    - [ ] CI tests pass
 7. PR merged -> skill available in next release

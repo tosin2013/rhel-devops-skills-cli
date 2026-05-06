@@ -56,7 +56,7 @@ chsh -s /opt/homebrew/bin/bash
 
 ### Cursor IDE
 
-- **Skill path**: `~/.cursor/skills/<skill-name>/`
+- **Skill path**: `~/.cursor/skills-cursor/<skill-name>/`
 - **Rules path**: `.cursor/rules/<skill-name>.mdc` (project-level)
 - **Detection**: Checks for `~/.cursor/` directory
 - **Format**: `SKILL.md` + optional `.mdc` rule files

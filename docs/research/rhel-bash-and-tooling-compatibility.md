@@ -64,7 +64,7 @@ The PRD specifies a bash shell script-based installer targeting RHEL. This resea
 ### Finding 5: File Path Conventions
 - **Description**: On Linux (RHEL), the skill directories are:
   - Claude Code: `~/.claude/skills/` (home directory hidden folder)
-  - Cursor: `~/.cursor/skills/` (home directory hidden folder)
+  - Cursor: `~/.cursor/skills-cursor/` (home directory hidden folder)
   Both follow XDG-adjacent conventions using hidden directories in $HOME.
 - **Evidence**: Consistent with Linux documentation for both tools
 - **Confidence**: High
@@ -85,7 +85,7 @@ The PRD specifies a bash shell script-based installer targeting RHEL. This resea
 ### Finding 8: macOS Skill Paths Are Identical to Linux
 - **Description**: On macOS, both Claude Code and Cursor IDE use the same home-directory-based skill paths as on Linux:
   - Claude Code: `~/.claude/skills/` (global), `.claude/skills/` (project)
-  - Cursor: `~/.cursor/skills/` (global), `.cursor/skills/` (project)
+  - Cursor: `~/.cursor/skills-cursor/` (global), `.cursor/skills/` (project)
   There is no `~/Library/Application Support/` variant for skills. Claude Desktop's MCP config on macOS is at `~/Library/Application Support/Claude/claude_desktop_config.json`, but that is unrelated to skills.
 - **Evidence**: Official Claude Code and Cursor documentation confirm `~/.claude/` and `~/.cursor/` on all platforms
 - **Confidence**: High
@@ -111,7 +111,7 @@ The PRD specifies a bash shell script-based installer targeting RHEL. This resea
 - macOS requires Homebrew bash as a prerequisite; the installer must detect the bash version at runtime
 - YAML registry parsing requires either bundling yq or switching to JSON format
 - SELinux should not be a concern for basic file installation to home directories
-- Skill paths (`~/.claude/skills/`, `~/.cursor/skills/`) are identical across Linux and macOS
+- Skill paths (`~/.claude/skills/`, `~/.cursor/skills-cursor/`) are identical across Linux and macOS
 
 ### Technology Choices
 - Bash 4.4+ as minimum requirement

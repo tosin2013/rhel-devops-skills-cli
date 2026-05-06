@@ -30,7 +30,7 @@ What bash version, tooling, registry format, and platform support matrix should 
 * The registry tracks installed skills, versions, paths, and metadata
 * JSON can be parsed with `jq` (available in EPEL/Homebrew) or Python's built-in `json` module
 * SELinux enforcing mode is default on RHEL; home directory writes are permitted
-* Skill paths (`~/.claude/skills/`, `~/.cursor/skills/`) are identical on Linux and macOS
+* Skill paths (`~/.claude/skills/`, `~/.cursor/skills-cursor/`) are identical on Linux and macOS
 
 ## Considered Options
 
@@ -89,7 +89,7 @@ fi
       "installed_date": "2026-03-31T10:30:00Z",
       "installed_to": [
         {"ide": "claude", "path": "~/.claude/skills/agnosticd"},
-        {"ide": "cursor", "path": "~/.cursor/skills/agnosticd"}
+        {"ide": "cursor", "path": "~/.cursor/skills-cursor/agnosticd"}
       ]
     }
   ]
