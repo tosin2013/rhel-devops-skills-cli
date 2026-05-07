@@ -24,6 +24,9 @@ Your AI assistant will activate this skill when you're:
 - Setting up a fork for workshop development
 - Deploying Field-Sourced Content or Showroom as workloads
 - Debugging deployment failures
+- Generating independent `deploy.sh` / `teardown.sh` scripts for your project
+- Provisioning multiple student environments (multi-student loop with parallel option)
+- Setting up a hub+student RHACM topology and scaffolding the `ocp4_workload_rhacm_import` role
 
 ## Key Concepts
 
@@ -60,6 +63,27 @@ git remote add upstream https://github.com/agnosticd/agnosticd-v2.git
 ```
 
 Workshop-specific variables go in `agnosticd-v2-vars/` and secrets in `agnosticd-v2-secrets/` -- both outside the repo, never committed.
+
+## Independent Deployment Scripts
+
+The skill guides you to create standalone scripts in `agnosticd-v2-vars/<config-name>/` that wrap all `agd` lifecycle commands:
+
+| Script | Wraps | Notes |
+|--------|-------|-------|
+| `deploy.sh` | `agd provision` | Loops over N students (default 2); sequential or parallel; hub-first for RHACM |
+| `teardown.sh` | `agd destroy` | Reads `students.txt` manifest; prompts before RHACM-registered clusters |
+| `stop.sh` | `agd stop` | Loops over all manifested student GUIDs |
+| `start.sh` | `agd start` | Loops over all manifested student GUIDs |
+
+Key behaviors:
+- `NUM_STUDENTS=2` by default; set `PARALLEL=true` for groups larger than 5
+- `students.txt` manifest is written on deploy and consumed by all other scripts (add to `.gitignore`)
+- Set `DEPLOY_HUB=true` when using a hub+student RHACM topology — hub provisions before student clusters
+- Secrets are **never** embedded in scripts — they come from `agnosticd-v2-secrets/`
+
+### RHACM hub-and-spoke note
+
+No RHACM cluster registration role exists in upstream [agnosticd/agnosticd-v2](https://github.com/agnosticd/agnosticd-v2). When using a hub+student RHACM topology, the skill scaffolds an `ocp4_workload_rhacm_import` role in your fork — see `(RESEARCH NEEDED — RQ-HUB-8)` in the skill for the task details once research resolves them.
 
 ## Related Skills
 

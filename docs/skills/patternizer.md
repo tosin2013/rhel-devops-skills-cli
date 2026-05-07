@@ -22,6 +22,7 @@ Your AI assistant will activate this skill when you're:
 - Working with generated files (values-global.yaml, pattern.sh, Makefile)
 - Configuring secrets management
 - Deploying patterns to OpenShift
+- Generating independent `deploy.sh` / `teardown.sh` scripts for your pattern repo
 
 ## Key Commands
 
@@ -48,6 +49,17 @@ podman run --pull=newer -v "$PWD:$PWD:z" -w "$PWD" \
 | `pattern.sh` | Utility script for install/upgrade |
 | `Makefile` / `Makefile-common` | Build targets |
 | `ansible.cfg` | Ansible configuration |
+
+## Independent Deployment Scripts
+
+The skill guides you to create two standalone scripts in your pattern repo root (committed to git — they contain no secrets):
+
+| Script | Wraps | Notes |
+|--------|-------|-------|
+| `deploy.sh` | `pattern.sh make install` | Pre-checks for `values-secret.yaml` before running (submission-blocking requirement) |
+| `teardown.sh` | `pattern.sh make uninstall` | Prompts for confirmation before uninstalling |
+
+Both scripts are safe to commit. `values-secret.yaml` must **never** be committed — add it to `.gitignore`.
 
 ## Reference Documentation
 
