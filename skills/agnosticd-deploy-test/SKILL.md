@@ -57,7 +57,20 @@ If any pre-flight check fails, stop and provide the corrective action. Do not pr
 
 ## Phase 2 — Provision
 
-Run `agd provision` and capture the result.
+Before running `agd provision` directly, check whether a `deploy.sh` script already exists in the vars directory:
+
+```bash
+ls agnosticd-v2-vars/<config-name>/deploy.sh
+```
+
+**If `deploy.sh` exists:** run it instead of the raw command — it captures the correct GUID, config, account, and student count:
+
+```bash
+cd agnosticd-v2-vars/<config-name>
+NUM_STUDENTS=<N> PARALLEL=false ./deploy.sh
+```
+
+**If `deploy.sh` does not exist:** run `agd provision` directly, then recommend generating the script using the **agnosticd** skill's "Independent Deployment Scripts" section:
 
 ```bash
 cd ~/Development/agnosticd-v2

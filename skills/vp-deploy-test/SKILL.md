@@ -73,6 +73,21 @@ If any other pre-flight check fails, stop and provide the corrective action. Do 
 Run the pattern installation and capture the result.
 
 **CLI install:**
+
+Before running `pattern.sh make install` directly, check whether a `deploy.sh` script already exists in the pattern repo root:
+
+```bash
+ls deploy.sh
+```
+
+**If `deploy.sh` exists:** run it instead — it includes the `values-secret.yaml` pre-check required for non-interactive install validation:
+
+```bash
+./deploy.sh
+```
+
+**If `deploy.sh` does not exist:** run `pattern.sh make install` directly, then recommend generating the script using the **patternizer** skill's "Independent Deployment Scripts" section:
+
 ```bash
 cd ~/my-pattern
 ./pattern.sh make install
