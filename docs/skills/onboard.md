@@ -35,7 +35,7 @@ The skill follows a seven-phase workflow:
 | **2 -- Prerequisites** | Checks each declared tool, installs missing ones with user confirmation; dev mode adds extra tools for maintainers |
 | **3 -- Setup Steps** | Runs ordered setup tasks (clone repos, run `agd setup`, scaffold files), skipping already-completed steps |
 | **4 -- Configuration** | Prompts for project-specific values, writes a local config file (git-ignored) |
-| **5 -- Validation** | Runs preflight checks (AWS credentials, pull secret, Route53, etc.) and reports pass/fail |
+| **5 -- Validation** | Runs preflight checks, computes a readiness score, and blocks deployment if any required check fails |
 | **6 -- Post-Setup** | Shows next steps; in prod mode, optionally runs the deploy script |
 | **7 -- Generate Bootstrap** | Creates a standalone `bootstrap.sh` for humans without AI agents |
 
@@ -52,7 +52,7 @@ The AI agent asks which mode the user wants. The generated `bootstrap.sh` accept
 
 ## Bootstrap Script Generation
 
-The skill can generate a standalone `bootstrap.sh` that humans run without an AI agent. The AI reads `onboard.yml` and produces a self-contained bash script with all manifest values baked in -- no YAML parsing at runtime.
+The skill generates a `bootstrap.sh` that reads `onboard.yml` at runtime using python3 + PyYAML. Because the script reads the manifest dynamically, editing `onboard.yml` changes bootstrap behavior immediately -- no regeneration needed.
 
 ```bash
 ./bootstrap.sh                    # prod mode (default)
@@ -61,7 +61,11 @@ The skill can generate a standalone `bootstrap.sh` that humans run without an AI
 ./bootstrap.sh --check-only       # validation only
 ```
 
-The generated script is committed to the consuming project's repo, giving every user a one-command setup path regardless of whether they have AI tooling.
+The generated script is committed to the consuming project's repo alongside `onboard.yml`, giving every user a one-command setup path regardless of whether they have AI tooling. The only runtime dependencies are python3 and PyYAML (both ship on RHEL).
+
+### Readiness Gate
+
+The bootstrap script enforces a strict readiness gate during validation. It reports a score like `Readiness: 4/5 required checks passed` and blocks deployment if any required check fails. Warnings are informational and do not block.
 
 ## The `onboard.yml` Manifest
 

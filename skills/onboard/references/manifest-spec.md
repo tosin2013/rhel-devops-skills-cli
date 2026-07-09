@@ -227,6 +227,40 @@ validation:
 
 ---
 
+## Readiness Gating
+
+The validation phase computes a readiness score from the `validation` array. The
+score determines whether deployment proceeds.
+
+### How the score is computed
+
+1. Count every validation entry where `required: true` → this is `required_total`
+2. Run each validation command
+3. Each `required: true` entry that exits 0 increments `required_passed`
+4. Each `required: false` entry that exits non-zero increments `warnings`
+
+### Gate behavior
+
+| Condition | Result |
+|-----------|--------|
+| `required_passed == required_total` | **Ready** — deployment proceeds (prod mode) |
+| `required_passed < required_total` | **Blocked** — deployment is refused, exit non-zero |
+| Warnings only | **Ready** — warnings are informational, do not block |
+
+### Output format
+
+```
+Readiness: 4/5 required checks passed (1 warning(s))
+BLOCKED: 1 required check(s) failed. Fix the issues above before deploying.
+```
+
+The readiness gate applies both when the AI agent runs validation (Phase 5) and
+when the generated `bootstrap.sh` runs `--check-only` or reaches the validation
+phase. The `post_setup.message` is still shown after a failure so users can see
+remediation instructions.
+
+---
+
 ## `post_setup`
 
 A message displayed after all phases complete.

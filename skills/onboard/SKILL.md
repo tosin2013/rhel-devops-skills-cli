@@ -41,8 +41,10 @@ This skill defines a six-phase onboarding process driven by a declarative manife
 be installed, configured, and validated — this skill interprets the manifest and
 walks the user through each phase interactively.
 
-The skill also generates standalone `bootstrap.sh` scripts so humans without AI
-agents can run the same onboarding process from the command line (see Phase 7).
+The skill also generates runtime `bootstrap.sh` scripts that read `onboard.yml`
+at execution time, so humans without AI agents can run the same onboarding process
+from the command line (see Phase 7). The generated script uses python3 + PyYAML
+to parse the manifest — no values are baked into the bash code.
 
 **Key behaviors:**
 
@@ -308,8 +310,19 @@ For each entry in the manifest's `validation` array:
   4/4 required checks passed, 1 warning. Ready to deploy!
 ```
 
-If any **required** check fails, warn the user but still proceed to Phase 6 (post-setup).
-The post-setup message often contains instructions for fixing the remaining items.
+### Readiness Gate
+
+After all checks run, report the readiness score:
+
+```
+  Readiness: X/Y required checks passed (N warning(s))
+```
+
+- **All required checks pass** → Proceed to Phase 6 (and deployment in prod mode)
+- **Any required check fails** → Report the score and **stop**. Do not proceed to
+  deployment. The user must fix all required failures before deploying. Still show
+  the post-setup message (Phase 6), since it often contains remediation instructions.
+- **Warnings** are informational and do not block deployment
 
 ## Phase 6 — Post-Setup
 
@@ -328,9 +341,9 @@ If yes, run the command. If validation had required failures, warn before deploy
 
 ## Phase 7 — Generate Bootstrap Script
 
-When the user asks to generate a setup script, create a self-contained `bootstrap.sh`
-that humans can run without an AI agent. This gives the project a standalone onboarding
-experience for users who do not have Claude Code or Cursor.
+When the user asks to generate a setup script, create a `bootstrap.sh` that reads
+`onboard.yml` at runtime. This gives the project a standalone onboarding experience
+for humans who do not have Claude Code or Cursor.
 
 ### When to generate
 
@@ -340,29 +353,27 @@ experience for users who do not have Claude Code or Cursor.
 
 ### How to generate
 
-1. Read `references/bootstrap-template.md` for the annotated bash template
-2. Read the project's `onboard.yml` manifest
-3. Generate a `bootstrap.sh` by filling in the template:
-   - Bake all prerequisite check/install commands into the script as case statements
-   - Bake all setup steps with their idempotency checks
-   - Bake all config prompts with defaults and validation
-   - Bake all validation checks with pass/fail reporting
-   - Bake the post-setup message
-   - If `modes` is defined, include dev/prod mode support with `--mode` flag
-   - Include `--non-interactive` and `--check-only` flags
-4. Write the script to the project root as `bootstrap.sh`
-5. Run `chmod +x bootstrap.sh`
-6. Suggest the project add it to their Makefile: `setup: ./bootstrap.sh`
+1. Read `references/bootstrap-template.md` for the complete runtime script
+2. Copy the script into the project root as `bootstrap.sh`
+3. Run `chmod +x bootstrap.sh`
+4. Suggest the project add it to their Makefile: `setup: ./bootstrap.sh`
+5. Remind the user to commit both `onboard.yml` and `bootstrap.sh`
 
 ### Key principles
 
-- The generated script must be **self-contained** — no YAML parsing, no external
-  dependencies beyond bash 4.4+ and standard system tools
-- All manifest values are **baked in** as literal bash code, not read at runtime
+- The generated script reads `onboard.yml` at runtime via python3 + PyYAML — no
+  manifest values are baked into the bash code
+- **Single source of truth**: changing `onboard.yml` changes bootstrap behavior
+  immediately; the script itself only needs updating if a new version of the
+  template adds structural improvements
+- **python3 + PyYAML required**: the script exits with clear install instructions
+  if either is missing. python3 ships on every RHEL system; PyYAML ships as
+  `python3-pyyaml` on RHEL/Fedora
+- **Strict readiness gate**: deployment is blocked unless all required validation
+  checks pass. The script prints a readiness score and exits non-zero on failure.
 - The script is **idempotent** — safe to re-run
-- Variable naming: manifest `key` values become `UPPERCASE_KEY` bash variables
 - Default mode is `prod` (most users are consumers, not maintainers)
-- Use bash 4.4+ features only (RHEL 8 minimum)
+- CI-friendly: `./bootstrap.sh --non-interactive --check-only` works in pipelines
 
 ## Re-run Behavior
 
