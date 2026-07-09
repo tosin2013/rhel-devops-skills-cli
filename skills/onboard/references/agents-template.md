@@ -85,6 +85,14 @@ Compute a readiness score: `X/Y required checks passed (N warnings)`.
   remediation messages.
 - Warnings are informational and do not block.
 
+#### Phase 5b — Quota checks
+
+If the manifest defines `quota_checks`, check cloud resource quotas before
+deploying. For each entry, run `limit_command` and `usage_command` (with variable
+substitution), compute `available = limit - usage`, and compare with `needed`.
+All quota checks must pass — block deployment if any resource has insufficient
+capacity. Display: `need X, available Y (limit: Z, used: W)`.
+
 #### Phase 6 — Post-setup
 
 Display `post_setup.message` with `${variable}` references substituted.

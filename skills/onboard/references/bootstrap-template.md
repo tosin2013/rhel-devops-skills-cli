@@ -537,6 +537,65 @@ validate() {
     fi
 }
 
+# ─── Phase: Quota Checks ─────────────────────────────────────────────────────
+
+run_quota_checks() {
+    local count
+    count="$(manifest_len ".quota_checks")"
+    if (( count == 0 )); then return 0; fi
+
+    echo ""
+    echo -e "${BOLD}--- Quota Check ---${RESET}"
+    echo ""
+
+    local total=0 passed=0
+    local i label needed limit_cmd usage_cmd fail_message
+    for (( i=0; i<count; i++ )); do
+        label="$(manifest_get ".quota_checks[$i].label")"
+        needed="$(manifest_get ".quota_checks[$i].needed")"
+        limit_cmd="$(manifest_get ".quota_checks[$i].limit_command")"
+        usage_cmd="$(manifest_get ".quota_checks[$i].usage_command")"
+        fail_message="$(manifest_get ".quota_checks[$i].fail_message")"
+
+        limit_cmd="$(substitute_vars "$limit_cmd")"
+        usage_cmd="$(substitute_vars "$usage_cmd")"
+        fail_message="$(substitute_vars "$fail_message")"
+
+        total=$((total + 1))
+
+        local limit_val usage_val available
+        limit_val=$(eval "$limit_cmd" 2>/dev/null | tr -d '[:space:]' || echo "0")
+        usage_val=$(eval "$usage_cmd" 2>/dev/null | tr -d '[:space:]' || echo "0")
+
+        # Truncate decimals for integer comparison
+        limit_val="${limit_val%%.*}"
+        usage_val="${usage_val%%.*}"
+        limit_val="${limit_val:-0}"
+        usage_val="${usage_val:-0}"
+
+        available=$((limit_val - usage_val))
+
+        if (( available >= needed )); then
+            pass "${label}: need ${needed}, available ${available} (limit: ${limit_val}, used: ${usage_val})"
+            passed=$((passed + 1))
+        else
+            fail "${label}: need ${needed}, available ${available} (limit: ${limit_val}, used: ${usage_val})"
+            [[ -n "$fail_message" ]] && echo "      ${fail_message}"
+        fi
+    done
+
+    echo ""
+    if (( passed == total )); then
+        info "Quota: ${passed}/${total} checks passed. Sufficient capacity."
+        return 0
+    else
+        local failed=$((total - passed))
+        fail "Quota: ${passed}/${total} checks passed"
+        fail "BLOCKED: Insufficient quota. Fix the issues above before deploying."
+        return 1
+    fi
+}
+
 # ─── Phase: Post-Setup ──────────────────────────────────────────────────────
 
 show_post_setup() {
@@ -568,8 +627,9 @@ main() {
     info "Manifest: ${MANIFEST}"
 
     if [[ "$CHECK_ONLY" == "true" ]]; then
-        validate
-        local rc=$?
+        local rc=0
+        validate || rc=1
+        run_quota_checks || rc=1
         show_post_setup
         exit $rc
     fi
@@ -598,11 +658,17 @@ main() {
         validation_passed=false
     fi
 
+    # --- Quota Checks ---
+    local quota_passed=true
+    if ! run_quota_checks; then
+        quota_passed=false
+    fi
+
     # --- Post-Setup ---
     show_post_setup
 
-    # --- Prod Deploy (only if readiness gate passed) ---
-    if [[ "$MODE" == "prod" && "$validation_passed" == "true" ]]; then
+    # --- Prod Deploy (only if both gates passed) ---
+    if [[ "$MODE" == "prod" && "$validation_passed" == "true" && "$quota_passed" == "true" ]]; then
         local deploy_cmd
         deploy_cmd="$(manifest_get ".modes.prod.post_validation_command")"
         if [[ -n "$deploy_cmd" ]]; then
@@ -613,9 +679,9 @@ main() {
             info "Running: ${deploy_cmd}"
             eval "$deploy_cmd"
         fi
-    elif [[ "$MODE" == "prod" && "$validation_passed" == "false" ]]; then
+    elif [[ "$MODE" == "prod" && ("$validation_passed" == "false" || "$quota_passed" == "false") ]]; then
         echo ""
-        fail "Deployment skipped — resolve all required validation failures first."
+        fail "Deployment skipped — resolve all failures above first."
         exit 1
     fi
 }

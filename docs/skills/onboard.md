@@ -36,6 +36,7 @@ The skill follows a seven-phase workflow:
 | **3 -- Setup Steps** | Runs ordered setup tasks (clone repos, run `agd setup`, scaffold files), skipping already-completed steps |
 | **4 -- Configuration** | Prompts for project-specific values, writes a local config file (git-ignored) |
 | **5 -- Validation** | Runs preflight checks, computes a readiness score, and blocks deployment if any required check fails |
+| **5b -- Quota Checks** | Queries cloud resource limits and usage (AWS, Azure, etc.), blocks deployment if capacity is insufficient |
 | **6 -- Post-Setup** | Shows next steps; in prod mode, optionally runs the deploy script |
 | **7 -- Generate Bootstrap** | Creates a standalone `bootstrap.sh` for humans without AI agents |
 
@@ -73,7 +74,7 @@ The bootstrap script enforces a strict readiness gate during validation. It repo
 
 ## The `onboard.yml` Manifest
 
-Each consuming project ships an `onboard.yml` (committed to git) that declares what the onboard skill should do. The manifest has six sections:
+Each consuming project ships an `onboard.yml` (committed to git) that declares what the onboard skill should do. The manifest has seven sections:
 
 | Section | Purpose |
 |---------|---------|
@@ -81,6 +82,7 @@ Each consuming project ships an `onboard.yml` (committed to git) that declares w
 | `setup_steps` | Ordered tasks with idempotency checks (e.g., clone repo, run setup) |
 | `config` | Interactive prompts and where to write the config file |
 | `validation` | Preflight commands with pass/fail/warn reporting |
+| `quota_checks` | Optional cloud resource quota checks (limit vs usage) that block deployment when capacity is insufficient |
 | `post_setup` | Message shown after setup completes |
 | `modes` | Optional dev/prod mode definitions with extra prerequisites and deploy commands |
 

@@ -55,6 +55,7 @@ to parse the manifest — no values are baked into the bash code.
 - If the user says "use all defaults" or asks for non-interactive mode, accept all
   default values from the manifest without prompting
 - Always run validation (Phase 5) even if the user asks to skip other phases
+- If `quota_checks` is defined, run quota checks (Phase 5b) after validation
 - Always show the post-setup message (Phase 6)
 - Substitute `${variable}` references in commands, messages, and paths using the
   configuration values collected in Phase 4
@@ -323,6 +324,41 @@ After all checks run, report the readiness score:
   deployment. The user must fix all required failures before deploying. Still show
   the post-setup message (Phase 6), since it often contains remediation instructions.
 - **Warnings** are informational and do not block deployment
+
+## Phase 5b — Quota Checks
+
+If the manifest defines a `quota_checks` array, run cloud resource quota checks
+after validation. Quota checks query both the limit and current usage for each
+resource and block deployment when needs exceed available capacity.
+
+For each entry in `quota_checks`:
+
+1. Substitute `${variable}` references in `limit_command` and `usage_command`
+2. Run `limit_command` — capture the numeric output as `limit`
+3. Run `usage_command` — capture the numeric output as `usage`
+4. Compute `available = limit - usage`
+5. Compare: if `available < needed`, the check **fails**
+
+### Reporting
+
+```
+--- Quota Check ---
+
+  [PASS] EC2 vCPUs: need 32, available 96 (limit: 128, used: 32)
+  [FAIL] Elastic IPs: need 5, available 2 (limit: 5, used: 3)
+
+  Quota: 1/2 checks passed
+  BLOCKED: Insufficient quota. Fix the issues above before deploying.
+```
+
+### Quota Gate
+
+All quota checks must pass for deployment to proceed. Unlike validation checks,
+there is no `required` flag — every quota check is mandatory. If any check fails,
+display the `fail_message` with remediation instructions and **stop**. Do not
+proceed to deployment.
+
+If `quota_checks` is not defined or is empty, skip this phase silently.
 
 ## Phase 6 — Post-Setup
 

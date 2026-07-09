@@ -147,6 +147,35 @@ fi
 
 ---
 
+## AgnosticD Vars: Copy, Do Not Symlink
+
+Symlinks to files in `agnosticd-v2-vars/` (or `agnosticd-v2-secrets/`) break
+when `agd` runs inside containers or when the working directory changes during
+provisioning. Always **copy** vars and secrets files instead of symlinking them:
+
+```bash
+# Bad: symlinks break inside containers and across working directories
+ln -s "${AGNOSTICD_VARS}/my-vars.yml" ./vars.yml
+
+# Good: copy the file so it is self-contained
+cp "${AGNOSTICD_VARS}/my-vars.yml" ./vars.yml
+```
+
+If the vars file is generated from a template (e.g., by substituting config
+values), write the output directly to the target path rather than creating an
+intermediate symlink:
+
+```bash
+# Good: generate in place
+envsubst < templates/vars.yml.tpl > "${DEPLOY_DIR}/vars.yml"
+
+# Bad: generate to a temp dir and symlink
+envsubst < templates/vars.yml.tpl > /tmp/vars.yml
+ln -s /tmp/vars.yml "${DEPLOY_DIR}/vars.yml"
+```
+
+---
+
 ## Consistent grep/awk Fallbacks
 
 All `grep` and `awk` extractions that can legitimately return empty results should
@@ -209,6 +238,7 @@ Common deploy.sh issues sorted by severity:
 | Issue | Fix |
 |-------|-----|
 | Cross-platform `sed -i` breaks on macOS | Use `sed_inplace` helper above |
+| Symlinked vars/secrets files break in containers | Copy files instead of symlinking |
 | Missing prerequisite checks | Add fail-fast block at script top |
 | Missing config files referenced in code | Create the file or fail-fast with a clear error |
 | User-data path inconsistency | Standardize on one path pattern |

@@ -227,6 +227,102 @@ validation:
 
 ---
 
+## `quota_checks`
+
+An optional array of cloud resource quota checks run after validation (Phase 5)
+and before deployment. Each entry queries the quota limit and current usage for
+a cloud resource, computes available capacity, and blocks deployment if the
+deployment's needs exceed what is available.
+
+This section is provider-agnostic — manifest authors supply the shell commands
+that query limits and usage for their specific cloud (AWS, Azure, GCP, etc.).
+
+### Quota Check Entry Fields
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `label` | string | Yes | Human-readable name for the resource (e.g., `EC2 vCPUs`, `Elastic IPs`) |
+| `needed` | integer | Yes | How many units of this resource the deployment requires |
+| `limit_command` | string | Yes | Shell command that prints the quota limit as a number. Supports `${variable}` substitution. |
+| `usage_command` | string | Yes | Shell command that prints current usage as a number. Supports `${variable}` substitution. |
+| `fail_message` | string | No | Remediation instructions shown when the check fails |
+
+### Check Logic
+
+```
+available = limit - usage
+if available < needed → FAIL
+if available >= needed → PASS
+```
+
+### Output Format
+
+```
+--- Quota Check ---
+
+  [PASS] EC2 vCPUs: need 32, available 96 (limit: 128, used: 32)
+  [FAIL] Elastic IPs: need 5, available 2 (limit: 5, used: 3)
+
+  Quota: 1/2 checks passed
+  BLOCKED: Insufficient quota. Fix the issues above before deploying.
+```
+
+### Quota Gate
+
+All quota checks must pass for deployment to proceed. This is a strict gate —
+there is no `required` flag on quota checks (they are always required).
+
+### Example (AWS)
+
+```yaml
+quota_checks:
+  - label: "EC2 vCPUs (On-Demand Standard)"
+    needed: 32
+    limit_command: >-
+      aws service-quotas get-service-quota
+        --service-code ec2 --quota-code L-1216C47A
+        --region ${aws_region}
+        --query 'Quota.Value' --output text
+    usage_command: >-
+      aws ec2 describe-instances
+        --region ${aws_region}
+        --filters Name=instance-state-name,Values=running
+        --query 'Reservations[].Instances[] | length(@)' --output text
+    fail_message: >-
+      Request a vCPU limit increase at
+      https://console.aws.amazon.com/servicequotas/
+
+  - label: "Elastic IPs"
+    needed: 5
+    limit_command: >-
+      aws service-quotas get-service-quota
+        --service-code ec2 --quota-code L-0263D0A3
+        --region ${aws_region}
+        --query 'Quota.Value' --output text
+    usage_command: >-
+      aws ec2 describe-addresses
+        --region ${aws_region}
+        --query 'Addresses | length(@)' --output text
+    fail_message: "Release unused Elastic IPs or request a limit increase."
+```
+
+### Example (Azure)
+
+```yaml
+quota_checks:
+  - label: "Standard Dv4 vCPUs"
+    needed: 16
+    limit_command: >-
+      az vm list-usage --location ${azure_region}
+        --query "[?name.value=='standardDv4Family'].limit | [0]" --output tsv
+    usage_command: >-
+      az vm list-usage --location ${azure_region}
+        --query "[?name.value=='standardDv4Family'].currentValue | [0]" --output tsv
+    fail_message: "Request a quota increase in the Azure portal."
+```
+
+---
+
 ## Readiness Gating
 
 The validation phase computes a readiness score from the `validation` array. The
