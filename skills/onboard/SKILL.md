@@ -356,8 +356,11 @@ for humans who do not have Claude Code or Cursor.
 1. Read `references/bootstrap-template.md` for the complete runtime script
 2. Copy the script into the project root as `bootstrap.sh`
 3. Run `chmod +x bootstrap.sh`
-4. Suggest the project add it to their Makefile: `setup: ./bootstrap.sh`
-5. Remind the user to commit both `onboard.yml` and `bootstrap.sh`
+4. Read `references/agents-template.md` for the AGENTS.md template
+5. If the project already has an `AGENTS.md`, append the onboard section under a new
+   `## Onboarding` heading. Otherwise create `AGENTS.md` with the template content.
+6. Suggest the project add it to their Makefile: `setup: ./bootstrap.sh`
+7. Remind the user to commit `onboard.yml`, `bootstrap.sh`, and `AGENTS.md`
 
 ### Key principles
 

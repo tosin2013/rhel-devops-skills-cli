@@ -63,6 +63,10 @@ The skill generates a `bootstrap.sh` that reads `onboard.yml` at runtime using p
 
 The generated script is committed to the consuming project's repo alongside `onboard.yml`, giving every user a one-command setup path regardless of whether they have AI tooling. The only runtime dependencies are python3 and PyYAML (both ship on RHEL).
 
+### AGENTS.md for AI Discovery
+
+Phase 7 also generates an `AGENTS.md` file in the consuming project. This file contains condensed onboard instructions so that any AI agent (Cursor, Claude Code, Windsurf, etc.) can understand `onboard.yml` and walk users through setup -- even without the onboard skill installed. The AI reads the manifest and interactively prompts for required values. If the user prefers to handle setup themselves, the AI recommends running `./bootstrap.sh`.
+
 ### Readiness Gate
 
 The bootstrap script enforces a strict readiness gate during validation. It reports a score like `Readiness: 4/5 required checks passed` and blocks deployment if any required check fails. Warnings are informational and do not block.
