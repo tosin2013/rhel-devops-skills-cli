@@ -46,8 +46,8 @@ fetch_skill_docs() {
             cp "$skill_src/SKILL.md" "$target_dir/SKILL.md"
         fi
 
-        if [[ -f "$skill_src/references/REFERENCE.md" ]]; then
-            cp "$skill_src/references/REFERENCE.md" "$target_dir/references/REFERENCE.md"
+        if [[ -d "$skill_src/references" ]]; then
+            cp -r "$skill_src/references/"* "$target_dir/references/" 2>/dev/null || true
         fi
 
         # Use installer repo commit as the version hash
