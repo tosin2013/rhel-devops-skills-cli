@@ -258,6 +258,53 @@ post_setup:
 
 ---
 
+## `modes`
+
+Optional section that defines dev and prod onboarding modes. If omitted, the
+onboard process runs all phases without a deploy step (original behavior).
+
+- **dev** — For repo maintainers and contributors. Installs extra development tools
+  on top of the base prerequisites. Does not deploy.
+- **prod** — For end users. Runs the full onboarding flow and optionally executes a
+  deploy command after validation passes. This is the default mode.
+
+### Mode Object Fields
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `description` | string | No | Human-readable description of what this mode does |
+| `phases` | array of strings | No | Which phases to run. Valid values: `prerequisites`, `setup_steps`, `config`, `validation`, `deploy`. Default: all except `deploy`. |
+| `extra_prerequisites` | array | No | Additional prerequisite entries (same schema as top-level `prerequisites`) installed only in this mode. Typically used in `dev` mode for linters, test tools, etc. |
+| `post_validation_command` | string | No | Shell command to run after validation passes. Typically used in `prod` mode to trigger deployment. Supports `${variable}` substitution. |
+
+### Example
+
+```yaml
+modes:
+  dev:
+    description: "Set up maintainer/contributor development environment"
+    phases: [prerequisites, setup_steps, config, validation]
+    extra_prerequisites:
+      - name: shellcheck
+        check_command: "command -v shellcheck"
+        install:
+          rhel9: "sudo dnf install -y ShellCheck"
+          macos: "brew install shellcheck"
+          fallback: "Install ShellCheck from https://www.shellcheck.net/"
+      - name: pre-commit
+        check_command: "command -v pre-commit"
+        install:
+          rhel9: "pip3 install pre-commit"
+          macos: "brew install pre-commit"
+          fallback: "Install pre-commit from https://pre-commit.com/"
+  prod:
+    description: "Set up and deploy for end users"
+    phases: [prerequisites, setup_steps, config, validation, deploy]
+    post_validation_command: "${deploy_script}"
+```
+
+---
+
 ## Complete Minimal Example
 
 The smallest valid manifest:

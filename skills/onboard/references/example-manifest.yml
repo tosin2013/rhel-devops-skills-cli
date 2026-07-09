@@ -213,3 +213,35 @@ post_setup:
        make teardown
 
     Full reference: agnosticd/DEPLOYMENT.md
+
+# ─────────────────────────────────────────────────────────────
+# Modes (dev = maintainers, prod = end users)
+# ─────────────────────────────────────────────────────────────
+
+modes:
+  dev:
+    description: "Set up maintainer/contributor development environment"
+    phases: [prerequisites, setup_steps, config, validation]
+    extra_prerequisites:
+      - name: shellcheck
+        check_command: "command -v shellcheck"
+        install:
+          macos: "brew install shellcheck"
+          rhel9: "sudo dnf install -y ShellCheck"
+          rhel8: "sudo dnf install -y ShellCheck"
+          fedora: "sudo dnf install -y ShellCheck"
+          debian: "sudo apt-get install -y shellcheck"
+          fallback: "Install ShellCheck from https://www.shellcheck.net/"
+      - name: yamllint
+        check_command: "command -v yamllint"
+        install:
+          macos: "brew install yamllint"
+          rhel9: "pip3 install yamllint"
+          rhel8: "pip3 install yamllint"
+          fedora: "sudo dnf install -y yamllint"
+          debian: "sudo apt-get install -y yamllint"
+          fallback: "pip3 install yamllint"
+  prod:
+    description: "Set up and deploy for end users"
+    phases: [prerequisites, setup_steps, config, validation, deploy]
+    post_validation_command: "./agnosticd/deploy.sh"

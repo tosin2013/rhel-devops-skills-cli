@@ -26,21 +26,46 @@ Your AI assistant will activate this skill when you're:
 
 ## The Onboarding Process
 
-The skill follows a six-phase workflow:
+The skill follows a seven-phase workflow:
 
 | Phase | What Happens |
 |-------|-------------|
-| **0 -- Manifest Discovery** | Finds and reads `onboard.yml` from the project directory |
+| **0 -- Manifest Discovery** | Finds and reads `onboard.yml` from the project directory; asks dev or prod mode |
 | **1 -- Platform Detection** | Detects the OS (RHEL 8/9/10, Fedora, macOS, Debian/Ubuntu) to select correct install commands |
-| **2 -- Prerequisites** | Checks each declared tool, installs missing ones with user confirmation |
+| **2 -- Prerequisites** | Checks each declared tool, installs missing ones with user confirmation; dev mode adds extra tools for maintainers |
 | **3 -- Setup Steps** | Runs ordered setup tasks (clone repos, run `agd setup`, scaffold files), skipping already-completed steps |
 | **4 -- Configuration** | Prompts for project-specific values, writes a local config file (git-ignored) |
 | **5 -- Validation** | Runs preflight checks (AWS credentials, pull secret, Route53, etc.) and reports pass/fail |
-| **6 -- Post-Setup** | Shows next steps (fill in secrets, deploy, teardown) |
+| **6 -- Post-Setup** | Shows next steps; in prod mode, optionally runs the deploy script |
+| **7 -- Generate Bootstrap** | Creates a standalone `bootstrap.sh` for humans without AI agents |
+
+## Dev vs Prod Modes
+
+The manifest supports two modes to serve different audiences:
+
+| Mode | Audience | What it does |
+|------|----------|-------------|
+| **dev** | Repo maintainers and contributors | Installs base prerequisites plus dev-only tools (linters, test frameworks, pre-commit hooks). Does not deploy. |
+| **prod** (default) | End users who want to deploy | Installs runtime prerequisites, configures deployment, validates, and optionally runs the deploy script. |
+
+The AI agent asks which mode the user wants. The generated `bootstrap.sh` accepts `--mode dev|prod`.
+
+## Bootstrap Script Generation
+
+The skill can generate a standalone `bootstrap.sh` that humans run without an AI agent. The AI reads `onboard.yml` and produces a self-contained bash script with all manifest values baked in -- no YAML parsing at runtime.
+
+```bash
+./bootstrap.sh                    # prod mode (default)
+./bootstrap.sh --mode dev         # maintainer setup
+./bootstrap.sh --non-interactive  # use all defaults (CI)
+./bootstrap.sh --check-only       # validation only
+```
+
+The generated script is committed to the consuming project's repo, giving every user a one-command setup path regardless of whether they have AI tooling.
 
 ## The `onboard.yml` Manifest
 
-Each consuming project ships an `onboard.yml` (committed to git) that declares what the onboard skill should do. The manifest has five sections:
+Each consuming project ships an `onboard.yml` (committed to git) that declares what the onboard skill should do. The manifest has six sections:
 
 | Section | Purpose |
 |---------|---------|
@@ -49,6 +74,7 @@ Each consuming project ships an `onboard.yml` (committed to git) that declares w
 | `config` | Interactive prompts and where to write the config file |
 | `validation` | Preflight commands with pass/fail/warn reporting |
 | `post_setup` | Message shown after setup completes |
+| `modes` | Optional dev/prod mode definitions with extra prerequisites and deploy commands |
 
 See the full schema in the skill's `references/manifest-spec.md` and a complete working example in `references/example-manifest.yml`.
 
@@ -97,6 +123,8 @@ To add onboard support to your project:
 5. Write a post-setup message with next steps
 
 The AI assistant can also help you create the manifest -- just ask it to generate an `onboard.yml` from your project's existing setup documentation.
+
+After creating the manifest, ask the AI to generate a `bootstrap.sh` so users without AI agents can onboard too.
 
 ## Install
 

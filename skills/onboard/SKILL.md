@@ -25,6 +25,8 @@ related_skills:
 - A project directory contains an `onboard.yml`, `onboard.json`, or `.onboard.yml` manifest
 - User says "onboard me" or "run onboard"
 - User runs `make setup` and the Makefile delegates to this skill
+- User asks to generate a setup script or bootstrap script for their project
+- User asks about dev vs prod mode for a project setup
 
 Do NOT use this skill for:
 - Environments that are already deployed — use **student-readiness** to verify them
@@ -39,6 +41,9 @@ This skill defines a six-phase onboarding process driven by a declarative manife
 be installed, configured, and validated — this skill interprets the manifest and
 walks the user through each phase interactively.
 
+The skill also generates standalone `bootstrap.sh` scripts so humans without AI
+agents can run the same onboarding process from the command line (see Phase 7).
+
 **Key behaviors:**
 
 - Read the manifest first; do not improvise steps that are not declared in it
@@ -51,6 +56,21 @@ walks the user through each phase interactively.
 - Always show the post-setup message (Phase 6)
 - Substitute `${variable}` references in commands, messages, and paths using the
   configuration values collected in Phase 4
+
+**Dev vs prod modes:**
+
+If the manifest defines a `modes` section, ask the user which mode they want at the
+start of Phase 0:
+
+- **dev** — For repo maintainers and contributors. Installs dev-only extra prerequisites
+  (linters, test frameworks, pre-commit hooks) in addition to the base prerequisites.
+  Does not deploy.
+- **prod** — For end users who want to deploy and use the project. Installs runtime
+  prerequisites, configures deployment, runs validation, and optionally executes the
+  deploy script after validation passes. This is the default if the user does not specify.
+
+If the manifest has no `modes` section, run all phases without a deploy step (original
+behavior).
 
 See `references/manifest-spec.md` for the complete `onboard.yml` schema.
 
@@ -81,6 +101,13 @@ Read and parse the manifest. Display the project name and description to the use
 === <name> Onboarding ===
 <description>
 ```
+
+**Mode selection:** If the manifest defines a `modes` section, ask the user:
+
+- "Are you a maintainer/contributor (dev) or an end user looking to deploy (prod)?"
+- Default to `prod` if the user does not specify
+- In dev mode, include `modes.dev.extra_prerequisites` during Phase 2
+- In prod mode, run `modes.prod.post_validation_command` after Phase 5
 
 **If no manifest is found:** Explain what `onboard.yml` is and offer to help the user
 create one. Refer them to `references/manifest-spec.md` for the schema and
@@ -169,6 +196,11 @@ Print status for each prerequisite:
             → Running: sudo dnf install -y sshpass
   [OK]      sshpass installed
 ```
+
+**Dev mode extras:** If running in dev mode and the manifest defines
+`modes.dev.extra_prerequisites`, process those after the base prerequisites using
+the same check/install pattern. These are tools only maintainers need (e.g., shellcheck,
+pre-commit, test frameworks).
 
 **Gate:** All prerequisites must be installed before continuing. If any install fails,
 stop and help the user troubleshoot before proceeding.
@@ -289,6 +321,48 @@ substituted. Also show the `deploy_script` path if defined:
 
   <post_setup.message with variables substituted>
 ```
+
+**Prod mode deploy:** If running in prod mode and the manifest defines
+`modes.prod.post_validation_command`, ask the user if they want to deploy now.
+If yes, run the command. If validation had required failures, warn before deploying.
+
+## Phase 7 — Generate Bootstrap Script
+
+When the user asks to generate a setup script, create a self-contained `bootstrap.sh`
+that humans can run without an AI agent. This gives the project a standalone onboarding
+experience for users who do not have Claude Code or Cursor.
+
+### When to generate
+
+- User asks "generate a bootstrap script" or "create a setup script"
+- User asks "how can someone set this up without AI?"
+- After completing Phases 0-6, offer to generate the script
+
+### How to generate
+
+1. Read `references/bootstrap-template.md` for the annotated bash template
+2. Read the project's `onboard.yml` manifest
+3. Generate a `bootstrap.sh` by filling in the template:
+   - Bake all prerequisite check/install commands into the script as case statements
+   - Bake all setup steps with their idempotency checks
+   - Bake all config prompts with defaults and validation
+   - Bake all validation checks with pass/fail reporting
+   - Bake the post-setup message
+   - If `modes` is defined, include dev/prod mode support with `--mode` flag
+   - Include `--non-interactive` and `--check-only` flags
+4. Write the script to the project root as `bootstrap.sh`
+5. Run `chmod +x bootstrap.sh`
+6. Suggest the project add it to their Makefile: `setup: ./bootstrap.sh`
+
+### Key principles
+
+- The generated script must be **self-contained** — no YAML parsing, no external
+  dependencies beyond bash 4.4+ and standard system tools
+- All manifest values are **baked in** as literal bash code, not read at runtime
+- The script is **idempotent** — safe to re-run
+- Variable naming: manifest `key` values become `UPPERCASE_KEY` bash variables
+- Default mode is `prod` (most users are consumers, not maintainers)
+- Use bash 4.4+ features only (RHEL 8 minimum)
 
 ## Re-run Behavior
 
