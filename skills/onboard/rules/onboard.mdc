@@ -1,0 +1,19 @@
+---
+description: Project onboarding manifest conventions for onboard.yml
+globs: ["**/onboard.yml", "**/onboard.json", "**/.onboard.yml", "**/.onboard.json"]
+alwaysApply: false
+---
+
+When working with onboard.yml manifests:
+
+- Follow the spec version 1.0 schema — top-level keys are: name, description, deploy_script, prerequisites, setup_steps, config, validation, post_setup
+- Every prerequisite must have a `check_command` and an `install` map with at least one platform key
+- Valid platform keys in `install` maps are: macos, rhel8, rhel9, rhel10, fedora, debian, fallback
+- Use `fallback` as a catch-all for platforms not explicitly listed — it should contain a human-readable install instruction or URL
+- Use `${variable}` syntax for variable substitution in setup_steps, validation commands, and post_setup messages — variables resolve from config prompt answers
+- Config prompts with `choices` must include the `default` value in the choices array
+- Required prompts (`required: true`) must not have an empty `default`
+- The `config.output_file` path should be relative to the project root and listed in .gitignore
+- Validation checks with `required: false` report as WARN on failure, not FAIL
+- Use YAML block scalar (`|`) for multi-line `post_setup.message` and `fail_message` values
+- When authoring install commands, prefer system package managers (dnf, apt-get, brew) over pip for system tools
