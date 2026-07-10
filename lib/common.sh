@@ -16,7 +16,7 @@ readonly CURSOR_SKILLS_DIR="$HOME/.cursor/skills-cursor"
 readonly CURSOR_RULES_DIR=".cursor/rules"
 
 # Available skills -- loaded dynamically from per-skill config.sh files
-readonly ALL_SKILLS=("agnosticd" "field-sourced-content" "patternizer" "showroom" "student-readiness" "workshop-tester" "agnosticd-refactor" "vp-refactor" "skill-researcher" "agnosticd-deploy-test" "vp-deploy-test" "vp-deploy-validator" "agnosticd-hub-student" "vp-submission" "onboard")
+readonly ALL_SKILLS=("agnosticd" "field-sourced-content" "patternizer" "showroom" "student-readiness" "workshop-tester" "agnosticd-refactor" "vp-refactor" "skill-researcher" "agnosticd-deploy-test" "vp-deploy-test" "vp-deploy-validator" "agnosticd-hub-student" "vp-submission" "project-onboard")
 
 # Per-skill config is loaded from skills/<name>/config.sh at runtime.
 # Each config.sh defines: SKILL_NAME, UPSTREAM_REPO, FORK_REPO, BRANCH, DOC_PATHS

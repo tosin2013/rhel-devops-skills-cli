@@ -1,5 +1,5 @@
 # Project onboarding skill configuration
-SKILL_NAME="onboard"
+SKILL_NAME="project-onboard"
 UPSTREAM_REPO=""
 FORK_REPO=""
 BRANCH="main"

@@ -2,7 +2,7 @@
 
 Best practices for consuming projects that ship a `deploy.sh` alongside their
 `onboard.yml` manifest. These are the responsibility of each consuming project,
-not the onboard skill itself.
+not the project-onboard skill itself.
 
 ---
 
@@ -205,13 +205,13 @@ must use the same pattern. Audit for mismatches between:
 
 ## Recommended Makefile Targets
 
-Projects using the onboard skill should ship a Makefile for convenience:
+Projects using the project-onboard skill should ship a Makefile for convenience:
 
 ```makefile
 .PHONY: setup deploy teardown status
 
 setup:
-	@echo "Run the onboard skill in Claude Code or Cursor to set up this project."
+	@echo "Run the project-onboard skill in Claude Code or Cursor to set up this project."
 	@echo "Alternatively, review DEPLOYMENT.md for manual setup instructions."
 
 deploy:
@@ -224,7 +224,7 @@ status:
 	./agnosticd/status.sh
 ```
 
-The `setup` target can remind users to invoke the onboard skill rather than
+The `setup` target can remind users to invoke the project-onboard skill rather than
 attempting to run onboarding as a shell script.
 
 ---

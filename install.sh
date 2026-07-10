@@ -67,7 +67,7 @@ AVAILABLE SKILLS:
   agnosticd-deploy-test  Validate AgnosticD deployment end-to-end
   vp-deploy-test         Validate VP deployment end-to-end
   vp-deploy-validator    Health check running VP deployment
-  onboard                Project onboarding from onboard.yml manifests
+  project-onboard        Project onboarding from onboard.yml manifests
 USAGE
 }
 

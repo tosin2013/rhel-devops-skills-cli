@@ -26,7 +26,7 @@ Each skill teaches your AI assistant (Claude Code or Cursor) how to work with a 
 | [VP Deploy Validator](vp-deploy-validator.html) | Health check an already-running Validated Pattern — ArgoCD convergence, secrets, and jobs without reinstalling | Self-contained |
 | [AgnosticD Hub-Student](agnosticd-hub-student.html) | Architect, size, provision, and validate hub+student cluster topologies — Showroom on hub, each student on a separate SNO/compact cluster, with cloud quota pre-flight for AWS, GCP, and Azure | Self-contained |
 | [VP Submission](vp-submission.html) | Audit a Validated Pattern against VP tier requirements (Community, Tested, Maintained) and guide the PR submission to validatedpatterns/docs | Self-contained |
-| [Onboard](onboard.html) | Project onboarding assistant — reads `onboard.yml` manifests to install prerequisites, configure environments, and validate deployment readiness | Self-contained |
+| [Project Onboard](project-onboard.html) | Project onboarding assistant — reads `onboard.yml` manifests to install prerequisites, configure environments, and validate deployment readiness | Self-contained |
 
 ## Cross-Skill Relationships
 
@@ -67,12 +67,12 @@ Some skills work together. The installer and AI assistants recognize these relat
 | VP Refactor | VP Submission | vp-submission escalates structural pattern issues to vp-refactor before re-auditing tier readiness |
 | Patternizer | VP Submission | vp-submission audits patterns initialized by patternizer for VP tier compliance |
 | Skill Researcher | VP Submission | skill-researcher resolves VP-SUB-1 through VP-SUB-5 for submission criteria and docs structure |
-| Onboard | AgnosticD v2 | onboard installs AgnosticD prerequisites and configures deployment variables for any AgnosticD-based project |
-| Onboard | AgnosticD Hub-Student | hub+student topologies use onboard for initial setup, then hub-student for multi-cluster provisioning |
-| Onboard | Field-Sourced Content | field content repos can ship onboard.yml for their prerequisite and config setup |
-| Onboard | Student Readiness | after onboard + deploy, student-readiness verifies the environment is ready for students |
-| Onboard | Showroom | Showroom-based workshops benefit from onboard for cross-platform prerequisite installation |
-| Onboard | Patternizer | validated pattern repos can ship onboard.yml for pattern-specific setup |
+| Project Onboard | AgnosticD v2 | project-onboard installs AgnosticD prerequisites and configures deployment variables for any AgnosticD-based project |
+| Project Onboard | AgnosticD Hub-Student | hub+student topologies use project-onboard for initial setup, then hub-student for multi-cluster provisioning |
+| Project Onboard | Field-Sourced Content | field content repos can ship onboard.yml for their prerequisite and config setup |
+| Project Onboard | Student Readiness | after project-onboard + deploy, student-readiness verifies the environment is ready for students |
+| Project Onboard | Showroom | Showroom-based workshops benefit from project-onboard for cross-platform prerequisite installation |
+| Project Onboard | Patternizer | validated pattern repos can ship onboard.yml for pattern-specific setup |
 
 See [ADR-010](../adrs/010-cross-skill-dependencies.html) for cross-skill dependencies, [ADR-011](../adrs/011-e2e-validation-and-troubleshooting.html) for validation and troubleshooting, [ADR-012](../adrs/012-workshop-module-testing.html) for workshop module testing strategy, [ADR-013](../adrs/013-refactor-skills.html) for refactor skills design, [ADR-014](../adrs/014-skill-researcher.html) for the skill researcher workflow, [ADR-015](../adrs/015-deployment-pipeline-testing.html) for deployment pipeline testing and the operator confidence chain, [ADR-016](../adrs/016-hub-student-skill.html) for the hub+student topology skill, and [ADR-017](../adrs/017-vp-submission-skill.html) for the VP submission skill and validator redeploy gate.
 

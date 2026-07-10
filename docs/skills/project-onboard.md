@@ -1,17 +1,17 @@
 ---
-title: Onboard
+title: Project Onboard
 parent: Skills
 nav_order: 15
 ---
 
-# Onboard Skill
+# Project Onboard Skill
 
 **Type**: Process-oriented (no upstream repository)
 {: .fs-5 }
 
 ## Overview
 
-The Onboard skill automates project setup for AgnosticD workshops, demos, and validated patterns. It reads a declarative manifest (`onboard.yml`) shipped by any consuming project and walks the user through installing prerequisites, configuring the environment, and validating deployment readiness.
+The Project Onboard skill automates project setup for AgnosticD workshops, demos, and validated patterns. It reads a declarative manifest (`onboard.yml`) shipped by any consuming project and walks the user through installing prerequisites, configuring the environment, and validating deployment readiness.
 
 Every AgnosticD-based project has the same onboarding pattern: prerequisites, secrets, configuration, deploy. Instead of users reading hundreds of lines of setup documentation, the AI assistant reads the manifest and handles each step interactively -- installing missing tools, asking configuration questions, writing config files, and running preflight checks.
 
@@ -66,7 +66,7 @@ The generated script is committed to the consuming project's repo alongside `onb
 
 ### AGENTS.md for AI Discovery
 
-Phase 7 also generates an `AGENTS.md` file in the consuming project. This file contains condensed onboard instructions so that any AI agent (Cursor, Claude Code, Windsurf, etc.) can understand `onboard.yml` and walk users through setup -- even without the onboard skill installed. The AI reads the manifest and interactively prompts for required values. If the user prefers to handle setup themselves, the AI recommends running `./bootstrap.sh`.
+Phase 7 also generates an `AGENTS.md` file in the consuming project. This file contains condensed onboard instructions so that any AI agent (Cursor, Claude Code, Windsurf, etc.) can understand `onboard.yml` and walk users through setup -- even without the project-onboard skill installed. The AI reads the manifest and interactively prompts for required values. If the user prefers to handle setup themselves, the AI recommends running `./bootstrap.sh`.
 
 ### Readiness Gate
 
@@ -74,7 +74,7 @@ The bootstrap script enforces a strict readiness gate during validation. It repo
 
 ## The `onboard.yml` Manifest
 
-Each consuming project ships an `onboard.yml` (committed to git) that declares what the onboard skill should do. The manifest has seven sections:
+Each consuming project ships an `onboard.yml` (committed to git) that declares what the project-onboard skill should do. The manifest has seven sections:
 
 | Section | Purpose |
 |---------|---------|
@@ -139,5 +139,5 @@ After creating the manifest, ask the AI to generate a `bootstrap.sh` so users wi
 ## Install
 
 ```bash
-./install.sh install --skill onboard
+./install.sh install --skill project-onboard
 ```

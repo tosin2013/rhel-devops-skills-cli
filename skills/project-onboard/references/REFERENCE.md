@@ -1,4 +1,4 @@
-# Onboard Skill — Reference Documentation
+# Project Onboard Skill — Reference Documentation
 
 This skill is self-contained (no upstream repository). The onboarding workflow
 is defined in `SKILL.md`. Reference files provide the manifest schema, hardening

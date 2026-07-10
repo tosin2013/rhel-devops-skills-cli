@@ -177,7 +177,7 @@ validation:
   - name: "AgnosticD agd binary"
     command: "test -x ${agnosticd_root}/bin/agd"
     required: true
-    fail_message: "AgnosticD not found. Re-run the onboard process or clone manually."
+    fail_message: "AgnosticD not found. Re-run project-onboard or clone manually."
 
   - name: "Secrets file exists"
     command: "test -f ${agnosticd_root}/../agnosticd-v2-secrets/secrets-${account}.yml"
