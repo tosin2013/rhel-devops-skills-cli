@@ -83,6 +83,37 @@ Check for and install updates to the installer itself.
 ./install.sh upgrade-installer
 ```
 
+### `scaffold`
+
+Generate a project scaffold from topology-specific templates.
+
+```bash
+./install.sh scaffold --type <type> [--output DIR] [--vars FILE] [--non-interactive]
+```
+
+| Type | Topology | Description |
+|------|----------|-------------|
+| `hub-student` | Hub + N student clusters | Workshop with facilitator + separate student clusters |
+| `demo` | Single cluster, one user | Presenter-focused demonstration environment |
+| `agnosticd-infra` | Flexible (1+ configs) | Dev/test/prod infrastructure provisioning |
+| `shared-cluster` | Single cluster, N users | Multi-user workshop with namespace isolation |
+
+Options:
+
+| Option | Description |
+|--------|-------------|
+| `--type <type>` | Required. Scaffold topology type |
+| `--output <dir>` | Target directory (default: current directory) |
+| `--vars <file>` | Load template variables from a key=value file |
+| `--non-interactive` | Use all default values without prompting |
+
+Example:
+
+```bash
+./install.sh scaffold --type shared-cluster --output ./my-workshop
+./install.sh scaffold --type hub-student --vars workshop.env
+```
+
 ### `help`
 
 Show the help message.

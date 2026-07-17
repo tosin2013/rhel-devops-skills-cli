@@ -27,6 +27,7 @@ Each skill teaches your AI assistant (Claude Code or Cursor) how to work with a 
 | [AgnosticD Hub-Student](agnosticd-hub-student.html) | Architect, size, provision, and validate hub+student cluster topologies — Showroom on hub, each student on a separate SNO/compact cluster, with cloud quota pre-flight for AWS, GCP, and Azure | Self-contained |
 | [VP Submission](vp-submission.html) | Audit a Validated Pattern against VP tier requirements (Community, Tested, Maintained) and guide the PR submission to validatedpatterns/docs | Self-contained |
 | [Project Onboard](project-onboard.html) | Project onboarding assistant — reads `onboard.yml` manifests to install prerequisites, configure environments, and validate deployment readiness | Self-contained |
+| [RHEL DevOps Auditor](rhel-devops-auditor.html) | Audit projects against rhel-devops-skills-cli standards and generate structured remediation plans | Self-contained |
 
 ## Cross-Skill Relationships
 

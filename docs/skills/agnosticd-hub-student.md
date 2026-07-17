@@ -116,3 +116,19 @@ See [ADR-016](../adrs/016-hub-student-skill.html) for the full design rationale.
 ```bash
 ./install.sh install --skill agnosticd-hub-student
 ```
+
+## Scaffold Templates
+
+This skill ships with scaffold templates for generating a complete hub-student workshop project:
+
+```bash
+./install.sh scaffold --type hub-student --output ./my-workshop
+```
+
+This generates a ready-to-use project with Makefile, deploy/teardown scripts, onboard.yml, and quota checks pre-configured for the hub + N student cluster topology. See [ADR-018](../adrs/018-scaffold-command.html) for details.
+
+For multi-user workshops that share a single cluster (namespace isolation instead of separate clusters per student), use the `shared-cluster` scaffold type instead:
+
+```bash
+./install.sh scaffold --type shared-cluster --output ./my-workshop
+```

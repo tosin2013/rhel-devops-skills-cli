@@ -18,6 +18,8 @@ source "$SCRIPT_DIR/lib/fetch-docs.sh"
 source "$SCRIPT_DIR/lib/validate.sh"
 # shellcheck source=lib/upgrade.sh
 source "$SCRIPT_DIR/lib/upgrade.sh"
+# shellcheck source=lib/scaffold.sh
+source "$SCRIPT_DIR/lib/scaffold.sh"
 
 # ─── Usage ───────────────────────────────────────────────────────────────────
 
@@ -36,6 +38,7 @@ COMMANDS:
   verify [--skill NAME|--all]      Validate skill installation integrity
   list                             List installed skills and status
   available                        List all available skills
+  scaffold --type <type>           Generate project scaffold from templates
   upgrade-installer                Upgrade the installer itself
   help                             Show this help message
 
@@ -53,6 +56,10 @@ EXAMPLES:
   ./install.sh check-updates                 Check for upstream changes
   ./install.sh verify --all                  Verify all installations
   ./install.sh list                          Show installed skills
+  ./install.sh scaffold --type hub-student   Scaffold a hub-student workshop project
+  ./install.sh scaffold --type demo          Scaffold a demo project
+  ./install.sh scaffold --type agnosticd-infra  Scaffold an infra project
+  ./install.sh scaffold --type shared-cluster   Scaffold a shared-cluster multi-user workshop
 
 AVAILABLE SKILLS:
   agnosticd              AgnosticD v2 — Ansible Agnostic Deployer
@@ -68,6 +75,7 @@ AVAILABLE SKILLS:
   vp-deploy-test         Validate VP deployment end-to-end
   vp-deploy-validator    Health check running VP deployment
   project-onboard        Project onboarding from onboard.yml manifests
+  rhel-devops-auditor    Audit projects against RHEL DevOps standards
 USAGE
 }
 
@@ -275,12 +283,19 @@ main() {
     local all_skills=false
     local ide_flag="auto"
     local no_auto_check=false
+    local scaffold_args=()
 
     while [[ $# -gt 0 ]]; do
         case "$1" in
             install|uninstall|update|check-updates|verify|list|available|upgrade-installer|help)
                 command="$1"
                 shift
+                ;;
+            scaffold)
+                command="scaffold"
+                shift
+                scaffold_args=("$@")
+                break
                 ;;
             --skill)
                 skill_name="${2:-}"
@@ -412,6 +427,9 @@ main() {
         upgrade-installer)
             check_prerequisites
             upgrade_installer
+            ;;
+        scaffold)
+            do_scaffold "${scaffold_args[@]}"
             ;;
         *)
             error "Unknown command: $command"
