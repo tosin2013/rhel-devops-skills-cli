@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Scaffold module for rhel-devops-skills-cli
 # Generates standardized project files from topology-specific templates
-# shellcheck disable=SC2034
+# shellcheck disable=SC2034,SC2178
 
 # ─── Constants ───────────────────────────────────────────────────────────────
 
@@ -80,7 +80,7 @@ collect_common_vars() {
     vars_ref[PROJECT_NAME]="$(prompt_value "Project name" "$detected_name" "PROJECT_NAME")"
     vars_ref[CLOUD_PROVIDER]="$(prompt_value "Cloud provider (aws/gcp/azure)" "aws" "CLOUD_PROVIDER")"
     vars_ref[CLOUD_REGION]="$(prompt_value "Cloud region" "us-east-2" "CLOUD_REGION")"
-    vars_ref[AGD_ROOT]="$(prompt_value "AgnosticD v2 root path" "~/Development/agnosticd-v2" "AGD_ROOT")"
+    vars_ref[AGD_ROOT]="$(prompt_value "AgnosticD v2 root path" "$HOME/Development/agnosticd-v2" "AGD_ROOT")"
     vars_ref[REPO_URL]="$(prompt_value "Project git remote URL" "${detected_repo:-https://github.com/your-org/your-project}" "REPO_URL")"
 }
 
