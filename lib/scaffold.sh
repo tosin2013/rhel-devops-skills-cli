@@ -5,7 +5,7 @@
 
 # ─── Constants ───────────────────────────────────────────────────────────────
 
-readonly SCAFFOLD_TYPES=("hub-student" "demo" "agnosticd-infra" "shared-cluster")
+readonly SCAFFOLD_TYPES=("hub-student" "demo" "agnosticd-infra" "shared-cluster" "rhdp-workload")
 
 # ─── Template Directory Resolution ──────────────────────────────────────────
 
@@ -27,6 +27,9 @@ get_template_dir() {
             ;;
         shared-cluster)
             echo "$repo_root/templates/shared-cluster"
+            ;;
+        rhdp-workload)
+            echo "$repo_root/templates/rhdp-workload"
             ;;
     esac
 }
@@ -118,6 +121,30 @@ collect_shared_cluster_vars() {
     vars_ref[NUM_USERS]="$(prompt_value "Number of workshop users" "10" "NUM_USERS")"
     vars_ref[NAMESPACE_PREFIX]="$(prompt_value "User namespace prefix" "user" "NAMESPACE_PREFIX")"
     vars_ref[INCLUDE_SHOWROOM]="$(prompt_value "Include Showroom? (y/n)" "y" "INCLUDE_SHOWROOM")"
+}
+
+collect_rhdp_workload_vars() {
+    local -n vars_ref=$1
+
+    echo ""
+    info "RHDP workload bootstrap configuration:"
+    info "Target: pre-provisioned RHDP cluster (agd-v2.ocp-cluster-aws.prod)"
+    vars_ref[DEPLOY_MODE]="$(prompt_value "Deploy mode (ocp_workloads/rhel_vms/both)" "ocp_workloads" "DEPLOY_MODE")"
+    vars_ref[NUM_USERS]="$(prompt_value "Number of workshop users (0 = auto-detect from Keycloak)" "10" "NUM_USERS")"
+    vars_ref[NAMESPACE_PREFIX]="$(prompt_value "User namespace prefix (no dash, e.g. 'user' -> user1)" "user" "NAMESPACE_PREFIX")"
+    vars_ref[INCLUDE_SHOWROOM]="$(prompt_value "Include Showroom? (y/n)" "y" "INCLUDE_SHOWROOM")"
+    vars_ref[USE_FIELD_CONTENT]="$(prompt_value "Use Field-Sourced Content GitOps deployment? (y/n)" "y" "USE_FIELD_CONTENT")"
+    if [[ "${vars_ref[USE_FIELD_CONTENT]}" =~ ^[Yy] ]]; then
+        vars_ref[FIELD_CONTENT_REPO]="$(prompt_value "Field content Git repo URL" "https://github.com/your-org/${vars_ref[PROJECT_NAME]:-your-project}.git" "FIELD_CONTENT_REPO")"
+        vars_ref[FIELD_CONTENT_REF]="$(prompt_value "Field content Git ref (branch/tag)" "main" "FIELD_CONTENT_REF")"
+        vars_ref[FIELD_CONTENT_PATTERN]="$(prompt_value "Deployment pattern (helm/ansible)" "helm" "FIELD_CONTENT_PATTERN")"
+        vars_ref[FIELD_CONTENT_NAMESPACE]="$(prompt_value "ArgoCD Application target namespace" "field-content" "FIELD_CONTENT_NAMESPACE")"
+    else
+        vars_ref[FIELD_CONTENT_REPO]=""
+        vars_ref[FIELD_CONTENT_REF]="main"
+        vars_ref[FIELD_CONTENT_PATTERN]="helm"
+        vars_ref[FIELD_CONTENT_NAMESPACE]="field-content"
+    fi
 }
 
 # ─── Template Processing ─────────────────────────────────────────────────────
@@ -276,7 +303,7 @@ do_scaffold() {
     done
 
     if [[ -z "$scaffold_type" ]]; then
-        error "Scaffold type is required: --type hub-student|demo|agnosticd-infra|shared-cluster"
+        error "Scaffold type is required: --type hub-student|demo|agnosticd-infra|shared-cluster|rhdp-workload"
         return 2
     fi
 
@@ -300,13 +327,27 @@ do_scaffold() {
             SCAFFOLD_VARS[$key]="$value"
         done < "$vars_file"
     else
-        collect_common_vars SCAFFOLD_VARS "$output_dir"
+        if [[ "$scaffold_type" == "rhdp-workload" ]]; then
+            local detected_name
+            detected_name="$(basename "$output_dir")"
+            local detected_repo=""
+            if command -v git &>/dev/null && git -C "$output_dir" rev-parse --is-inside-work-tree &>/dev/null 2>&1; then
+                detected_repo="$(git -C "$output_dir" remote get-url origin 2>/dev/null)" || true
+            fi
+            echo ""
+            info "Common configuration:"
+            SCAFFOLD_VARS[PROJECT_NAME]="$(prompt_value "Project name" "$detected_name" "PROJECT_NAME")"
+            SCAFFOLD_VARS[REPO_URL]="$(prompt_value "Project git remote URL" "${detected_repo:-https://github.com/your-org/your-project}" "REPO_URL")"
+        else
+            collect_common_vars SCAFFOLD_VARS "$output_dir"
+        fi
 
         case "$scaffold_type" in
             hub-student)  collect_hub_student_vars SCAFFOLD_VARS ;;
             demo)         collect_demo_vars SCAFFOLD_VARS ;;
             agnosticd-infra) collect_infra_vars SCAFFOLD_VARS ;;
             shared-cluster)  collect_shared_cluster_vars SCAFFOLD_VARS ;;
+            rhdp-workload)   collect_rhdp_workload_vars SCAFFOLD_VARS ;;
         esac
     fi
 

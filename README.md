@@ -86,6 +86,7 @@ git pull origin main
 ./install.sh scaffold --type hub-student      # Scaffold a hub-student workshop project
 ./install.sh scaffold --type demo             # Scaffold a demo project
 ./install.sh scaffold --type agnosticd-infra  # Scaffold an infra project
+./install.sh scaffold --type rhdp-workload    # Scaffold workloads on RHDP pre-provisioned cluster
 ```
 
 ## Documentation
@@ -120,6 +121,7 @@ git pull origin main
 | [017](docs/adrs/017-vp-submission-skill.md) | VP Submission Skill and Validator Redeploy Gate |
 | [018](docs/adrs/018-scaffold-command.md) | Scaffold Command Architecture |
 | [019](docs/adrs/019-rhel-devops-auditor.md) | RHEL DevOps Auditor Skill |
+| [020](docs/adrs/020-rhdp-workload-scaffold.md) | RHDP Workload Bootstrap Scaffold Type |
 
 ## Running Tests
 

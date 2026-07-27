@@ -427,3 +427,115 @@ workshop_check_quota() {
         return 0
     fi
 }
+
+# ─── RHDP Pre-Provisioned Cluster Helpers ─────────────────────────────────────
+#
+# These functions support the rhdp-workload scaffold type, where the OpenShift
+# cluster is ordered from the RHDP catalog (agd-v2.ocp-cluster-aws.prod) and
+# users are pre-created via Red Hat Build of Keycloak (RHBK).
+
+workshop_rhdp_detect_keycloak() {
+    if ! oc get namespace keycloak &>/dev/null 2>&1; then
+        workshop_log ERROR "Namespace 'keycloak' not found on cluster"
+        return 1
+    fi
+
+    if ! oc get csv -n keycloak --no-headers 2>/dev/null | grep -q Succeeded; then
+        workshop_log WARN "RHBK operator CSV not in Succeeded state in keycloak namespace"
+        return 1
+    fi
+
+    local kc_pods
+    kc_pods="$(oc get pods -n keycloak --no-headers 2>/dev/null | grep -c Running || echo 0)"
+    if (( kc_pods == 0 )); then
+        workshop_log WARN "No running Keycloak pods found in keycloak namespace"
+        return 1
+    fi
+
+    return 0
+}
+
+workshop_rhdp_detect_users() {
+    local realm_cr="sso"
+    local namespace="keycloak"
+
+    if ! oc get keycloakrealmimport "$realm_cr" -n "$namespace" &>/dev/null 2>&1; then
+        workshop_log ERROR "KeycloakRealmImport '$realm_cr' not found in '$namespace' namespace"
+        return 1
+    fi
+
+    local users
+    users="$(oc get keycloakrealmimport "$realm_cr" -n "$namespace" \
+        -o jsonpath='{range .spec.realm.users[*]}{.username}{"\n"}{end}' 2>/dev/null)"
+
+    if [[ -z "$users" ]]; then
+        workshop_log ERROR "No users found in KeycloakRealmImport '$realm_cr'"
+        return 1
+    fi
+
+    echo "$users"
+}
+
+workshop_rhdp_resolve_passwords() {
+    local num_users="${1:-0}"
+    local realm_cr="sso"
+    local namespace="keycloak"
+
+    if ! oc get keycloakrealmimport "$realm_cr" -n "$namespace" &>/dev/null 2>&1; then
+        workshop_log ERROR "KeycloakRealmImport '$realm_cr' not found — cannot resolve passwords"
+        return 1
+    fi
+
+    local user_json
+    user_json="$(oc get keycloakrealmimport "$realm_cr" -n "$namespace" \
+        -o jsonpath='{.spec.realm.users}' 2>/dev/null)"
+
+    if [[ -z "$user_json" ]]; then
+        workshop_log ERROR "No user data in KeycloakRealmImport '$realm_cr'"
+        return 1
+    fi
+
+    python3 -c "
+import json, sys
+
+users = json.loads('''$user_json''')
+num = int('$num_users') if '$num_users' != '0' else len(users)
+
+for u in users[:num]:
+    username = u.get('username', '')
+    creds = u.get('credentials', [])
+    password = creds[0].get('value', '') if creds else ''
+    if username and password:
+        print(f'{username}={password}')
+" 2>/dev/null | while IFS='=' read -r user password; do
+        idx="${user#user}"
+        if [[ "$idx" =~ ^[0-9]+$ ]]; then
+            workshop_save_state "user_${idx}_password" "$password"
+        fi
+    done
+
+    workshop_log OK "Resolved per-user passwords from KeycloakRealmImport"
+}
+
+workshop_rhdp_verify_idp() {
+    local oauth_providers
+    oauth_providers="$(oc get oauth cluster -o jsonpath='{.spec.identityProviders[*].type}' 2>/dev/null || echo '')"
+
+    if [[ -z "$oauth_providers" ]]; then
+        workshop_log WARN "No identity providers configured on cluster OAuth"
+        return 1
+    fi
+
+    if echo "$oauth_providers" | grep -qi "openid"; then
+        workshop_log OK "OpenID identity provider detected (RHDP Keycloak)"
+    else
+        workshop_log WARN "OpenID identity provider not found — detected: $oauth_providers"
+        workshop_log WARN "RHDP clusters should have OpenID configured via RHBK. Users may not be able to log in."
+    fi
+
+    if echo "$oauth_providers" | grep -qi "htpasswd"; then
+        workshop_log WARN "htpasswd identity provider also detected — avoid creating conflicting IdPs"
+    fi
+
+    return 0
+}

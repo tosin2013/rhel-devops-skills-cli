@@ -1,7 +1,7 @@
 ---
 name: field-sourced-content
 description: AI assistance for building RHDP Catalog Items using the Field-Sourced Content Template — a self-service GitOps platform with Helm and Ansible deployment patterns. Use when creating demos or labs for Red Hat Demo Platform.
-related_skills: [agnosticd, showroom]
+related_skills: [agnosticd, showroom, student-readiness, project-onboard]
 ---
 
 # Field-Sourced Content Template Skill
@@ -18,6 +18,8 @@ related_skills: [agnosticd, showroom]
 - Adding Showroom lab guides to field content
 - Scaffolding a new demo or lab project from the template
 - Debugging ArgoCD sync or deployment issues
+- Deploying field content onto an RHDP pre-provisioned cluster (rhdp-workload scaffold type)
+- Integrating Field-Sourced Content with RHDP Keycloak-managed users
 
 ## Instructions
 
@@ -134,6 +136,72 @@ The role automatically receives `openshift_cluster_ingress_domain` and `openshif
 The Helm example also includes a `components/showroom/` directory that deploys Showroom lab guides alongside your demo. See the **showroom** skill for content authoring and terminal configuration.
 
 See the **agnosticd** skill ("Reporting Deployment Info" section) for the full `agnosticd_user_info` data flow and how Pipeline A data reaches the RHDP catalog and Showroom.
+
+## RHDP Pre-Provisioned Cluster Deployment
+
+Field-Sourced Content integrates directly with the `rhdp-workload` scaffold type for workshops that deploy onto RHDP pre-provisioned clusters. This is the recommended path when the cluster is ordered from the RHDP catalog (`agd-v2.ocp-cluster-aws.prod`) rather than provisioned via `agd`.
+
+### How it works
+
+```
+RHDP Catalog                     Your Git Repo                 RHDP Cluster
+┌─────────────────────┐         ┌──────────────────┐         ┌────────────────────┐
+│ Order OCP cluster   │─────────│ Helm/Ansible      │─ArgoCD─│ Workloads deployed │
+│ (pre-provisioned,   │         │ field content     │         │ Users via Keycloak │
+│  Keycloak users)    │         │ (your-org/repo)   │         │ (user1, user2, ..) │
+└─────────────────────┘         └──────────────────┘         └────────────────────┘
+```
+
+### Scaffolding for RHDP
+
+Use the `rhdp-workload` scaffold type with Field-Sourced Content enabled:
+
+```bash
+./install.sh scaffold --type rhdp-workload --output ./my-workshop
+# Answer "y" to "Use Field-Sourced Content GitOps deployment?"
+# Provide your content repo URL, branch, and pattern (helm/ansible)
+```
+
+The generated `deploy-workloads.sh` script will:
+1. Detect RHDP pre-created users from the Keycloak SSO realm (`userN` format, no dash)
+2. Create per-user namespaces and RBAC
+3. Create an ArgoCD Application pointing to your field content repo
+4. ArgoCD syncs your Helm chart or Ansible playbooks onto the cluster
+
+### Key differences from AgnosticD-driven deployment
+
+| Aspect | AgnosticD + Field Content | RHDP + Field Content |
+|--------|---------------------------|----------------------|
+| Cluster provisioning | `agd provision` triggers `ocp4_workload_field_content` role | RHDP catalog provides the cluster |
+| ArgoCD Application creation | AgnosticD workload role | `deploy-workloads.sh` creates it directly |
+| User format | `user-N` (with dash) | `userN` (no dash, Keycloak-managed) |
+| Data passback (Pipeline B) | ConfigMaps labeled `demo.redhat.com/userinfo` | Same mechanism works on RHDP clusters |
+| Teardown | `agd destroy` removes everything | `teardown-workloads.sh` deletes ArgoCD app + namespaces; cluster stays |
+
+### Helm values injection
+
+When deploying via Helm on an RHDP cluster, the deploy script passes cluster-specific values to the ArgoCD Application:
+
+```yaml
+global:
+  clusterDomain: "apps.cluster-xxx.example.com"   # auto-detected
+  clusterApiUrl: "https://api.cluster-xxx:6443"    # auto-detected
+  namespace: "field-content"                        # configurable
+  numUsers: 10                                      # from Keycloak detection
+```
+
+Your Helm chart can reference these as `{{ .Values.global.clusterDomain }}`, etc.
+
+### RHDP integration labels
+
+Label your deployed resources for RHDP data passback — this works the same on RHDP pre-provisioned clusters as on AgnosticD-provisioned ones:
+
+```yaml
+metadata:
+  labels:
+    demo.redhat.com/application: "my-workshop"
+    demo.redhat.com/userinfo: ""
+```
 
 ## Best Practices
 

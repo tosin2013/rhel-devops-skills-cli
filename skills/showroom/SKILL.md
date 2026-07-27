@@ -84,6 +84,13 @@ ocp4_workload_showroom_content_git_repo_ref: main
 
 **Multi-user deployments:** For workshops where each student gets their own Showroom instance, AgnosticD provisions a separate Showroom namespace per student. The number of student instances is controlled by AgnosticD multi-user variables in the config's vars file.
 
+**RHDP pre-provisioned clusters:** When deploying Showroom on a cluster ordered from the RHDP catalog with "Create users on cluster" enabled:
+- Users follow the `userN` format (no dash separator): `user1`, `user2`, `user3`, etc.
+- Per-user Showroom instances must use this naming convention for namespace derivation and RBAC
+- Each user has a unique password stored in the `KeycloakRealmImport` CR in the `keycloak` namespace — resolve passwords from this CR rather than generating or assuming shared passwords
+- The `keycloak` namespace is already occupied by RHDP's Red Hat Build of Keycloak (RHBK) — if the workshop deploys components that need their own Keycloak instance (e.g., RHTAS), deploy to a different namespace to avoid conflicts
+- Do NOT create additional identity providers (htpasswd, etc.); RHDP has already configured OpenID via RHBK
+
 > (RESEARCH NEEDED — RQ-7: What AgnosticD variables control per-student Showroom provisioning, and how does the multi-user loop work for `ocp4_workload_showroom`?)
 >
 > Pending items: the variable name that sets the number of students (e.g. `ocp4_idm_htpasswd_user_count` or similar), how the per-student namespace naming is derived, and any Showroom-specific multi-user configuration options.

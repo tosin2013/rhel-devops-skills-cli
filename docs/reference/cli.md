@@ -97,6 +97,7 @@ Generate a project scaffold from topology-specific templates.
 | `demo` | Single cluster, one user | Presenter-focused demonstration environment |
 | `agnosticd-infra` | Flexible (1+ configs) | Dev/test/prod infrastructure provisioning |
 | `shared-cluster` | Single cluster, N users | Multi-user workshop with namespace isolation |
+| `rhdp-workload` | Pre-provisioned cluster | Deploy workloads on RHDP-ordered cluster with Keycloak users |
 
 Options:
 
@@ -112,6 +113,7 @@ Example:
 ```bash
 ./install.sh scaffold --type shared-cluster --output ./my-workshop
 ./install.sh scaffold --type hub-student --vars workshop.env
+./install.sh scaffold --type rhdp-workload --output ./my-rhdp-workshop
 ```
 
 ### `help`

@@ -60,6 +60,7 @@ EXAMPLES:
   ./install.sh scaffold --type demo          Scaffold a demo project
   ./install.sh scaffold --type agnosticd-infra  Scaffold an infra project
   ./install.sh scaffold --type shared-cluster   Scaffold a shared-cluster multi-user workshop
+  ./install.sh scaffold --type rhdp-workload    Scaffold workloads on RHDP pre-provisioned cluster
 
 AVAILABLE SKILLS:
   agnosticd              AgnosticD v2 — Ansible Agnostic Deployer

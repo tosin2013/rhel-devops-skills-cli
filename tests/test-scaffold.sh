@@ -203,6 +203,99 @@ test_scaffold_shared_cluster() {
     teardown
 }
 
+# ─── Test: RHDP-Workload Scaffold ─────────────────────────────────────────────
+
+test_scaffold_rhdp_workload() {
+    echo "TEST: Scaffold rhdp-workload type"
+    setup
+
+    do_scaffold --type rhdp-workload --output "$TEST_TMPDIR/project" --non-interactive
+
+    assert_file_exists "$TEST_TMPDIR/project/Makefile" "Makefile generated"
+    assert_file_exists "$TEST_TMPDIR/project/bootstrap.sh" "bootstrap.sh generated"
+    assert_file_exists "$TEST_TMPDIR/project/onboard.yml" "onboard.yml generated"
+    assert_file_exists "$TEST_TMPDIR/project/scripts/deploy-workloads.sh" "deploy script generated"
+    assert_file_exists "$TEST_TMPDIR/project/scripts/teardown-workloads.sh" "teardown script generated"
+    assert_file_exists "$TEST_TMPDIR/project/scripts/check-quota.sh" "quota script generated"
+
+    assert_file_executable "$TEST_TMPDIR/project/bootstrap.sh" "bootstrap.sh is executable"
+    assert_file_executable "$TEST_TMPDIR/project/scripts/deploy-workloads.sh" "deploy is executable"
+    assert_file_executable "$TEST_TMPDIR/project/scripts/teardown-workloads.sh" "teardown is executable"
+
+    assert_file_contains "$TEST_TMPDIR/project/Makefile" "rhdp-workload" "Makefile has correct type"
+    assert_file_contains "$TEST_TMPDIR/project/onboard.yml" "keycloak" "onboard.yml references Keycloak"
+    assert_file_contains "$TEST_TMPDIR/project/onboard.yml" "RHDP" "onboard.yml references RHDP"
+    assert_file_contains "$TEST_TMPDIR/project/.gitignore" "student_info.txt" ".gitignore has student_info"
+
+    # Verify RHDP-specific: no AgnosticD references
+    assert_file_not_contains "$TEST_TMPDIR/project/onboard.yml" "agd" "onboard.yml does not reference agd binary"
+    assert_file_not_contains "$TEST_TMPDIR/project/onboard.yml" "AGD_ROOT" "onboard.yml does not reference AGD_ROOT"
+    assert_file_not_contains "$TEST_TMPDIR/project/onboard.yml" "aws-cli" "onboard.yml does not require AWS CLI"
+
+    # Verify deploy script uses RHDP functions
+    assert_file_contains "$TEST_TMPDIR/project/scripts/deploy-workloads.sh" "workshop_rhdp_detect_users" "deploy calls RHDP user detection"
+    assert_file_contains "$TEST_TMPDIR/project/scripts/deploy-workloads.sh" "workshop_rhdp_detect_keycloak" "deploy calls Keycloak detection"
+    assert_file_contains "$TEST_TMPDIR/project/scripts/deploy-workloads.sh" "workshop_rhdp_resolve_passwords" "deploy resolves RHDP passwords"
+    assert_file_contains "$TEST_TMPDIR/project/scripts/deploy-workloads.sh" "workshop_rhdp_verify_idp" "deploy verifies identity provider"
+
+    # Verify teardown does NOT destroy the cluster
+    assert_file_not_contains "$TEST_TMPDIR/project/scripts/teardown-workloads.sh" "workshop_agd_destroy" "teardown does not destroy cluster via agd"
+    assert_file_contains "$TEST_TMPDIR/project/scripts/teardown-workloads.sh" "RHDP cluster" "teardown references RHDP cluster preservation"
+
+    # Verify Field-Sourced Content integration present in deploy
+    assert_file_contains "$TEST_TMPDIR/project/scripts/deploy-workloads.sh" "USE_FIELD_CONTENT" "deploy has field content toggle"
+    assert_file_contains "$TEST_TMPDIR/project/scripts/deploy-workloads.sh" "FIELD_CONTENT_REPO" "deploy references field content repo"
+    assert_file_contains "$TEST_TMPDIR/project/scripts/deploy-workloads.sh" "ArgoCD" "deploy references ArgoCD"
+
+    # Verify teardown handles ArgoCD Application cleanup
+    assert_file_contains "$TEST_TMPDIR/project/scripts/teardown-workloads.sh" "field_content_app" "teardown reads field content app from state"
+
+    # Verify onboard.yml has field content config prompts
+    assert_file_contains "$TEST_TMPDIR/project/onboard.yml" "use_field_content" "onboard.yml has field content toggle"
+    assert_file_contains "$TEST_TMPDIR/project/onboard.yml" "field_content_repo" "onboard.yml has field content repo prompt"
+    assert_file_contains "$TEST_TMPDIR/project/onboard.yml" "field_content_pattern" "onboard.yml has field content pattern prompt"
+
+    # Verify no unsubstituted placeholders
+    assert_file_not_contains "$TEST_TMPDIR/project/Makefile" "{{" "No unsubstituted placeholders in Makefile"
+    assert_file_not_contains "$TEST_TMPDIR/project/onboard.yml" "{{" "No unsubstituted placeholders in onboard.yml"
+
+    teardown
+}
+
+# ─── Test: RHDP-Workload Vars File ───────────────────────────────────────────
+
+test_scaffold_rhdp_workload_vars() {
+    echo "TEST: Scaffold rhdp-workload with --vars file"
+    setup
+
+    cat > "$TEST_TMPDIR/vars.env" <<'EOF'
+PROJECT_NAME=my-rhdp-workshop
+REPO_URL=https://github.com/test/rhdp-repo
+DEPLOY_MODE=both
+NUM_USERS=25
+NAMESPACE_PREFIX=student
+INCLUDE_SHOWROOM=y
+USE_FIELD_CONTENT=y
+FIELD_CONTENT_REPO=https://github.com/test/my-field-content.git
+FIELD_CONTENT_REF=develop
+FIELD_CONTENT_PATTERN=ansible
+FIELD_CONTENT_NAMESPACE=my-demo-ns
+EOF
+
+    do_scaffold --type rhdp-workload --output "$TEST_TMPDIR/project" --vars "$TEST_TMPDIR/vars.env"
+
+    assert_file_contains "$TEST_TMPDIR/project/onboard.yml" "my-rhdp-workshop" "Project name substituted"
+    assert_file_contains "$TEST_TMPDIR/project/scripts/deploy-workloads.sh" "my-rhdp-workshop" "Project name in deploy script"
+
+    # Verify field content vars substituted
+    assert_file_contains "$TEST_TMPDIR/project/onboard.yml" "my-field-content" "Field content repo substituted in onboard"
+    assert_file_contains "$TEST_TMPDIR/project/onboard.yml" "ansible" "Field content pattern substituted in onboard"
+    assert_file_contains "$TEST_TMPDIR/project/scripts/deploy-workloads.sh" "my-field-content" "Field content repo in deploy script"
+    assert_file_contains "$TEST_TMPDIR/project/scripts/deploy-workloads.sh" "develop" "Field content ref in deploy script"
+
+    teardown
+}
+
 # ─── Test: Shared Library Installation ────────────────────────────────────────
 
 test_shared_lib_install() {
@@ -299,6 +392,8 @@ test_scaffold_hub_student
 test_scaffold_demo
 test_scaffold_infra
 test_scaffold_shared_cluster
+test_scaffold_rhdp_workload
+test_scaffold_rhdp_workload_vars
 test_shared_lib_install
 test_scaffold_invalid_type
 test_scaffold_idempotent

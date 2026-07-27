@@ -33,3 +33,4 @@ All ADRs follow the [MADR](https://adr.github.io/madr/) (Markdown Architectural 
 | [017](017-vp-submission-skill.html) | VP Submission Skill and Validator Redeploy Gate | Accepted |
 | [018](018-scaffold-command.html) | Scaffold Command Architecture | Accepted |
 | [019](019-rhel-devops-auditor.html) | RHEL DevOps Auditor Skill | Accepted |
+| [020](020-rhdp-workload-scaffold.html) | RHDP Workload Bootstrap Scaffold Type | Accepted |

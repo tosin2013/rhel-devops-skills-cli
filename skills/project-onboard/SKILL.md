@@ -439,6 +439,18 @@ When a user asks to create a manifest for their project:
 5. Generate the manifest, filling in platform-specific install commands
 6. For deploy.sh hardening, refer to `references/deploy-hardening.md`
 
+### RHDP Pre-Provisioned Cluster Workshops
+
+When the target cluster is ordered from the RHDP catalog (`agd-v2.ocp-cluster-aws.prod`) rather than provisioned via `agd`, use the `rhdp-workload` scaffold type (`./install.sh scaffold --type rhdp-workload`). Key differences for the manifest:
+
+- **No AgnosticD prerequisites** — remove `agd` binary checks, `AGD_ROOT`, and secrets file validation
+- **No cloud credentials** — replace AWS/GCP/Azure credential checks with `oc whoami` (must be logged in to the RHDP cluster)
+- **Add Keycloak validation** — verify `keycloak` namespace exists, RHBK operator is Succeeded, and `KeycloakRealmImport` CR named `sso` is present
+- **User format** — RHDP pre-creates users as `user1`, `user2`, `user3` (no dash separator, not `user-1`); each user has a unique password in the KeycloakRealmImport CR
+- **User count auto-detection** — query the Keycloak `sso` realm to count pre-created users rather than requiring a hardcoded count
+- **Identity provider** — RHDP already configures OpenID via RHBK; manifests must NOT create htpasswd or conflicting IdPs
+- **Deploy mode** — support `ocp_workloads`, `rhel_vms`, or `both` modes for workload deployment flexibility
+
 ## Platform-Specific Install Command Reference
 
 Common install commands for use when helping users author manifests:

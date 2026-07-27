@@ -105,6 +105,8 @@ oc auth can-i --list -n <student_namespace> --as=<student_user>
 ```
 - Verify: expected namespaces exist, student users have expected permissions (create pods, get routes, etc.)
 
+**RHDP pre-provisioned clusters:** User namespaces follow the `userN` format (no dash separator). The namespace pattern is `<prefix>N` (e.g., `user1`, `user2`), not `<prefix>-N`. When checking RBAC, use `--as=user1` not `--as=user-1`. Detect the format by checking whether a `keycloakrealmimport` CR named `sso` exists in the `keycloak` namespace.
+
 ### 6. Workload Resources
 
 ```bash
@@ -156,6 +158,28 @@ done
 ```
 - Verify: all N student environments are provisioned with correct namespace isolation
 - If the count of OK namespaces is less than N, the provisioning loop did not complete — re-run `agd provision` or check the AgnosticD output logs for the failing iteration
+
+**RHDP pre-provisioned clusters:** User verification works differently on clusters ordered from the RHDP catalog with "Create users on cluster" enabled:
+
+```bash
+# Detect RHDP user format by checking for Keycloak SSO realm
+if oc get keycloakrealmimport sso -n keycloak &>/dev/null; then
+  # RHDP cluster — users are userN (no dash), managed by Keycloak
+  RHDP_USER_COUNT=$(oc get keycloakrealmimport sso -n keycloak \
+    -o jsonpath='{.spec.realm.users}' | python3 -c \
+    "import sys,json; print(len(json.load(sys.stdin)))")
+  echo "RHDP users detected: $RHDP_USER_COUNT (format: user1, user2, ...)"
+
+  for i in $(seq 1 $RHDP_USER_COUNT); do
+    oc auth can-i get pods -n "user${i}" --as="user${i}" 2>/dev/null \
+      && echo "user${i}: OK" || echo "user${i}: MISSING/NO ACCESS"
+  done
+fi
+```
+
+- Verify: OpenID identity provider is configured (not htpasswd) — `oc get oauth cluster -o jsonpath='{.spec.identityProviders[*].type}'` should include `OpenID`
+- Do NOT create additional identity providers; RHDP already configured OpenID via RHBK
+- Each user has a unique password stored in the KeycloakRealmImport CR, not a shared password
 
 ## Output Format
 
