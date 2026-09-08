@@ -1,6 +1,8 @@
 # rhel-devops-skills-cli
 
-A centralized installer for AI assistant skills (Claude Code and Cursor IDE) providing deep knowledge for RHEL DevOps tooling — AgnosticD v2, Field-Sourced Content Template, Showroom, Patternizer, and Validated Patterns.
+A centralized installer for AI assistant skills providing deep knowledge for RHEL DevOps tooling — AgnosticD v2, Field-Sourced Content Template, Showroom, Patternizer, and Validated Patterns.
+
+Skills use the [Agent Skills open standard](https://agentskills.io/) (`SKILL.md`) and work with [Claude Code](https://docs.claude.com/), [Cursor IDE](https://www.cursor.com/), and **40+ compatible tools** (Codex, Copilot, VS Code, Gemini CLI, Goose, Windsurf, and more) via the cross-tool `~/.agents/skills/` path.
 
 ## Supported Skills
 
@@ -31,8 +33,6 @@ A centralized installer for AI assistant skills (Claude Code and Cursor IDE) pro
 | RHEL 9 | 5.1 | Supported |
 | RHEL 10 | 5.2.26 | Supported |
 | macOS (Homebrew bash) | 5.2+ | Supported (`brew install bash` required) |
-
-Skills use the [Agent Skills open standard](https://agentskills.io/) (`SKILL.md`) and work with both [Claude Code](https://docs.claude.com/) and [Cursor IDE](https://www.cursor.com/).
 
 ## Quick Start
 
@@ -75,7 +75,9 @@ git pull origin main
 ```bash
 ./install.sh install --skill agnosticd       # Install one skill
 ./install.sh install --all                    # Install all skills
-./install.sh install --all --ide cursor       # Target specific IDE
+./install.sh install --all --ide cursor       # Target Cursor IDE only
+./install.sh install --all --ide agents       # Target cross-tool portable path
+./install.sh install --all --ide all          # Install to Claude + Cursor + agents
 ./install.sh update --all                     # Update skill docs from upstream
 ./install.sh check-updates                    # Check for upstream changes
 ./install.sh verify --all                     # Verify installations
@@ -88,6 +90,17 @@ git pull origin main
 ./install.sh scaffold --type agnosticd-infra  # Scaffold an infra project
 ./install.sh scaffold --type rhdp-workload    # Scaffold workloads on RHDP pre-provisioned cluster
 ```
+
+### Installation Targets
+
+| `--ide` value | Installs to | Compatible tools |
+|---------------|-------------|------------------|
+| `claude` | `~/.claude/skills/` | Claude Code |
+| `cursor` | `~/.cursor/skills-cursor/` | Cursor IDE |
+| `agents` | `~/.agents/skills/` | Codex, Copilot, Cursor, Goose, Gemini CLI, and 40+ Agent Skills standard tools |
+| `both` | Claude + Cursor (auto-detect) | |
+| `all` | Claude + Cursor + agents | All of the above |
+| *(default)* | Auto-detect Claude + Cursor | |
 
 ## Documentation
 
@@ -129,6 +142,10 @@ git pull origin main
 bash tests/run-all.sh
 ```
 
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for how to get involved.
+
 ## License
 
-See [LICENSE](LICENSE) for details.
+Licensed under the [Apache License 2.0](LICENSE).

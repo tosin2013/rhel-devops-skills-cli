@@ -43,7 +43,14 @@ COMMANDS:
   help                             Show this help message
 
 OPTIONS:
-  --ide <claude|cursor|both>       Target specific IDE (default: auto-detect)
+  --ide <claude|cursor|agents|both|all>
+                                 Target specific IDE or cross-tool path
+                                   claude  — Claude Code (~/.claude/skills/)
+                                   cursor  — Cursor IDE (~/.cursor/skills-cursor/)
+                                   agents  — Cross-tool portable (~/.agents/skills/)
+                                   both    — Claude Code + Cursor (auto-detect)
+                                   all     — Claude Code + Cursor + agents
+                                   (default: auto-detect Claude + Cursor)
   --verbose                        Enable verbose output
   --dry-run                        Show what would be done without making changes
   --force                          Force operation even if up to date
@@ -52,6 +59,8 @@ OPTIONS:
 EXAMPLES:
   ./install.sh install --all                 Install all skills to detected IDEs
   ./install.sh install --skill agnosticd     Install AgnosticD v2 skill
+  ./install.sh install --all --ide all       Install to Claude + Cursor + cross-tool agents path
+  ./install.sh install --all --ide agents    Install to cross-tool portable path only
   ./install.sh update --all                  Update all installed skills
   ./install.sh check-updates                 Check for upstream changes
   ./install.sh verify --all                  Verify all installations

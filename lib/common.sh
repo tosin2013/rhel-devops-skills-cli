@@ -13,6 +13,7 @@ readonly LOG_DIR="$DATA_DIR/logs"
 
 readonly CLAUDE_SKILLS_DIR="$HOME/.claude/skills"
 readonly CURSOR_SKILLS_DIR="$HOME/.cursor/skills-cursor"
+readonly AGENTS_SKILLS_DIR="$HOME/.agents/skills"
 readonly CURSOR_RULES_DIR=".cursor/rules"
 SHARED_LIB_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/rhel-devops-skills"
 
@@ -144,6 +145,12 @@ detect_cursor() {
     [[ -d "$HOME/.cursor" ]]
 }
 
+detect_agents() {
+    # The .agents/ path is the cross-tool portable directory.
+    # Always available as an explicit target; auto-detect checks if dir exists.
+    [[ -d "$HOME/.agents" ]]
+}
+
 resolve_target_ides() {
     local ide_flag="${1:-auto}"
     local targets=()
@@ -165,6 +172,10 @@ resolve_target_ides() {
                 exit 6
             fi
             ;;
+        agents)
+            mkdir -p "$AGENTS_SKILLS_DIR"
+            targets+=("agents")
+            ;;
         both)
             detect_claude && targets+=("claude")
             detect_cursor && targets+=("cursor")
@@ -175,6 +186,16 @@ resolve_target_ides() {
                 exit 6
             fi
             ;;
+        all)
+            detect_claude && targets+=("claude")
+            detect_cursor && targets+=("cursor")
+            mkdir -p "$AGENTS_SKILLS_DIR"
+            targets+=("agents")
+            if [[ ${#targets[@]} -eq 1 ]]; then
+                # Only agents target (no IDE detected) -- still valid
+                true
+            fi
+            ;;
         auto)
             detect_claude && targets+=("claude")
             detect_cursor && targets+=("cursor")
@@ -182,11 +203,12 @@ resolve_target_ides() {
                 error "Neither Claude Code nor Cursor IDE detected"
                 error "Install Claude Code: https://docs.claude.com/en/docs/claude-code"
                 error "Install Cursor: https://www.cursor.com/downloads"
+                error "Or use --ide agents for the cross-tool portable path"
                 exit 6
             fi
             ;;
         *)
-            error "Invalid --ide value: $ide_flag (use: claude, cursor, both)"
+            error "Invalid --ide value: $ide_flag (use: claude, cursor, agents, both, all)"
             exit 2
             ;;
     esac
@@ -199,6 +221,7 @@ get_ide_skills_dir() {
     case "$ide" in
         claude) echo "$CLAUDE_SKILLS_DIR" ;;
         cursor) echo "$CURSOR_SKILLS_DIR" ;;
+        agents) echo "$AGENTS_SKILLS_DIR" ;;
     esac
 }
 
