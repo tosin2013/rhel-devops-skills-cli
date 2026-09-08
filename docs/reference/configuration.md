@@ -71,3 +71,17 @@ globs: ["**/configs/**/*", "**/roles/**/tasks/*.yml"]
 alwaysApply: false
 ---
 ```
+
+## Installation Paths
+
+The installer supports three target paths, controlled by the `--ide` flag:
+
+| `--ide` value | Path | Compatible tools |
+|---------------|------|------------------|
+| `claude` | `~/.claude/skills/<name>/` | Claude Code |
+| `cursor` | `~/.cursor/skills-cursor/<name>/` | Cursor IDE |
+| `agents` | `~/.agents/skills/<name>/` | Codex, Copilot, Cursor, Goose, Gemini CLI, and 40+ Agent Skills standard tools |
+| `both` | Claude + Cursor (auto-detect) | |
+| `all` | Claude + Cursor + agents | All of the above |
+
+The `agents` path follows the [Agent Skills open standard](https://agentskills.io/) portable directory convention. Skills installed there use the same `SKILL.md` + `references/` format but are discoverable by any compliant tool.

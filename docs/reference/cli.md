@@ -128,7 +128,7 @@ Show the help message.
 
 | Option | Description |
 |--------|-------------|
-| `--ide <claude\|cursor\|both>` | Target specific IDE (default: auto-detect) |
+| `--ide <target>` | Target: `claude`, `cursor`, `agents`, `both`, `all` (default: auto-detect Claude + Cursor) |
 | `--verbose`, `-v` | Enable verbose debug output |
 | `--dry-run` | Show what would be done without changes |
 | `--force`, `-f` | Force operation even if already up to date |

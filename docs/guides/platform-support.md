@@ -60,3 +60,10 @@ chsh -s /opt/homebrew/bin/bash
 - **Rules path**: `.cursor/rules/<skill-name>.mdc` (project-level)
 - **Detection**: Checks for `~/.cursor/` directory
 - **Format**: `SKILL.md` + optional `.mdc` rule files
+
+### Cross-Tool Portable (Agent Skills Standard)
+
+- **Skill path**: `~/.agents/skills/<skill-name>/`
+- **Detection**: Created on first use with `--ide agents`
+- **Format**: `SKILL.md` with `references/` subdirectory
+- **Compatible tools**: Codex, Copilot, Cursor, Goose, Gemini CLI, and 40+ [Agent Skills standard](https://agentskills.io/) tools

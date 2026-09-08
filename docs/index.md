@@ -7,7 +7,7 @@ nav_order: 1
 # RHEL DevOps Skills CLI
 {: .fs-9 }
 
-A centralized installer for AI assistant skills — providing deep knowledge of AgnosticD v2, Field-Sourced Content, Showroom, Patternizer, and workshop validation to Claude Code and Cursor IDE.
+A centralized installer for AI assistant skills — providing deep knowledge of AgnosticD v2, Field-Sourced Content, Showroom, Patternizer, and workshop validation to Claude Code, Cursor IDE, and 40+ [Agent Skills standard](https://agentskills.io/) compatible tools.
 {: .fs-6 .fw-300 }
 
 [Get Started](getting-started/){: .btn .btn-primary .fs-5 .mb-4 .mb-md-0 .mr-2 }
@@ -49,3 +49,4 @@ cd rhel-devops-skills-cli
 |-----|-------------|----------------|
 | [Claude Code](https://docs.claude.com/) | `SKILL.md` + `references/` | Agent Skills standard |
 | [Cursor IDE](https://www.cursor.com/) | `SKILL.md` + `references/` | Optional `.cursor/rules/*.mdc` |
+| Cross-tool (`--ide agents`) | `SKILL.md` + `references/` | Portable to Codex, Copilot, Goose, Gemini CLI, and 40+ tools |

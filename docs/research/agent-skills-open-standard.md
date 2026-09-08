@@ -74,14 +74,18 @@ The PRD proposes a custom `skill.json` format for skill definitions. Research re
 - **Source**: [Agent Skills Overview](https://agentskills.io/), [Agent Skills Guide](https://agentskills.so/skills)
 
 ### Finding 6: Broad Agent Support
-- **Description**: The Agent Skills standard is supported by:
+- **Description**: The Agent Skills standard is supported by approximately 40 tools as of mid-2026, including:
   - **Claude Code** (Anthropic CLI/IDE agent)
   - **Cursor IDE** (explicitly loads from multiple skill directories)
-  - **Any compliant agent** (open standard, portable by design)
-  Cursor also loads from `.claude/skills/` and `.codex/skills/` for cross-compatibility.
-- **Evidence**: Cursor docs list compatibility directories; Claude docs describe same format
+  - **OpenAI Codex** (CLI agent)
+  - **GitHub Copilot** (via `gh skill`)
+  - **VS Code** (native support)
+  - **Gemini CLI** (Google)
+  - **Goose**, **Windsurf**, **Roo Code**, **Amp**, and others
+  The emerging cross-tool portable directory is `~/.agents/skills/` (user-level) and `.agents/skills/` (project-level), which is scanned by Cursor, Codex, and other adopters.
+- **Evidence**: Agent Skills showcase at agentskills.io lists 40+ adopters; Cursor docs list `.agents/skills/` as a scanned directory
 - **Confidence**: High
-- **Source**: [Cursor Skills](https://www.cursor.com/docs/context/skills), [Claude Skills](https://docs.claude.com/en/docs/claude-code/slash-commands.md)
+- **Source**: [Agent Skills Showcase](https://agentskills.io/), [Cursor Skills](https://www.cursor.com/docs/context/skills)
 
 ### Finding 7: Skills vs MCP Are Complementary
 - **Description**: Agent Skills (SKILL.md) provide static knowledge and workflow instructions. MCP servers provide dynamic tools, live resources, and reusable prompts. They serve different purposes and can coexist.

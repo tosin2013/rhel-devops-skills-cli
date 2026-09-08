@@ -41,7 +41,7 @@ cd rhel-devops-skills-cli
 ./install.sh install --all
 ```
 
-This auto-detects installed IDEs (Claude Code, Cursor) and installs skills to each.
+This auto-detects installed IDEs (Claude Code, Cursor) and installs skills to each. Use `--ide agents` for the cross-tool portable path or `--ide all` for all targets.
 
 ## Install a Single Skill
 
@@ -52,8 +52,10 @@ This auto-detects installed IDEs (Claude Code, Cursor) and installs skills to ea
 ## Target a Specific IDE
 
 ```bash
-./install.sh install --all --ide cursor
-./install.sh install --skill patternizer --ide claude
+./install.sh install --all --ide cursor       # Cursor IDE only
+./install.sh install --skill patternizer --ide claude  # Claude Code only
+./install.sh install --all --ide agents       # Cross-tool portable path
+./install.sh install --all --ide all          # Claude + Cursor + agents
 ```
 
 ## Verify Installation
@@ -75,7 +77,9 @@ For each skill, the installer:
 ### File Layout
 
 ```
-~/.claude/skills/          # or ~/.cursor/skills-cursor/
+~/.claude/skills/          # Claude Code
+~/.cursor/skills-cursor/   # Cursor IDE
+~/.agents/skills/          # Cross-tool portable (Codex, Copilot, Goose, Gemini CLI, etc.)
   agnosticd/
     SKILL.md               # Agent skill definition
     references/
