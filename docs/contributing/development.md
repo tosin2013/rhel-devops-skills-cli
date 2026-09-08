@@ -61,7 +61,7 @@ All architectural decisions are documented in [ADRs](../adrs/):
 - **ADR-001**: Agent Skills standard (`SKILL.md`) over custom formats
 - **ADR-002**: Target Claude Code and Cursor IDE
 - **ADR-003**: Documentation embedding via `references/`
-- **ADR-004**: Installation paths (`~/.claude/skills/`, `~/.cursor/skills-cursor/`, `~/.agents/skills/`)
+- **ADR-004**: Installation paths (`~/.claude/skills/`, `~/.cursor/skills/`, `~/.agents/skills/`)
 - **ADR-005**: Dual-mode skills + optional Cursor rules
 - **ADR-006**: Shell installer with JSON registry
 - **ADR-007**: GitHub Pages with Just the Docs
@@ -75,7 +75,7 @@ The installer supports three target types:
 | `--ide` value | Path | Compatible tools |
 |---------------|------|------------------|
 | `claude` | `~/.claude/skills/` | Claude Code |
-| `cursor` | `~/.cursor/skills-cursor/` | Cursor IDE |
+| `cursor` | `~/.cursor/skills/` | Cursor IDE |
 | `agents` | `~/.agents/skills/` | Codex, Copilot, Cursor, Goose, Gemini CLI, and 40+ Agent Skills standard tools |
 | `both` | Claude + Cursor | (auto-detect) |
 | `all` | Claude + Cursor + agents | (all paths) |

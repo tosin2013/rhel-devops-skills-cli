@@ -12,7 +12,7 @@ readonly BACKUP_DIR="$DATA_DIR/backups"
 readonly LOG_DIR="$DATA_DIR/logs"
 
 readonly CLAUDE_SKILLS_DIR="$HOME/.claude/skills"
-readonly CURSOR_SKILLS_DIR="$HOME/.cursor/skills-cursor"
+readonly CURSOR_SKILLS_DIR="$HOME/.cursor/skills"
 readonly AGENTS_SKILLS_DIR="$HOME/.agents/skills"
 readonly CURSOR_RULES_DIR=".cursor/rules"
 SHARED_LIB_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/rhel-devops-skills"
@@ -133,6 +133,59 @@ check_prerequisites() {
     fi
 
     debug "Prerequisites OK: bash ${BASH_VERSION}, git, curl, $(command -v jq &>/dev/null && echo jq || echo python3)"
+
+    _migrate_cursor_skills
+}
+
+# --- Cursor Skills Migration ---
+# Moves skills from the old ~/.cursor/skills-cursor/ path (reserved for
+# Cursor's managed built-in skills) to ~/.cursor/skills/ (correct user path).
+
+_migrate_cursor_skills() {
+    local old_dir="$HOME/.cursor/skills-cursor"
+    local new_dir="$CURSOR_SKILLS_DIR"
+
+    # Nothing to migrate if old directory doesn't exist or is empty
+    [[ -d "$old_dir" ]] || return 0
+    local skill_count
+    skill_count="$(find "$old_dir" -maxdepth 2 -name 'SKILL.md' 2>/dev/null | wc -l)"
+    (( skill_count == 0 )) && return 0
+
+    warn "Found $skill_count skill(s) in old path: $old_dir"
+    warn "Migrating to correct path: $new_dir"
+
+    mkdir -p "$new_dir"
+
+    local migrated=0
+    for skill_dir in "$old_dir"/*/; do
+        [[ -d "$skill_dir" ]] || continue
+        local skill_name
+        skill_name="$(basename "$skill_dir")"
+        local dest="$new_dir/$skill_name"
+
+        if [[ -d "$dest" ]]; then
+            debug "Skipping $skill_name — already exists at $dest"
+        else
+            mv "$skill_dir" "$dest"
+            migrated=$((migrated + 1))
+            debug "Migrated $skill_name -> $dest"
+        fi
+    done
+
+    # Update registry entries that reference the old path
+    if [[ -f "$REGISTRY_FILE" ]] && command -v sed &>/dev/null; then
+        if grep -q 'skills-cursor' "$REGISTRY_FILE" 2>/dev/null; then
+            sed -i.bak "s|$old_dir|$new_dir|g" "$REGISTRY_FILE"
+            debug "Updated registry paths from skills-cursor to skills"
+        fi
+    fi
+
+    # Remove old directory if empty
+    rmdir "$old_dir" 2>/dev/null || true
+
+    if (( migrated > 0 )); then
+        success "Migrated $migrated skill(s) from $old_dir to $new_dir"
+    fi
 }
 
 # --- IDE Detection (ADR-004) ---

@@ -79,7 +79,7 @@ The installer supports three target paths, controlled by the `--ide` flag:
 | `--ide` value | Path | Compatible tools |
 |---------------|------|------------------|
 | `claude` | `~/.claude/skills/<name>/` | Claude Code |
-| `cursor` | `~/.cursor/skills-cursor/<name>/` | Cursor IDE |
+| `cursor` | `~/.cursor/skills/<name>/` | Cursor IDE |
 | `agents` | `~/.agents/skills/<name>/` | Codex, Copilot, Cursor, Goose, Gemini CLI, and 40+ Agent Skills standard tools |
 | `both` | Claude + Cursor (auto-detect) | |
 | `all` | Claude + Cursor + agents | All of the above |

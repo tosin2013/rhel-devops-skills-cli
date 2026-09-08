@@ -24,7 +24,7 @@ When contributing skills or installer changes, verify that installations work ac
 | Target | Path | Command |
 |--------|------|---------|
 | Claude Code | `~/.claude/skills/<name>/` | `./install.sh install --skill <name> --ide claude` |
-| Cursor IDE | `~/.cursor/skills-cursor/<name>/` | `./install.sh install --skill <name> --ide cursor` |
+| Cursor IDE | `~/.cursor/skills/<name>/` | `./install.sh install --skill <name> --ide cursor` |
 | Cross-tool portable | `~/.agents/skills/<name>/` | `./install.sh install --skill <name> --ide agents` |
 | All targets | All of the above | `./install.sh install --skill <name> --ide all` |
 

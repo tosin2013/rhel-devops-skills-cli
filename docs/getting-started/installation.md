@@ -78,7 +78,7 @@ For each skill, the installer:
 
 ```
 ~/.claude/skills/          # Claude Code
-~/.cursor/skills-cursor/   # Cursor IDE
+~/.cursor/skills/   # Cursor IDE
 ~/.agents/skills/          # Cross-tool portable (Codex, Copilot, Goose, Gemini CLI, etc.)
   agnosticd/
     SKILL.md               # Agent skill definition

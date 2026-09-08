@@ -96,7 +96,7 @@ git pull origin main
 | `--ide` value | Installs to | Compatible tools |
 |---------------|-------------|------------------|
 | `claude` | `~/.claude/skills/` | Claude Code |
-| `cursor` | `~/.cursor/skills-cursor/` | Cursor IDE |
+| `cursor` | `~/.cursor/skills/` | Cursor IDE |
 | `agents` | `~/.agents/skills/` | Codex, Copilot, Cursor, Goose, Gemini CLI, and 40+ Agent Skills standard tools |
 | `both` | Claude + Cursor (auto-detect) | |
 | `all` | Claude + Cursor + agents | All of the above |

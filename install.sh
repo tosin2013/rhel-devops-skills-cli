@@ -46,7 +46,7 @@ OPTIONS:
   --ide <claude|cursor|agents|both|all>
                                  Target specific IDE or cross-tool path
                                    claude  — Claude Code (~/.claude/skills/)
-                                   cursor  — Cursor IDE (~/.cursor/skills-cursor/)
+                                   cursor  — Cursor IDE (~/.cursor/skills/)
                                    agents  — Cross-tool portable (~/.agents/skills/)
                                    both    — Claude Code + Cursor (auto-detect)
                                    all     — Claude Code + Cursor + agents

@@ -118,7 +118,7 @@ The [RHDP Skills Marketplace](https://rhpds.github.io/rhdp-skills-marketplace/) 
 ## How Skills Are Structured
 
 ```
-~/.claude/skills/agnosticd/     # or ~/.cursor/skills-cursor/agnosticd/
+~/.claude/skills/agnosticd/     # or ~/.cursor/skills/agnosticd/
   SKILL.md                      # Instructions and "When to Use" triggers
   references/
     REFERENCE.md                # Index of fetched docs

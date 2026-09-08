@@ -61,7 +61,7 @@ See the [Agent Skills specification](https://agentskills.io/specification) for
 - **Document architectural changes** — add an ADR in `docs/adrs/` for design decisions
 - **Cross-tool testing** — verify skills install correctly to all targets:
   - `~/.claude/skills/` (Claude Code)
-  - `~/.cursor/skills-cursor/` (Cursor IDE)
+  - `~/.cursor/skills/` (Cursor IDE)
   - `~/.agents/skills/` (cross-tool portable path)
 
 ## Code Style
