@@ -1,7 +1,10 @@
 ---
 name: showroom
 description: AI assistance for Showroom — the RHDP lab guide and terminal system. Use when creating Antora-based lab content, configuring Showroom deployment on OpenShift (terminal types, VNC, multi-user), or integrating Showroom with AgnosticD or Field-Sourced Content.
-related_skills: [agnosticd, field-sourced-content, student-readiness, workshop-tester, agnosticd-hub-student]
+license: Apache-2.0
+compatibility: Requires bash 4.4+, git, oc/kubectl, and Node.js for Antora. Designed for RHEL 8/9 with Cursor and Claude Code.
+metadata:
+  related-skills: "agnosticd, field-sourced-content, student-readiness, workshop-tester, agnosticd-hub-student"
 ---
 
 # Showroom Skill

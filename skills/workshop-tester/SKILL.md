@@ -1,7 +1,10 @@
 ---
 name: workshop-tester
 description: AI-as-student module testing — reads a workshop module (AsciiDoc or markdown), executes each student step against a live environment, verifies expected outcomes, classifies failures, and produces a step-by-step pass/fail report. Use when a developer asks to run through, test, or validate workshop exercises.
-related_skills: [student-readiness, showroom, agnosticd]
+license: Apache-2.0
+compatibility: Requires bash 4.4+, oc/kubectl, and access to a running workshop environment. Designed for RHEL 8/9 with Cursor and Claude Code.
+metadata:
+  related-skills: "student-readiness, showroom, agnosticd"
 ---
 
 # Workshop Module Tester Skill

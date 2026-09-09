@@ -6,13 +6,10 @@ description: >-
   for AgnosticD workshops, demos, and validated patterns. Use when a user
   clones a project and asks for help setting up, getting started, or
   deploying for the first time.
-related_skills:
-  - agnosticd
-  - agnosticd-hub-student
-  - field-sourced-content
-  - student-readiness
-  - showroom
-  - patternizer
+license: Apache-2.0
+compatibility: Requires bash 4.4+ and git. Additional tools installed per onboard.yml manifest. Designed for RHEL 8/9 with Cursor and Claude Code.
+metadata:
+  related-skills: "agnosticd, agnosticd-hub-student, field-sourced-content, student-readiness, showroom, patternizer"
 ---
 
 # Project Onboarding Assistant

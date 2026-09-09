@@ -1,7 +1,10 @@
 ---
 name: agnosticd-refactor
 description: AI assistance for auditing and improving existing AgnosticD v2 configs and workload roles against RHDP best practices. Use when a developer has an existing deployment and wants to improve it, fix validation failures, or prepare it for RHDP submission — not when setting up from scratch.
-related_skills: [agnosticd, student-readiness, workshop-tester, agnosticd-deploy-test]
+license: Apache-2.0
+compatibility: Requires bash 4.4+, git, and Ansible. Designed for RHEL 8/9 with Cursor and Claude Code.
+metadata:
+  related-skills: "agnosticd, student-readiness, workshop-tester, agnosticd-deploy-test"
 ---
 
 # AgnosticD Refactor Skill

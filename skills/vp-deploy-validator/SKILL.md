@@ -1,7 +1,10 @@
 ---
 name: vp-deploy-validator
 description: AI assistance for validating the health of an already-running Validated Pattern deployment — checking ArgoCD Application convergence, secrets delivery, and job completion without re-installing. Use when the pattern was deployed by automation or by someone else, or for a pre-demo confidence check on a live deployment.
-related_skills: [vp-deploy-test, vp-refactor, student-readiness, workshop-tester, vp-submission]
+license: Apache-2.0
+compatibility: Requires bash 4.4+, oc/kubectl, and access to a running OpenShift cluster. Designed for RHEL 8/9 with Cursor and Claude Code.
+metadata:
+  related-skills: "vp-deploy-test, vp-refactor, student-readiness, workshop-tester, vp-submission"
 ---
 
 # Validated Pattern Deployment Validator Skill

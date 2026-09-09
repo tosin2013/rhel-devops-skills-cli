@@ -6,12 +6,10 @@ description: >-
   Produces structured PASS/WARN/FAIL reports with prioritized remediation
   plans containing executable commands. A meta-auditor that dispatches to
   specific check modules and aggregates findings.
-related_skills:
-  - agnosticd-refactor
-  - onboard
-  - student-readiness
-  - agnosticd-deploy-test
-  - agnosticd-hub-student
+license: Apache-2.0
+compatibility: Requires bash 4.4+ and git on RHEL 8/9 or compatible Linux. Designed for Cursor and Claude Code.
+metadata:
+  related-skills: "agnosticd-refactor, project-onboard, student-readiness, agnosticd-deploy-test, agnosticd-hub-student"
 ---
 
 # RHEL DevOps Auditor

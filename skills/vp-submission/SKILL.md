@@ -1,7 +1,10 @@
 ---
 name: vp-submission
 description: AI assistance for auditing a Validated Pattern against VP tier requirements (Community/Sandbox, Tested, Maintained) and guiding submission to validatedpatterns/docs. Use after vp-deploy-validator reports HEALTHY and the pattern deploys fully without user interaction.
-related_skills: [vp-deploy-validator, vp-deploy-test, vp-refactor, patternizer]
+license: Apache-2.0
+compatibility: Requires bash 4.4+, git, and the GitHub CLI (gh). Designed for RHEL 8/9 with Cursor and Claude Code.
+metadata:
+  related-skills: "vp-deploy-validator, vp-deploy-test, vp-refactor, patternizer"
 ---
 
 # Validated Pattern Submission Skill

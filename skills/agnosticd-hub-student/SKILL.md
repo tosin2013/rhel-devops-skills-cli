@@ -1,7 +1,10 @@
 ---
 name: agnosticd-hub-student
 description: AI assistance for architecting, sizing, provisioning, and validating an AgnosticD deployment where Showroom runs on a dedicated hub cluster and students each get their own SNO or compact OpenShift cluster. Covers student count input (default 2), cloud provider quota pre-flight checks for AWS, GCP, and Azure, cross-cluster Showroom terminal configuration, per-student credential data pipeline, and independent hub/student lifecycle operations.
-related_skills: [agnosticd, agnosticd-deploy-test, showroom, student-readiness, agnosticd-refactor]
+license: Apache-2.0
+compatibility: Requires bash 4.4+, oc/kubectl, the agd CLI, and cloud provider CLIs (aws/gcloud/az). Designed for RHEL 8/9 with Cursor and Claude Code.
+metadata:
+  related-skills: "agnosticd, agnosticd-deploy-test, showroom, student-readiness, agnosticd-refactor"
 ---
 
 # AgnosticD Hub-Student Topology Skill

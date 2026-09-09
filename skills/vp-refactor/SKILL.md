@@ -1,7 +1,10 @@
 ---
 name: vp-refactor
 description: AI assistance for auditing and improving existing Validated Pattern repos against VP Operator requirements and Sandbox/Tested/Maintained tier criteria. Use when a developer has run `patternizer init` and needs to know what to fill in, or when preparing a pattern for tier submission — not when initializing from scratch.
-related_skills: [patternizer, vp-deploy-test, vp-deploy-validator, vp-submission]
+license: Apache-2.0
+compatibility: Requires bash 4.4+, git, and Helm. Designed for RHEL 8/9 with Cursor and Claude Code.
+metadata:
+  related-skills: "patternizer, vp-deploy-test, vp-deploy-validator, vp-submission"
 ---
 
 # Validated Pattern Refactor Skill

@@ -1,7 +1,10 @@
 ---
 name: vp-deploy-test
 description: AI assistance for validating a Validated Pattern deployment end-to-end — verifying VP Operator installation, ArgoCD Application convergence, secrets delivery via Vault and ESO, and imperative job completion. Use after pattern.sh make install or VP Operator install, before running student-readiness checks.
-related_skills: [patternizer, vp-refactor, student-readiness, workshop-tester, vp-deploy-validator, vp-submission]
+license: Apache-2.0
+compatibility: Requires bash 4.4+, oc/kubectl, and Helm. Designed for RHEL 8/9 with Cursor and Claude Code.
+metadata:
+  related-skills: "patternizer, vp-refactor, student-readiness, workshop-tester, vp-deploy-validator, vp-submission"
 ---
 
 # Validated Pattern Deployment Tester Skill

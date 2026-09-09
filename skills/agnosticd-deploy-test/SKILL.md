@@ -1,7 +1,10 @@
 ---
 name: agnosticd-deploy-test
 description: AI assistance for validating an AgnosticD v2 deployment end-to-end — verifying provisioning completed cleanly, all workloads are running, agnosticd_user_info data is flowing, and the stop/start/status lifecycle works. Use after agd provision completes, before running student-readiness checks.
-related_skills: [agnosticd, agnosticd-refactor, student-readiness, workshop-tester, agnosticd-hub-student]
+license: Apache-2.0
+compatibility: Requires bash 4.4+, oc/kubectl, and the agd CLI on RHEL 8/9 or compatible Linux. Designed for Cursor and Claude Code.
+metadata:
+  related-skills: "agnosticd, agnosticd-refactor, student-readiness, workshop-tester, agnosticd-hub-student"
 ---
 
 # AgnosticD Deployment Tester Skill

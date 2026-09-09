@@ -1,7 +1,10 @@
 ---
 name: skill-researcher
 description: AI assistance for resolving open research questions in the skill catalog. Use when a user wants to answer a (RESEARCH NEEDED — RQ-N) question, fetch upstream documentation and write findings permanently into the affected skill files, or propagate research results across multiple skills at once.
-related_skills: [agnosticd-refactor, vp-refactor, agnosticd, showroom, student-readiness, field-sourced-content]
+license: Apache-2.0
+compatibility: Requires bash 4.4+, git, and internet access. Designed for Cursor and Claude Code.
+metadata:
+  related-skills: "agnosticd-refactor, vp-refactor, agnosticd, showroom, student-readiness, field-sourced-content"
 ---
 
 # Skill Researcher

@@ -1,7 +1,10 @@
 ---
 name: field-sourced-content
 description: AI assistance for building RHDP Catalog Items using the Field-Sourced Content Template — a self-service GitOps platform with Helm and Ansible deployment patterns. Use when creating demos or labs for Red Hat Demo Platform.
-related_skills: [agnosticd, showroom, student-readiness, project-onboard]
+license: Apache-2.0
+compatibility: Requires bash 4.4+, git, Helm, and oc/kubectl. Designed for RHEL 8/9 with Cursor and Claude Code.
+metadata:
+  related-skills: "agnosticd, showroom, student-readiness, project-onboard"
 ---
 
 # Field-Sourced Content Template Skill

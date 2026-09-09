@@ -1,7 +1,10 @@
 ---
 name: patternizer
 description: AI assistance for Patternizer — a CLI tool that bootstraps Git repositories containing Helm charts into ready-to-use Validated Patterns for OpenShift. Use when initializing, upgrading, or working with Validated Patterns.
-related_skills: [vp-refactor, vp-deploy-test]
+license: Apache-2.0
+compatibility: Requires bash 4.4+, git, and the patternizer CLI. Designed for RHEL 8/9 with Cursor and Claude Code.
+metadata:
+  related-skills: "vp-refactor, vp-deploy-test"
 ---
 
 # Patternizer Skill

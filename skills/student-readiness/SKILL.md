@@ -1,7 +1,10 @@
 ---
 name: student-readiness
 description: AI assistance for verifying that a deployed workshop or demo environment is ready for students. Use when a developer provides OpenShift credentials or bastion access and asks whether students can start the lab. Adapts to OCP, RHEL VM, AAP, and hybrid AgnosticD environments.
-related_skills: [agnosticd, showroom, field-sourced-content, workshop-tester, agnosticd-deploy-test, vp-deploy-test, vp-deploy-validator, agnosticd-hub-student]
+license: Apache-2.0
+compatibility: Requires bash 4.4+, oc/kubectl, and SSH access to target environments. Designed for RHEL 8/9 with Cursor and Claude Code.
+metadata:
+  related-skills: "agnosticd, showroom, field-sourced-content, workshop-tester, agnosticd-deploy-test, vp-deploy-test, vp-deploy-validator, agnosticd-hub-student"
 ---
 
 # Student Readiness Skill
