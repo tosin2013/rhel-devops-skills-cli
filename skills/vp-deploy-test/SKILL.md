@@ -26,6 +26,14 @@ Do NOT use this skill to initialize a new pattern from scratch — use the **pat
 
 This skill defines a four-phase process. Work through the phases in order. Do not proceed to the next phase if the current phase has unresolved failures.
 
+## Gotchas
+
+- `values-secret.yaml` must NEVER be committed to git — it contains real credentials for Vault/ESO
+- ArgoCD Application sync can take 10+ minutes after initial install — do not flag as failed prematurely
+- The VP Operator must be installed BEFORE running `make install` — check with `oc get csv -n openshift-operators | grep patterns`
+- Imperative jobs run as CronJobs, not regular Jobs — check with `oc get cronjob` not `oc get job`
+- Secrets delivery via ESO requires the ExternalSecret CR to exist AND the SecretStore to be healthy — check both
+
 ## Required Input
 
 Before starting, collect:

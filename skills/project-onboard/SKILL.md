@@ -74,6 +74,14 @@ behavior).
 
 See `references/manifest-spec.md` for the complete `onboard.yml` schema.
 
+## Gotchas
+
+- `onboard.yml` keys are case-sensitive — `deployMethod` is not the same as `deploymethod`
+- The deploy script must be executable (`chmod +x deploy.sh`) or AgnosticD will silently skip it
+- RHDP Keycloak naming: catalog item names must match exactly between `onboard.yml` and the RHDP catalog entry
+- Non-interactive mode (`--yes` / `ONBOARD_NONINTERACTIVE=true`) skips ALL confirmation prompts — use with caution in production
+- Platform-specific install commands vary (dnf vs brew vs apt) — the manifest's `prerequisites` list should use tool names, not install commands
+
 ## Required Input
 
 Before starting, confirm:

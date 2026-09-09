@@ -20,9 +20,19 @@ metadata:
 
 ## Instructions
 
-- Reference the documentation in `references/` for detailed guidance
-- See `references/REFERENCE.md` for an index of available documentation files
+- Read `references/REFERENCE.md` when you need the Patternizer CLI reference, container image details, or upstream links
+- Read `references/README.md` for the full upstream README including generated file descriptions and contributing workflow
 - Patternizer runs as a container via Podman or Docker — no local Go installation required
+
+## Gotchas
+
+- `patternizer init` overwrites existing files without warning — always run in a clean directory or commit first
+- The generated `Makefile` includes `common/Makefile` from the VP framework — this include must exist or `make` will fail silently
+- `values-secret.yaml.template` is the template; `values-secret.yaml` with real credentials must NEVER be committed to git
+- Container images referenced in Helm charts must be accessible from the target OpenShift cluster — air-gapped clusters need mirrored images
+- After `patternizer init`, run `make` immediately to verify the scaffolding is valid before making any changes
+- `deploy.sh` and `teardown.sh` are safe to commit — they contain no secrets
+- The `deploy.sh` pre-check for `values-secret.yaml` is a `vp-deploy-test` submission-blocking requirement — a pattern that deploys without this check fails the non-interactive install test
 
 ## Quick Start
 
@@ -122,15 +132,6 @@ echo "==> Uninstalling Validated Pattern ..."
 echo "==> Uninstall complete."
 ```
 
-### Important reminders
-
-- `deploy.sh` and `teardown.sh` are safe to commit — they contain no secrets
-- `values-secret.yaml` must **never** be committed (add to `.gitignore` if not already present)
-- The `deploy.sh` pre-check for `values-secret.yaml` is a `vp-deploy-test` submission-blocking requirement — a pattern that deploys without this check fails the non-interactive install test
-- Add a "Quick Deploy" section to `README.md` referencing these scripts so new contributors know how to get started
-
----
-
 ## Generated Files
 
 Running `patternizer init` creates:
@@ -170,8 +171,5 @@ export KUBECONFIG=/path/to/cluster/kubeconfig
 
 ## Best Practices
 
-- Commit your work to git before running `init --with-secrets` (not easily reversible)
 - Use the container image rather than building from source
-- The `upgrade` command removes the `common/` directory if it exists
-- After upgrade, verify `Makefile` contains `include Makefile-common`
 - See [Validated Patterns documentation](https://validatedpatterns.io/) for pattern design guidance

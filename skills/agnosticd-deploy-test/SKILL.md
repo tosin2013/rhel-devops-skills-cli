@@ -26,6 +26,16 @@ Do NOT use this skill to set up AgnosticD v2 from scratch — use the **agnostic
 
 This skill defines a four-phase process. Work through the phases in order. Do not proceed to the next phase if the current phase has unresolved failures.
 
+> When you encounter an `[RQ-*]` tag, see [references/research-questions.md](references/research-questions.md) for the open question and its context.
+
+## Gotchas
+
+- `agd provision` can take 30+ minutes — do not treat long-running provisioning as a failure
+- The `agnosticd_user_info` callback populates Showroom attributes — if lab guide data is missing, check the callback output first, not Showroom config
+- `agd status` returns the last-known state, not a live health check — always run `agd provision` with `--check` for a real status
+- Stop/start lifecycle only works on cloud instances (AWS/Azure/GCP), not on pre-existing shared clusters
+- Teardown is irreversible — always confirm the GUID before running `agd destroy`
+
 ## Required Input
 
 Before starting, collect:
@@ -140,7 +150,7 @@ Expected: at least one entry showing the user data keys (e.g., `openshift_consol
 
 If no `agnosticd_user_info` output is found, note it as a finding but do not stop — record it in the Phase 3 report.
 
-> (RESEARCH NEEDED — RQ-4: What exact output format and keys does agnosticd_user_info produce, and where in the output directory is it written?)
+> `[RQ-4]` — exact output format and key list for `agnosticd_user_info` is an open research question.
 
 ### 3c. Student-readiness hand-off
 
@@ -183,7 +193,7 @@ Deployment Test — Phase 3: Post-deploy Validation
 
 ## Phase 4 — Lifecycle Test
 
-> (RESEARCH NEEDED — RQ-5: What are the exact playbook names and locations for stop/start/status lifecycle operations, and what does each return for AWS EC2 environments?)
+> `[RQ-5]` — exact playbook names, locations, and return values for lifecycle operations is an open research question.
 
 Test the stop/start/status lifecycle operations. This phase is optional — skip if the user confirmed `lifecycle test: no` in Required Input, or if Phase 3 failed.
 

@@ -22,6 +22,16 @@ metadata:
 
 This skill defines a diagnostic process, not a tool wrapper. When activated, gather the required input, parse the target module for executable steps, run each step against the live environment, classify any failures, and produce a structured report.
 
+- Read `references/REFERENCE.md` when you need AsciiDoc role conventions, Antora attribute substitution details, or the list of complementary RHDP Skills Marketplace tools
+
+## Gotchas
+
+- AsciiDoc `[source,bash,role=execute]` blocks are executable steps; `[source,bash]` without `role=execute` are display-only. Missing `role=execute` means the step won't be auto-executed.
+- Step verification must happen AFTER the command completes, not immediately — some commands (e.g., `oc apply`) return before the resource is ready. Always allow settle time or poll for readiness before verifying.
+- Failure classification matters: "Instruction Fix" means the lab content is wrong, "Infra Fix" means the deployment is broken, "Rethink" means the exercise design is flawed. Misclassifying wastes developer effort on the wrong fix.
+- Multi-module workshops must be tested in order — later modules may depend on state created by earlier ones. Skipping ahead produces false failures.
+- Do not retry a failed step more than once without investigating — repeated retries can leave the environment in a broken state (duplicate resources, partial deployments, exhausted quotas).
+
 ## Required Input
 
 Before running tests, collect the following from the user:
@@ -181,9 +191,5 @@ When test failures cannot be resolved through the classification heuristics:
 
 ## Best Practices
 
-- Always run student-readiness checks before module testing — don't debug module steps on a broken environment
-- Test modules in order (module-01 before module-02) since later modules may depend on earlier state
 - When re-testing after fixes, run only the failed steps first, then do a full pass
 - Save test reports to git so the team can track testing progress across environments
-- For multi-module workshops, test each module independently to isolate failures
-- If a step has a timing dependency (waiting for a pod to start), add a reasonable retry with backoff before classifying as a failure

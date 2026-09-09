@@ -22,6 +22,18 @@ metadata:
 
 This skill defines a diagnostic process, not a tool wrapper. When activated, gather the required input from the user, determine the environment type, then execute the applicable checks using `oc`, `curl`, and/or `ssh`.
 
+- Read `references/REFERENCE.md` when you need the list of complementary RHDP Skills Marketplace tools and their setup commands
+- Read `references/research-questions.md` when encountering a (RESEARCH NEEDED) marker
+
+## Gotchas
+
+- The RHDP user format is `userN` (e.g. `user1`), not `user-1` or `student1`. Showroom terminals will fail silently if the format is wrong.
+- Do NOT create extra IdPs on the cluster — RHDP pre-provisions htpasswd users. Creating new IdPs breaks the existing user setup.
+- `oc login` with a student user may fail if the oauth pod is still rolling out — wait for `oc get co authentication` to show Available=True before diagnosing login failures.
+- Route hostnames include the GUID — hardcoding hostnames in checks will fail for different deployments. Always derive routes dynamically with `oc get route`.
+- AAP environments need both the AAP controller URL AND the student's AAP credentials, not just the OpenShift credentials.
+- After `agd start` (environment was previously stopped), prioritize checks in this order: #1 (cluster access — nodes must be Ready), then #4 (operators — all CSVs must be Succeeded). These degrade most during a stop cycle. Only proceed to checks #2 and #3 (Showroom, terminal) once the cluster and operators are healthy, as Showroom pods may fail to start if operators are not ready first.
+
 ## Required Input
 
 Before running checks, collect the following from the user:
@@ -133,9 +145,7 @@ If they do not match, the diagnosis is one of:
 2. The `antora.yml` in the content repo has a hardcoded value that overrides the injected attribute
 3. The config was deployed against a different cluster than expected
 
-> (RESEARCH NEEDED — RQ-4: What are the exact `agnosticd_user_info` key names that map to Showroom antora.yml attributes, so this check can verify all injected values — not just ingress domain?)
->
-> Pending items: full list of attribute keys written by agnosticd_user_info, how they map to antora.yml attribute names.
+> (RESEARCH NEEDED — RQ-4)
 
 ### 8. AAP Readiness (if applicable)
 
@@ -149,9 +159,7 @@ curl -sk -H "Authorization: Bearer <TOKEN>" "https://<AAP_CONTROLLER>/api/v2/pro
 
 The expected value of N is set by an AgnosticD multi-user variable in the config's vars file. When collecting the "Number of students" input (see Required Input), ask the developer what that variable is set to — that is the authoritative source, not the student sign-up count.
 
-> (RESEARCH NEEDED — RQ-7: What is the exact AgnosticD variable name that controls the number of student environments provisioned, so this check can verify the deployed count against the configured count?)
->
-> Pending items: variable name for student count (e.g. `ocp4_idm_htpasswd_user_count` or similar), how the per-student namespace naming convention is derived from the variable.
+> (RESEARCH NEEDED — RQ-7)
 
 For N students, verify isolation:
 ```bash
@@ -219,4 +227,3 @@ When checks fail and the cause is not obvious:
 - For multi-user workshops, verify at least 3 student environments (first, middle, last)
 - Save the readiness report output for post-training review
 - If using the RHDP catalog, readiness checks should run after the catalog item's provisioning callback completes
-- After `agd start` (environment was previously stopped), prioritize checks in this order before proceeding: #1 (cluster access — nodes must be Ready), then #4 (operators — all CSVs must be Succeeded). These degrade most during a stop cycle. Only proceed to checks #2 and #3 (Showroom, terminal) once the cluster and operators are healthy, as Showroom pods may fail to start if operators are not ready first.

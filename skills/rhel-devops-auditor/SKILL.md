@@ -40,6 +40,14 @@ This skill defines a four-module audit process. Each module checks a specific do
 - Distinguish between BLOCKING (must fix), HIGH (should fix), and MEDIUM (nice to fix)
 - If a module cannot run (e.g. no cluster credentials for deployment audit), mark it SKIP with a reason
 
+## Gotchas
+
+- The auditor dispatches to other skills — it does NOT perform deep checks itself. If agnosticd-refactor or student-readiness are not installed, those check categories will be skipped
+- Audit results are point-in-time — a PASS can become a FAIL if the environment changes between audit and student access
+- The `--mode full` default runs ALL check categories, which can take 10+ minutes on large deployments — use `--mode quick` for fast pre-flight checks
+- WARN severity means "works but not ideal" — do NOT block a demo on WARNs unless the user explicitly asks for strict compliance
+- Remediation commands in the report are generated, not tested — always review before executing, especially `oc delete` commands
+
 ## Audit Modes
 
 | Mode | Modules Run | When to Use |

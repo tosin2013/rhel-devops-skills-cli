@@ -26,6 +26,16 @@ Do NOT use this skill to fix pattern structure issues — use the **vp-refactor*
 
 This skill defines a three-phase process. Work through the phases in order.
 
+- Read `references/research-questions.md` when encountering a (RESEARCH NEEDED) marker
+
+## Gotchas
+
+- The pattern MUST deploy fully without user interaction to qualify for any tier — interactive prompts during install are an automatic rejection
+- Community/Sandbox tier is the entry point — do not attempt Tested tier without passing Sandbox requirements first
+- The submission PR goes to `validatedpatterns/docs`, not to the pattern's own repo
+- CI tests in the submission repo run the full deploy cycle — ensure your pattern works on a clean cluster, not just your dev cluster
+- Tier criteria are versioned — always check the current upstream requirements, as they may have changed since the skill was written
+
 ## Required Input
 
 Before starting, collect:
@@ -58,7 +68,7 @@ The entry point for listing a pattern on validatedpatterns.io. All checks must p
 | README explains the use case | Review `README.md` or `README.adoc` | Covers what the pattern does, who it is for, and how to deploy it |
 | `pattern-metadata.yaml` tier field | Inspect `tier:` field | Set to `community` or left unset (defaults to community) |
 
-> (RESEARCH NEEDED — VP-SUB-1: Exact required fields for `pattern-metadata.yaml` at Community tier — field names, types, and which are mandatory vs. optional per validatedpatterns.io current schema)
+> (RESEARCH NEEDED — VP-SUB-1)
 
 ### Tier 2 — Tested
 
@@ -73,7 +83,7 @@ Requires a working CI/CD pipeline that proves the pattern deploys automatically.
 | Lab or demo documentation present | Check `docs/` or `README` | Step-by-step lab or demo guide exists |
 | `pattern-metadata.yaml` tier field | Inspect `tier:` field | Set to `tested` |
 
-> (RESEARCH NEEDED — VP-SUB-2: Exact CI/CD requirements for the Tested tier — which pipeline platforms are accepted, what the convergence check must cover, and what OCP version matrix is required per the VP team's current acceptance criteria)
+> (RESEARCH NEEDED — VP-SUB-2)
 
 ### Tier 3 — Maintained
 
@@ -87,7 +97,7 @@ Requires ongoing commitment from an active maintainer.
 | Issue/PR response SLA | Check recent issues/PRs | No open issues/PRs older than 30 days without a response |
 | `pattern-metadata.yaml` tier field | Inspect `tier:` field | Set to `maintained` |
 
-> (RESEARCH NEEDED — VP-SUB-3: Exact Maintained tier requirements — SLA values, what qualifies as "Red Hat involvement", whether RHDP team ownership counts, and how the VP team verifies maintainer activity)
+> (RESEARCH NEEDED — VP-SUB-3)
 
 ### Tier Audit Report
 
@@ -192,7 +202,7 @@ jobs:
           echo "Convergence timeout" && exit 1
 ```
 
-> (RESEARCH NEEDED — VP-SUB-2: The VP team may have an official CI template or GitHub Actions reusable workflow — check validatedpatterns/docs/.github/ and validatedpatterns/common for official CI tooling)
+> (RESEARCH NEEDED — VP-SUB-2)
 
 ---
 
@@ -209,7 +219,7 @@ cd docs
 
 ### Step 2 — Understand the content structure
 
-> (RESEARCH NEEDED — VP-SUB-4: Exact content structure of validatedpatterns/docs — which directory holds pattern pages, what frontmatter fields are required, what the tier badge syntax is, and what a merged pattern page looks like in the repo)
+> (RESEARCH NEEDED — VP-SUB-4)
 
 **Current partial guidance** (verify against the live repo before filing a PR):
 
@@ -239,7 +249,7 @@ industries:
 ---
 ```
 
-> (RESEARCH NEEDED — VP-SUB-4: Exact frontmatter schema and required fields for the Hugo-based docs site — check `archetypes/` and existing pattern pages in `content/patterns/`)
+> (RESEARCH NEEDED — VP-SUB-4)
 
 ### Step 4 — Submit the PR
 
@@ -271,7 +281,7 @@ EOF
 
 ### Step 5 — Reviewer expectations
 
-> (RESEARCH NEEDED — VP-SUB-5: What the VP team checks during PR review — OWNERS file, CI results, tier-specific requirements, response time SLA, and whether a demo or recording is required)
+> (RESEARCH NEEDED — VP-SUB-5)
 
 **Current partial guidance:**
 - The VP team reviews for tier compliance — the checklist in the PR body should match the audit from Phase 1
@@ -295,20 +305,6 @@ VP Submission — <pattern-name>
  Status:  PR SUBMITTED — awaiting VP team review
 ══════════════════════════════════════════════════════
 ```
-
----
-
-## Research Questions
-
-The following items require upstream research via `skill-researcher`:
-
-| RQ | Description | Primary source |
-|----|-------------|----------------|
-| VP-SUB-1 | Exact required fields for `pattern-metadata.yaml` at Community tier | validatedpatterns/docs `content/` and validatedpatterns/common |
-| VP-SUB-2 | CI/CD requirements for Tested tier — accepted platforms, convergence check spec, OCP version matrix | validatedpatterns/docs `AGENTS.md`, `.github/workflows/`, VP team documentation |
-| VP-SUB-3 | Maintained tier requirements — SLA values, Red Hat involvement criteria, maintainer verification process | validatedpatterns/docs contributor guidelines |
-| VP-SUB-4 | validatedpatterns/docs content structure — directory layout, Hugo frontmatter schema, tier badge syntax | validatedpatterns/docs `archetypes/`, `content/patterns/` examples |
-| VP-SUB-5 | PR reviewer expectations and merge criteria — checklist, demo requirements, review timeline | validatedpatterns/docs CONTRIBUTING.md or OWNERS file |
 
 ---
 

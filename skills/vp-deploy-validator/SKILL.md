@@ -27,6 +27,14 @@ Do NOT use this skill to install or reinstall a pattern — use the **vp-deploy-
 
 This skill defines a three-phase health check process. None of the phases install or modify the deployment — they only inspect the current state.
 
+## Gotchas
+
+- This skill validates an ALREADY-RUNNING deployment — do not use it to install or re-install a pattern
+- ArgoCD Application "Progressing" is not a failure — some applications take 10+ minutes to converge after initial sync
+- `oc get secret` in a namespace only shows secrets the current user can access — a missing secret may be a permissions issue, not a delivery failure
+- ExternalSecret CRs may show "Ready" while the actual Secret they create is empty — always check the Secret data, not just the ExternalSecret status
+- Health check results from this skill can be stale within minutes on active clusters — always re-run before a demo
+
 ## Required Input
 
 Before starting, collect:

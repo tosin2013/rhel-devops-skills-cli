@@ -26,6 +26,16 @@ This skill defines an audit process, not a tool wrapper. When activated, collect
 
 Do NOT use this skill when a developer is setting up AgnosticD v2 from scratch — use the **agnosticd** skill instead.
 
+> When you encounter an `[RQ-*]` tag, see [references/research-questions.md](references/research-questions.md) for the open question and its context. For fetched upstream docs, see [references/REFERENCE.md](references/REFERENCE.md).
+
+## Gotchas
+
+- Workload role names must start with `ocp4_workload_` — AgnosticD will not discover roles with other prefixes
+- The `destroy` action in a workload role is mandatory — omitting `remove.yml` means teardown will leave resources orphaned
+- Config variable files use `_vars.yml` suffix by convention, not `.yaml` — inconsistent extensions break variable loading
+- AgnosticD roles run as the `ec2-user` (or equivalent), not root — `become: true` is needed for system-level changes
+- `agnosticd_user_info` must be called from the workload role, not the config — the config only sets up the infrastructure
+
 ## Required Input
 
 Before auditing, collect the following from the developer:
@@ -47,10 +57,7 @@ Work through each area in order. Report findings as a pass/fail table at the end
 
 ### 1. Environment Pre-flight Compliance
 
-> (RESEARCH NEEDED — RQ-1: What environment checks should the LLM run before any `agd` command, and what is the per-platform corrective action when requirements are not met?)
->
-> This section will be completed once research into AgnosticD v2 pre-flight requirements is done.
-> Pending items: Python 3.12+ detection per OS, podman presence check, virtualenv existence check, per-platform corrective commands.
+> `[RQ-1]` — pre-flight environment checks and per-platform corrective actions are an open research question.
 
 **Current partial guidance:**
 
@@ -65,10 +72,7 @@ Check that the developer's local environment meets minimum requirements before a
 
 ### 2. Config File Structure
 
-> (RESEARCH NEEDED — RQ-2: What is the required file structure and playbook set for an AgnosticD v2 config, what does each playbook do, and what are the minimum required variables?)
->
-> This section will be completed once research into AgnosticD v2 config anatomy is done.
-> Pending items: required playbook list (provision, destroy, stop, start, status), mandatory variables, default_vars file conventions, directory layout requirements.
+> `[RQ-2]` — required file structure, playbooks, and minimum variables for a v2 config are an open research question.
 
 **Current partial guidance:**
 
@@ -78,10 +82,7 @@ Verify the config directory exists under `ansible/configs/<config-name>/` in the
 
 ### 3. Workload Role Structure
 
-> (RESEARCH NEEDED — RQ-3: What files are required in a new `ocp4_workload_*` role, what is the purpose of each task file, and how does the `ocp4_workload_example` template demonstrate the correct structure?)
->
-> This section will be completed once research into AgnosticD v2 workload role anatomy is done.
-> Pending items: required files (tasks/workload.yml, tasks/main.yml, defaults/main.yml, meta/main.yml), variable naming prefix conventions, ocp4_workload_example reference implementation walkthrough.
+> `[RQ-3]` — required workload role files and the `ocp4_workload_example` reference structure are an open research question.
 
 **Current partial guidance:**
 
@@ -91,10 +92,7 @@ Verify all custom workload roles follow the `ocp4_workload_*` naming convention 
 
 ### 4. `agnosticd_user_info` Completeness
 
-> (RESEARCH NEEDED — RQ-4: How does the `agnosticd_user_info` Ansible module work, what format does it expect, how does data flow to RHDP and students, and how does it connect to Showroom Antora attributes?)
->
-> This section will be completed once research into the agnosticd_user_info module is done.
-> Pending items: module signature and required keys, RHDP-expected output fields, student credential patterns, connection to openshift_cluster_ingress_domain and Showroom antora.yml attributes.
+> `[RQ-4]` — `agnosticd_user_info` module signature, data flow, and Showroom attribute connection are an open research question.
 
 **Current partial guidance:**
 
@@ -104,10 +102,7 @@ Every config that deploys to RHDP must use `agnosticd_user_info` to surface depl
 
 ### 5. Stop / Start / Status Implementation
 
-> (RESEARCH NEEDED — RQ-5: What Ansible playbooks and variables does a config need to support `agd stop`, `agd start`, and `agd status`, and what does RHDP expect these lifecycle operations to do for an AWS-based OpenShift cluster?)
->
-> This section will be completed once research into AgnosticD v2 lifecycle playbook requirements is done.
-> Pending items: playbook names and locations for stop/start/status, AWS EC2 instance stop vs cluster stop semantics, variables that control lifecycle behavior, RHDP cost-management requirements.
+> `[RQ-5]` — lifecycle playbooks, variables, and RHDP cost-management expectations are an open research question.
 
 **Current partial guidance:**
 
@@ -117,10 +112,7 @@ Check whether the config implements stop, start, and status operations. These ar
 
 ### 6. Execution Environment Compliance
 
-> (RESEARCH NEEDED — RQ-6: What execution environment container images does AgnosticD v2 ship, what Ansible collections and Python libraries are included in each, and when would a developer need to build a custom EE?)
->
-> This section will be completed once research into AgnosticD v2 execution environments is done.
-> Pending items: available EE images and their contents, how to specify an EE in a config, when to build a custom EE, where custom EE definitions should live.
+> `[RQ-6]` — available EE images, their contents, and when to build a custom EE are an open research question.
 
 **Current partial guidance:**
 
@@ -130,10 +122,7 @@ Verify the config uses the execution environment rather than calling `ansible-pl
 
 ### 7. Multi-User Configuration
 
-> (RESEARCH NEEDED — RQ-7: How does AgnosticD v2 provision per-student namespaces, RBAC, and credentials for multi-user workshop environments, and what variables control the number of users and their access?)
->
-> This section will be completed once research into AgnosticD v2 multi-user deployment patterns is done.
-> Pending items: per-student namespace creation variables, RBAC configuration, credential generation patterns, number-of-users variable conventions.
+> `[RQ-7]` — multi-user namespace provisioning, RBAC, and credential variables are an open research question.
 
 **Current partial guidance:**
 
@@ -198,6 +187,5 @@ When audit findings reveal deeper issues:
 ## Best Practices
 
 - Run this audit before submitting a config to RHDP review, not after
-- Fix audit items in order — items 1 and 8 (pre-flight and hygiene) are prerequisites for everything else
-- After fixing Workload Role Structure issues (area 3), re-run `agd provision` to confirm the fix before proceeding
-- Use `(RESEARCH NEEDED)` SKIP results as a tracking list — revisit when the corresponding research question is answered
+- Fix audit items in order — pre-flight and hygiene are prerequisites for everything else
+- After fixing workload role structure issues, re-run `agd provision` to confirm before proceeding

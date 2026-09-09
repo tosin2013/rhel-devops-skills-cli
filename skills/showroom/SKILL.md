@@ -23,9 +23,23 @@ metadata:
 
 ## Instructions
 
-- Reference the documentation in `references/` for detailed guidance
-- See `references/REFERENCE.md` for an index of available documentation files
+- Read `references/REFERENCE.md` when looking up terminal image options or deployment variable names
+- Read `references/antora-environment-variables.md` when configuring Antora playbooks or troubleshooting site generation
 - Showroom content is built with Antora from AsciiDoc source files
+
+## Gotchas
+
+- **Showroom does NOT auto-refresh after content pushes.** Showroom pulls content from git at pod startup. Pushing changes to the content repo does NOT update a running instance. After every content push, you MUST restart the deployment:
+  ```bash
+  oc rollout restart deployment/showroom -n showroom-<GUID>
+  oc rollout status deployment/showroom -n showroom-<GUID> --timeout=120s
+  ```
+  For multi-user deployments, restart each student's namespace.
+- The `URL` environment variable silently overrides `site.url` in the Antora playbook — if the site URL looks wrong, check `echo $URL` first.
+- Setting `CI=true` changes Antora's log format from pretty to JSON and suppresses edit-page links in the UI. Unset it for local preview.
+- Do not hardcode cluster hostnames or GUIDs in AsciiDoc content — use Antora attributes from `antora.yml` (populated by `agnosticd_user_info` at provisioning time).
+- AsciiDoc `[source,bash,role=execute]` blocks are executable in Showroom terminals; `[source,bash]` without `role=execute` is display-only. Missing the role means students must copy-paste manually.
+- Start from `showroom_template_default` — do not build Antora structure from scratch.
 
 ## Content Authoring
 
@@ -57,6 +71,27 @@ podman run --rm --name antora -v $PWD:/antora:z -p 8080:8080 -i -t \
   ghcr.io/juliaaano/antora-viewer
 # Open http://localhost:8080
 ```
+
+### Antora CLI Validation
+
+Optionally install the Antora CLI for native local validation without containers:
+
+```bash
+npm i -g @antora/cli @antora/site-generator
+antora antora-playbook.yml
+```
+
+This validates the full site build (broken xrefs, missing includes, attribute errors) and produces the same output as the container approach. Use the CLI when you need faster iteration or CI integration.
+
+Key environment variables that affect site generation:
+
+| Variable | Effect |
+|----------|--------|
+| `URL` | Overrides `site.url` in playbook |
+| `CI=true` | JSON log format, suppresses edit links |
+| `GIT_CREDENTIALS` | Auth for private content repos |
+| `ANTORA_CACHE_DIR` | Custom cache location |
+| `ANTORA_LOG_LEVEL` | `warn` (default), `error`, `info`, `debug` |
 
 ### Adding Links to the UI
 
@@ -189,12 +224,41 @@ This connection is why lab content should reference `{openshift_cluster_ingress_
 
 ## Best Practices
 
-- Start from `showroom_template_default` -- do not build Antora structure from scratch
-- Use AsciiDoc attributes from `antora.yml` for dynamic content (hostnames, passwords) — these are populated by `agnosticd_user_info` at provisioning time, not hardcoded
-- Keep modules focused -- one concept per page
+- Keep modules focused — one concept per page
 - Use `partials/` for reusable content shared across modules
 - Test locally with the Antora viewer container before pushing
 - Pin the Helm chart version in AgnosticD configs for reproducibility
+
+## Live Cluster Validation
+
+After generating Showroom content, prove it works on a real cluster and feed real evidence back into the content.
+
+### Validation loop
+
+1. **Deploy** — Hand off to AgnosticD (`agd provision`) or Helm to deploy Showroom on the cluster
+2. **Restart after content changes** — After every `git push` to the content repo:
+   ```bash
+   oc rollout restart deployment/showroom -n showroom-<GUID>
+   oc rollout status deployment/showroom -n showroom-<GUID> --timeout=120s
+   ```
+3. **Validate environment** — Activate the **student-readiness** skill to confirm the cluster is ready for students
+4. **Test exercises** — Activate the **workshop-tester** skill to execute each module's exercises against the live environment
+5. **Capture evidence** — Collect real outputs to replace generic placeholders. Evidence types depend on the demo/workshop context:
+   - **Command outputs** — Run commands (`oc get pods`, `oc get routes`, `curl`) and capture into `[source,bash]` / `[source,text]` blocks
+   - **Screenshots** — Ask the user: "This step shows the OpenShift console. Can you paste a screenshot of what you see at [URL]? I'll reference it in the lab content." Use `image::` macro to embed
+   - **API/route responses** — Capture HTTP status codes and JSON payloads as `[source,json]` blocks
+   - **Pod/container logs** — Capture log snippets as `[source,text]` blocks
+   - **Context-dependent** — AAP job output for Ansible demos, ArgoCD sync status for GitOps patterns, Vault status for VP demos, etc.
+6. **Update content** — Replace placeholder outputs in AsciiDoc modules with captured evidence. Mark any step still using generic placeholders
+7. **Re-validate** — Run **workshop-tester** again to confirm the enriched content matches what students will see
+
+### Evidence comparison
+
+When encountering a step that shows example output:
+1. Run the actual command on the live cluster
+2. Compare real output to what the content shows
+3. If they differ, update the content (or flag for user review if the difference is significant)
+4. If visual proof is needed, ask the user for a screenshot
 
 ## Troubleshooting
 
@@ -246,8 +310,6 @@ Showroom not accessible
 ## Validation
 
 Before handing a Showroom environment to students:
-
-- **Content quality**: Use `/showroom:verify-content` from the [RHDP Skills Marketplace](https://rhpds.github.io/rhdp-skills-marketplace/) to validate AsciiDoc against Red Hat standards
-- **Student readiness**: Use the **student-readiness** skill to verify the full student experience (access, lab guide, terminal, operators, RBAC)
+- **Environment readiness**: Activate the **student-readiness** skill for cluster-level verification
+- **Content verification**: Run the **Live Cluster Validation** loop above to prove exercises work and capture real evidence
 - **Module testing**: Use the **workshop-tester** skill to execute each module's exercises against the live environment and classify any failures as Instruction Fix, Infra / Deployment Fix, or Rethink
-- **Lab grading** (if applicable): Use `/ftl:rhdp-lab-validator` to generate Solve/Validate button automation

@@ -26,14 +26,24 @@ metadata:
 
 ## Instructions
 
-- Reference the documentation in `references/` for detailed guidance
-- See `references/REFERENCE.md` for an index of available documentation files
-- The template provides two deployment patterns: **Helm** and **Ansible**
+- **Choosing a pattern?** Default to Helm (`references/helm-README.md`); fall back to Ansible only when you need wait logic, secret injection, or API calls (`references/ansible-README.md`, `references/ansible-developer-guide.md`)
+- **Setting up Showroom?** See `references/SHOWROOM-UPDATE-SPEC.md` for content maintenance
+- **First time with the template?** Start with `references/README.md` for the overview and quick start
+- **Project documentation?** See `references/project-documentation.md` for the full project docs index
+- The template provides two deployment patterns — **Helm** (default) and **Ansible** (escape hatch)
+
+## Gotchas
+
+- Default to Helm deployment pattern; use Ansible only when you need wait logic, secret injection, or API calls that Helm can't handle
+- The `values.yaml` in the Helm chart is the source of truth for all configurable parameters — do not hardcode values in templates
+- RHDP catalog item names must match the directory name in the GitOps repo exactly (case-sensitive)
+- The `deploy.sh` script must be idempotent — running it twice should not create duplicate resources
+- Field-Sourced Content repos must include a `README.md` with RHDP submission metadata or the catalog submission will be rejected
 
 ## Deployment Patterns
 
-### Helm Pattern (`examples/helm/`)
-Use when deployment can be expressed as Kubernetes manifests with Helm templating.
+### Helm Pattern (`examples/helm/`) — default
+Use this pattern by default. Suitable whenever deployment can be expressed as Kubernetes manifests with Helm templating.
 
 ```
 Your Git Repo         OpenShift Cluster
@@ -44,8 +54,8 @@ Your Git Repo         OpenShift Cluster
 └────────────┘
 ```
 
-### Ansible Pattern (`examples/ansible/`)
-Use when you need wait-for-ready, secret generation, API calls, or conditional logic.
+### Ansible Pattern (`examples/ansible/`) — escape hatch
+Fall back to this only when you need wait-for-ready logic, secret generation, API calls, or conditional logic that Helm cannot express.
 
 ArgoCD creates a Kubernetes Job that runs your playbook via Ansible Runner.
 
@@ -208,9 +218,7 @@ metadata:
 
 ## Best Practices
 
-- Start from `examples/helm/` or `examples/ansible/` — do not build from scratch
-- Each component should be independently toggleable via `values.yaml`
-- Never commit secrets to git — use OpenShift Secrets
-- Label resources for RHDP integration (userinfo, application)
+- Start from `examples/helm/` (preferred) — use `examples/ansible/` only when Helm can't express the deployment logic
 - Test Helm charts with `helm template` before pushing
-- For Ansible, use `kubernetes.core.k8s` module and the auto-injected variables (`cluster_domain`, `namespace`)
+- Label all deployed resources for RHDP integration (`demo.redhat.com/application`, `demo.redhat.com/userinfo`)
+- Never commit secrets to git — use OpenShift Secrets

@@ -26,6 +26,14 @@ This skill defines an audit process, not a tool wrapper. When activated, collect
 
 Do NOT use this skill when a developer is initializing a new pattern from scratch — use the **patternizer** skill instead.
 
+## Gotchas
+
+- NEVER use OperatorHub.io metadata — use `oc get packagemanifests` on the target cluster to get the real operator names and channels
+- `values-secret.yaml` must NEVER be committed to git — it contains real credentials. Only `values-secret.yaml.template` goes in the repo
+- The VP Operator watches for changes to `values-global.yaml` — modifying it triggers a full reconciliation. Edit carefully
+- Helm chart `values.yaml` files must not contain cluster-specific values — those go in `values-global.yaml` or `values-<cluster>.yaml`
+- ArgoCD Application names must be unique across the cluster, not just the namespace — name collisions cause silent sync failures
+
 ## Required Input
 
 Before auditing, collect the following from the developer:
@@ -344,7 +352,5 @@ When audit findings reveal deeper issues:
 ## Best Practices
 
 - Run this audit immediately after `patternizer init`, before attempting `./pattern.sh make install`
-- Fix secrets compliance (area 4) before anything else — committed secrets must be removed from git history, not just deleted
 - Address Sandbox tier checklist items (area 7) in parallel with technical fixes — the README and diagram are quick wins that unblock tier review
-- Use `(RESEARCH NEEDED)` SKIP results as a tracking list — revisit when the corresponding research question is answered
 - Test with the VP Operator (area 5) separately from `./pattern.sh` — they have different requirements
