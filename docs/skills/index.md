@@ -28,6 +28,7 @@ Each skill teaches your AI assistant (Claude Code or Cursor) how to work with a 
 | [VP Submission](vp-submission.html) | Audit a Validated Pattern against VP tier requirements (Community, Tested, Maintained) and guide the PR submission to validatedpatterns/docs | Self-contained |
 | [Project Onboard](project-onboard.html) | Project onboarding assistant — reads `onboard.yml` manifests to install prerequisites, configure environments, and validate deployment readiness | Self-contained |
 | [RHEL DevOps Auditor](rhel-devops-auditor.html) | Audit projects against rhel-devops-skills-cli standards and generate structured remediation plans | Self-contained |
+| [Static Validation](static-validation.html) | Offline static checks — render, schema, policy, secrets, and lint for Helm, Kustomize, and AgnosticD repos | Self-contained |
 
 ## Cross-Skill Relationships
 
@@ -76,25 +77,33 @@ Some skills work together. The installer and AI assistants recognize these relat
 | Project Onboard | Patternizer | validated pattern repos can ship onboard.yml for pattern-specific setup |
 | Field-Sourced Content | Student Readiness | RHDP pre-provisioned clusters use field content for workload deployment; student-readiness verifies the result with Keycloak user format awareness |
 | Field-Sourced Content | Project Onboard | rhdp-workload scaffold integrates field content as the GitOps deployment mechanism; project-onboard handles prerequisites and config |
+| Static Validation | AgnosticD Refactor | static-validation lint/syntax failures escalate to agnosticd-refactor for deep config auditing |
+| Static Validation | VP Refactor | static-validation Helm/schema failures escalate to vp-refactor for chart and values auditing |
+| Static Validation | RHEL DevOps Auditor | static-validation discovers structural issues; escalates to rhel-devops-auditor |
+| Static Validation | AgnosticD Deploy Test | static-validation is the offline pre-gate; agnosticd-deploy-test is the next rung with live cluster validation |
+| Static Validation | VP Deploy Test | static-validation is the offline pre-gate; vp-deploy-test is the next rung with live cluster validation |
+| Static Validation | Patternizer | static-validation checks Validated Pattern repos initialized by patternizer |
+| Static Validation | Field-Sourced Content | static-validation lints and validates field content Helm charts |
 
-See [ADR-010](../adrs/010-cross-skill-dependencies.html) for cross-skill dependencies, [ADR-011](../adrs/011-e2e-validation-and-troubleshooting.html) for validation and troubleshooting, [ADR-012](../adrs/012-workshop-module-testing.html) for workshop module testing strategy, [ADR-013](../adrs/013-refactor-skills.html) for refactor skills design, [ADR-014](../adrs/014-skill-researcher.html) for the skill researcher workflow, [ADR-015](../adrs/015-deployment-pipeline-testing.html) for deployment pipeline testing and the operator confidence chain, [ADR-016](../adrs/016-hub-student-skill.html) for the hub+student topology skill, [ADR-017](../adrs/017-vp-submission-skill.html) for the VP submission skill and validator redeploy gate, and [ADR-020](../adrs/020-rhdp-workload-scaffold.html) for the RHDP workload bootstrap scaffold type.
+See [ADR-010](../adrs/010-cross-skill-dependencies.html) for cross-skill dependencies, [ADR-011](../adrs/011-e2e-validation-and-troubleshooting.html) for validation and troubleshooting, [ADR-012](../adrs/012-workshop-module-testing.html) for workshop module testing strategy, [ADR-013](../adrs/013-refactor-skills.html) for refactor skills design, [ADR-014](../adrs/014-skill-researcher.html) for the skill researcher workflow, [ADR-015](../adrs/015-deployment-pipeline-testing.html) for deployment pipeline testing and the operator confidence chain, [ADR-016](../adrs/016-hub-student-skill.html) for the hub+student topology skill, [ADR-017](../adrs/017-vp-submission-skill.html) for the VP submission skill and validator redeploy gate, [ADR-020](../adrs/020-rhdp-workload-scaffold.html) for the RHDP workload bootstrap scaffold type, and [ADR-021](../adrs/021-static-validation-skill.html) for the static validation skill.
 
 ## Validation Lifecycle
 
 The validation skills follow a clear confidence-building progression. The goal of every step is to give an operator confidence they can run the workload with limited or no issues before going live.
 
 ```
-agnosticd-deploy-test  →  student-readiness  →  workshop-tester  →  ftl:rhdp-lab-validator
-vp-deploy-test         →  vp-deploy-validator →  student-readiness → workshop-tester  →  vp-submission
-(pipeline worked?)        (still healthy?)       (student POV)        (exercises work?)    (submit to VP)
+static-validation      →  agnosticd-deploy-test  →  student-readiness  →  workshop-tester  →  ftl:rhdp-lab-validator
+static-validation      →  vp-deploy-test         →  vp-deploy-validator →  student-readiness → workshop-tester  →  vp-submission
+(offline checks)          (pipeline worked?)         (still healthy?)       (student POV)        (exercises work?)    (submit to VP)
 ```
 
-1. **AgnosticD Deploy Test / VP Deploy Test** verifies the deployment pipeline produced a correct, fully-working result (provisioning, convergence, lifecycle). VP Deploy Test also detects `SUBMISSION_BLOCKING` non-interactive install failures.
-2. **VP Deploy Validator** *(VP only)* health-checks an already-running pattern without reinstalling. Activates the destroy-and-redeploy gate after two failed remediation cycles or on non-interactive install failure.
-3. **Student Readiness** verifies the deployed environment is accessible and ready from the student's perspective
-4. **Workshop Tester** executes module exercises against the live environment and classifies failures — the final confidence gate before going live
-5. **VP Submission** *(VP only)* audits the pattern against Community, Tested, and Maintained tier criteria and guides the PR submission to [validatedpatterns/docs](https://github.com/validatedpatterns/docs)
-6. **ftl:rhdp-lab-validator** (marketplace) generates grading automation for passing modules
+1. **Static Validation** runs fully offline checks (render, schema, policy, secrets, lint) with no cluster credentials — the first rung of the evidence ladder
+2. **AgnosticD Deploy Test / VP Deploy Test** verifies the deployment pipeline produced a correct, fully-working result (provisioning, convergence, lifecycle). VP Deploy Test also detects `SUBMISSION_BLOCKING` non-interactive install failures.
+3. **VP Deploy Validator** *(VP only)* health-checks an already-running pattern without reinstalling. Activates the destroy-and-redeploy gate after two failed remediation cycles or on non-interactive install failure.
+4. **Student Readiness** verifies the deployed environment is accessible and ready from the student's perspective
+5. **Workshop Tester** executes module exercises against the live environment and classifies failures — the final confidence gate before going live
+6. **VP Submission** *(VP only)* audits the pattern against Community, Tested, and Maintained tier criteria and guides the PR submission to [validatedpatterns/docs](https://github.com/validatedpatterns/docs)
+7. **ftl:rhdp-lab-validator** (marketplace) generates grading automation for passing modules
 
 ## Complementary: RHDP Skills Marketplace
 

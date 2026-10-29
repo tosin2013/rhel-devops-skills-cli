@@ -24,6 +24,7 @@ Skills use the [Agent Skills open standard](https://agentskills.io/) (`SKILL.md`
 | **vp-submission** | Audit a Validated Pattern against VP tier requirements (Community, Tested, Maintained) and guide submission to validatedpatterns/docs | Self-contained |
 | **onboard** | Project onboarding assistant — reads `onboard.yml` manifests to install prerequisites, configure environments, and validate deployment readiness | Self-contained |
 | **rhel-devops-auditor** | Audit projects against rhel-devops-skills-cli standards and generate structured PASS/WARN/FAIL reports with prioritized remediation plans | Self-contained |
+| **static-validation** | Offline static checks — render, schema, policy, secrets, and lint for Helm, Kustomize, and AgnosticD repos | Self-contained |
 
 ## Supported Platforms
 
@@ -135,6 +136,7 @@ git pull origin main
 | [018](docs/adrs/018-scaffold-command.md) | Scaffold Command Architecture |
 | [019](docs/adrs/019-rhel-devops-auditor.md) | RHEL DevOps Auditor Skill |
 | [020](docs/adrs/020-rhdp-workload-scaffold.md) | RHDP Workload Bootstrap Scaffold Type |
+| [021](docs/adrs/021-static-validation-skill.md) | Static Validation Skill |
 
 ## Running Tests
 

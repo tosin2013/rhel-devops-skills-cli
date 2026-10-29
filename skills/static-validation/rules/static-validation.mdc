@@ -1,0 +1,19 @@
+---
+description: Static validation conventions for Helm charts, Kustomize overlays, and AgnosticD configs — render, schema, policy, secrets, and lint checks
+globs: ["**/Chart.yaml", "**/values.yaml", "**/values-*.yaml", "**/kustomization.yaml", "**/kustomization.yml", "**/ansible/**/tasks/*.yml", "**/.gitleaks.toml", "**/.yamllint", "**/policy/**/*.rego"]
+alwaysApply: false
+---
+
+When working with static validation of infrastructure manifests:
+
+- Run static-validation checks BEFORE deploying to any cluster — these are offline, no kubeconfig required
+- Use `helm template` to render charts, `kustomize build` for overlays, `ansible-playbook --syntax-check` for AgnosticD
+- Validate rendered manifests against Kubernetes AND OpenShift CRD schemas using kubeconform with two schema locations
+- For OpenShift CRDs (Route, DeploymentConfig, etc.) use datreeio/CRDs-catalog as the schema source
+- Run `gitleaks detect` to scan for committed secrets — values-secret.yaml must NEVER be committed
+- Use conftest with OPA Rego policies under `policy/` to enforce: no privileged containers, resource limits required, pinned image tags
+- Run `yamllint` on all YAML files, `helm lint` on charts, `ansible-lint --offline` on AgnosticD roles
+- Save all validation output as evidence artifacts under `docs/evidence/<spec>/rung1/`
+- If a validation tool is not installed, skip that check gracefully and report it — do not fail the entire run
+- kubeconform resources marked "unknown" mean no schema was found — this is WARN, not FAIL
+- Helm template placeholders ({{ .Values.* }}) are not secret leaks — suppress gitleaks false positives for template syntax
